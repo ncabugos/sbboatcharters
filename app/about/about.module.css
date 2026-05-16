@@ -1,0 +1,220 @@
+/* ===== ABOUT HERO ===== */
+.hero {
+  position: relative;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.heroBgImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(165deg, rgba(10, 22, 40, 0.8) 0%, rgba(15, 33, 64, 0.6) 50%, rgba(13, 115, 119, 0.5) 100%);
+  z-index: 1;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding-top: 10rem;
+  padding-bottom: 4rem;
+}
+
+.heroLabel {
+  display: inline-block;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--color-seafoam);
+  margin-bottom: var(--space-lg);
+  animation: fadeInUp 0.6s var(--ease-out) 0.1s both;
+}
+
+.heroTitle {
+  font-family: var(--font-heading);
+  font-size: var(--fs-h1);
+  color: white;
+  margin-bottom: var(--space-lg);
+  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.3);
+  animation: fadeInUp 0.6s var(--ease-out) 0.2s both;
+}
+
+.heroSubtitle {
+  font-size: var(--fs-body-lg);
+  color: rgba(255, 255, 255, 0.8);
+  max-width: 50ch;
+  margin-inline: auto;
+  line-height: 1.8;
+  animation: fadeInUp 0.6s var(--ease-out) 0.3s both;
+}
+
+/* ===== STORY ===== */
+.story {
+  background: var(--color-warm-white);
+}
+
+.storyGrid {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: var(--space-4xl);
+  align-items: start;
+}
+
+.storyImageWrap {
+  position: relative;
+  display: grid;
+  gap: var(--space-md);
+}
+
+.storyImage {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  aspect-ratio: 3/4;
+  box-shadow: var(--shadow-lg);
+}
+
+.storyImageSecondary {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  aspect-ratio: 16/9;
+  box-shadow: var(--shadow-md);
+}
+
+.storyPhoto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform var(--duration-slow) var(--ease-out);
+}
+
+.storyImage:hover .storyPhoto,
+.storyImageSecondary:hover .storyPhoto {
+  transform: scale(1.05);
+}
+
+.storyContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.divider {
+  width: 60px;
+  height: 3px;
+  background: var(--color-ocean-teal);
+  border-radius: var(--radius-full);
+  margin: var(--space-sm) 0 var(--space-md);
+}
+
+.text {
+  color: var(--color-text-secondary);
+  font-size: var(--fs-body-lg);
+  line-height: 1.8;
+}
+
+/* ===== IMAGE BREAK ===== */
+.imageBreak {
+  position: relative;
+  height: 45vh;
+  min-height: 300px;
+  overflow: hidden;
+}
+
+.imageBreak img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.imageBreakOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(10, 22, 40, 0.1) 0%, rgba(10, 22, 40, 0.15) 100%);
+}
+
+/* ===== VALUES ===== */
+.values {
+  background: var(--color-sand);
+}
+
+.valuesGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-xl);
+  margin-top: var(--space-2xl);
+}
+
+.valueCard {
+  background: white;
+  border-radius: var(--radius-md);
+  padding: var(--space-2xl);
+  text-align: center;
+  border: 1px solid var(--color-border);
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.valueCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.valueIcon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: var(--space-lg);
+}
+
+.valueTitle {
+  font-family: var(--font-heading);
+  font-size: var(--fs-h4);
+  color: var(--color-deep-navy);
+  margin-bottom: var(--space-sm);
+}
+
+.valueDesc {
+  font-size: var(--fs-small);
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .storyGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .storyImageWrap {
+    max-width: 400px;
+    margin-inline: auto;
+  }
+
+  .valuesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .valuesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .imageBreak {
+    height: 30vh;
+    min-height: 200px;
+  }
+}

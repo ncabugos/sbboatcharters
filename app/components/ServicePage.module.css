@@ -1,0 +1,521 @@
+/* ===== SERVICE PAGE SHARED STYLES ===== */
+
+.hero {
+  position: relative;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.heroBgImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.heroImageOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(165deg, rgba(10, 22, 40, 0.75) 0%, rgba(26, 39, 68, 0.5) 40%, rgba(13, 115, 119, 0.4) 100%);
+  z-index: 1;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding-top: 10rem;
+  padding-bottom: 4rem;
+}
+
+.heroLabel {
+  display: inline-block;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--color-seafoam);
+  margin-bottom: var(--space-lg);
+}
+
+.heroTitle {
+  font-family: var(--font-heading);
+  font-size: var(--fs-h1);
+  color: white;
+  margin-bottom: var(--space-lg);
+  max-width: 18ch;
+  margin-inline: auto;
+}
+
+.heroSubtitle {
+  font-size: var(--fs-body-lg);
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 55ch;
+  margin-inline: auto;
+  line-height: 1.8;
+}
+
+/* ===== INFO SECTION ===== */
+.info {
+  background: #FFFFFF;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: var(--space-4xl);
+  align-items: start;
+}
+
+.infoContent h2 {
+  margin-bottom: var(--space-lg);
+}
+
+.divider {
+  width: 40px;
+  height: 2px;
+  background: var(--color-accent);
+  border-radius: 0;
+  margin-bottom: var(--space-xl);
+}
+
+.infoText {
+  color: var(--color-text-secondary);
+  font-size: var(--fs-body-lg);
+  line-height: 1.8;
+  margin-bottom: var(--space-lg);
+}
+
+/* ===== DETAILS CARD ===== */
+.detailsCard {
+  background: #FFFFFF;
+  border-radius: var(--radius-md);
+  padding: var(--space-2xl);
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.08);
+  position: sticky;
+  top: 100px;
+}
+
+.detailsTitle {
+  font-family: var(--font-heading);
+  font-size: var(--fs-h3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-deep-navy);
+  margin-bottom: var(--space-xl);
+  padding-bottom: var(--space-lg);
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+.detailItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  padding: var(--space-md) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.detailItem:last-of-type {
+  border-bottom: none;
+}
+
+.detailIcon {
+  color: var(--color-ocean-teal);
+  flex-shrink: 0;
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+}
+
+.detailLabel {
+  display: block;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: 2px;
+}
+
+.detailValue {
+  display: block;
+  font-size: var(--fs-small);
+  color: var(--color-text-primary);
+  line-height: 1.5;
+}
+
+.bookingCTA {
+  margin-top: var(--space-xl);
+  width: 100%;
+  text-align: center;
+}
+
+.phoneLink {
+  display: block;
+  text-align: center;
+  margin-top: var(--space-md);
+  color: var(--color-text-secondary);
+  font-size: var(--fs-small);
+  font-weight: var(--fw-semibold);
+}
+
+/* ===== HIGHLIGHTS / WHAT'S INCLUDED ===== */
+.highlights {
+  background: var(--color-warm-white);
+}
+
+.highlightsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-xl);
+  margin-top: var(--space-2xl);
+}
+
+.highlightCard {
+  background: #FFFFFF;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.07);
+  transition: all var(--duration-normal) var(--ease-out);
+  display: flex;
+  flex-direction: column;
+}
+
+.highlightCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Image-header variant */
+.highlightImageWrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.highlightImageWrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform var(--duration-slow) var(--ease-out);
+}
+
+.highlightCard:hover .highlightImageWrap img {
+  transform: scale(1.05);
+}
+
+.highlightImageOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(10, 22, 40, 0.35) 0%, transparent 60%);
+}
+
+.highlightBody {
+  padding: var(--space-xl) var(--space-xl) var(--space-2xl);
+  flex: 1;
+}
+
+/* Legacy icon variant (keep for fallback) */
+.highlightIcon {
+  color: var(--color-ocean-teal);
+  margin-bottom: var(--space-lg);
+  display: flex;
+  justify-content: center;
+  padding-top: var(--space-2xl);
+  padding-inline: var(--space-xl);
+}
+
+.highlightTitle {
+  font-family: var(--font-heading);
+  font-size: var(--fs-h4);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-deep-navy);
+  margin-bottom: var(--space-sm);
+}
+
+.highlightDesc {
+  font-size: var(--fs-small);
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+
+/* When card has no image, add padding at top */
+.highlightCard:not(:has(.highlightImageWrap)) {
+  padding: var(--space-2xl);
+  text-align: center;
+}
+
+/* ===== SPECIES GRID ===== */
+.speciesGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-xl);
+}
+
+@media (max-width: 1100px) {
+  .speciesGrid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .speciesGrid { grid-template-columns: 1fr; }
+}
+
+.speciesCard {
+  background: #FFFFFF;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.07);
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.speciesCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.speciesImageWrap {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+}
+
+.speciesImageWrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform var(--duration-slow) var(--ease-out);
+}
+
+.speciesCard:hover .speciesImageWrap img {
+  transform: scale(1.06);
+}
+
+.speciesOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(10, 22, 40, 0.65) 0%, transparent 55%);
+}
+
+.speciesName {
+  position: absolute;
+  bottom: var(--space-md);
+  left: var(--space-lg);
+  font-family: var(--font-heading);
+  font-size: var(--fs-h4);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: white;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+}
+
+.speciesMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  padding: var(--space-md) var(--space-lg) 0;
+}
+
+.speciesTag {
+  font-size: 10px;
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  border: 1px solid rgba(232, 72, 30, 0.4);
+  border-radius: 0;
+  padding: 2px 10px;
+  white-space: nowrap;
+}
+
+.speciesDesc {
+  font-size: var(--fs-small);
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  padding: var(--space-sm) var(--space-lg) var(--space-xl);
+}
+
+/* ===== WHAT TO BRING ===== */
+.logistics {
+  background: var(--color-warm-white);
+}
+
+.logisticsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-2xl);
+  margin-top: var(--space-2xl);
+}
+
+.logisticsCard {
+  background: #FFFFFF;
+  border-radius: var(--radius-md);
+  padding: var(--space-2xl);
+  border: 1px solid rgba(0,0,0,0.07);
+}
+
+.logisticsCardTitle {
+  font-family: var(--font-heading);
+  font-size: var(--fs-h3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-deep-navy);
+  margin-bottom: var(--space-lg);
+}
+
+.logisticsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.logisticsItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--fs-small);
+  color: var(--color-text-secondary);
+}
+
+.logisticsCheck {
+  color: var(--color-accent);
+  font-weight: var(--fw-bold);
+  flex-shrink: 0;
+}
+
+/* ===== SERVICE CTA ===== */
+.serviceCTA {
+  position: relative;
+  padding: var(--space-4xl) 0;
+  text-align: center;
+  overflow: hidden;
+  background: #0A0C0E;
+}
+
+.ctaBgImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.45;
+  z-index: 0;
+}
+
+.serviceCTA::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(10,12,14,0.6) 0%, rgba(10,12,14,0.7) 100%);
+  z-index: 1;
+}
+
+.serviceCTA > *:not(img) {
+  position: relative;
+  z-index: 2;
+}
+
+.ctaTitle {
+  font-family: var(--font-heading);
+  font-size: var(--fs-h2);
+  color: white;
+  margin-bottom: var(--space-lg);
+}
+
+.ctaText {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: var(--fs-body-lg);
+  max-width: 50ch;
+  margin-inline: auto;
+  margin-bottom: var(--space-2xl);
+  line-height: 1.8;
+}
+
+.ctaActions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-lg);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .infoGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .detailsCard {
+    position: static;
+  }
+
+  .highlightsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    min-height: 50vh;
+  }
+
+  .highlightsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .logisticsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .ctaActions {
+    flex-direction: column;
+  }
+}
+
+/* ===== VESSEL PHOTO GALLERY ===== */
+.vesselGallery {
+  background: var(--color-deep-navy);
+  padding: var(--space-xs) 0;
+}
+
+.vesselGalleryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-xs);
+}
+
+.vesselGalleryItem {
+  overflow: hidden;
+  aspect-ratio: 16/10;
+}
+
+.vesselGalleryItem img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--duration-slow) var(--ease-out);
+}
+
+.vesselGalleryItem:hover img {
+  transform: scale(1.08);
+}
+
+@media (max-width: 768px) {
+  .vesselGalleryGrid {
+    grid-template-columns: 1fr;
+  }
+}

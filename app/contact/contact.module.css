@@ -1,0 +1,131 @@
+.successMsg {
+  text-align: center;
+  padding: var(--space-4xl) var(--space-2xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+}
+.successMsg h3 { font-family: var(--font-heading); font-size: var(--fs-h3); color: var(--color-deep-navy); }
+.successMsg p { color: var(--color-text-secondary); font-size: var(--fs-body-lg); }
+
+.errorMsg {
+  color: #c0392b;
+  font-size: var(--fs-small);
+  margin-bottom: var(--space-md);
+}
+
+/* ===== HERO ===== */
+.hero {
+  position: relative;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.heroBgImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(165deg, rgba(10, 22, 40, 0.75) 0%, rgba(10, 22, 40, 0.5) 100%);
+  z-index: 1;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding-top: 10rem;
+  padding-bottom: 4rem;
+}
+
+.heroLabel {
+  display: inline-block;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--color-seafoam);
+  margin-bottom: var(--space-lg);
+}
+
+.heroTitle {
+  font-family: var(--font-heading);
+  font-size: var(--fs-h1);
+  color: white;
+  margin-bottom: var(--space-lg);
+  text-shadow: 0 2px 30px rgba(0,0,0,0.3);
+}
+
+.heroSubtitle {
+  font-size: var(--fs-body-lg);
+  color: rgba(255,255,255,0.8);
+  max-width: 50ch;
+  margin-inline: auto;
+  line-height: 1.8;
+}
+
+/* ===== CONTACT SECTION ===== */
+.contactSection { background: var(--color-warm-white); }
+.contactGrid { display: grid; grid-template-columns: 1fr 1.1fr; gap: var(--space-4xl); align-items: start; }
+.contactText { color: var(--color-text-secondary); font-size: var(--fs-body-lg); line-height: 1.8; margin-bottom: var(--space-2xl); }
+
+/* ===== INFO CARDS ===== */
+.infoCards { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); }
+.infoCard {
+  background: var(--color-sand);
+  border-radius: 0;
+  padding: var(--space-xl);
+  border: 1px solid var(--color-border);
+  transition: all var(--duration-normal) var(--ease-out);
+}
+.infoCard:hover { box-shadow: var(--shadow-sm); transform: translateY(-2px); }
+
+.infoIcon {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: var(--space-md);
+  color: var(--color-deep-navy);
+  opacity: 0.7;
+}
+
+.infoTitle { font-family: var(--font-heading); font-size: var(--fs-h4); color: var(--color-deep-navy); margin-bottom: 4px; letter-spacing: 0.05em; }
+.infoValue { display: block; color: var(--color-ocean-teal); font-weight: var(--fw-semibold); font-size: var(--fs-small); margin-bottom: 4px; }
+.infoNote { font-size: var(--fs-xs); color: var(--color-text-secondary); }
+
+/* ===== FORM CARD ===== */
+.formCard { background: white; border-radius: 0; padding: var(--space-2xl); box-shadow: var(--shadow-sm); border: 1px solid var(--color-border); }
+.formTitle { font-family: var(--font-heading); font-size: var(--fs-h3); color: var(--color-deep-navy); margin-bottom: var(--space-xs); }
+.formSubtitle { color: var(--color-text-secondary); font-size: var(--fs-small); margin-bottom: var(--space-xl); }
+
+.form { display: flex; flex-direction: column; gap: var(--space-lg); }
+.formRow { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); }
+.formGroup { display: flex; flex-direction: column; gap: var(--space-xs); }
+.formLabel { font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-secondary); }
+.formInput, .formTextarea {
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  color: var(--color-text-primary);
+  transition: border-color var(--duration-fast);
+  background: var(--color-warm-white);
+}
+.formInput:focus, .formTextarea:focus { outline: none; border-color: var(--color-deep-navy); box-shadow: 0 0 0 2px rgba(10,22,40,0.08); }
+.formTextarea { resize: vertical; min-height: 120px; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) { .contactGrid { grid-template-columns: 1fr; } }
+@media (max-width: 640px) { .infoCards { grid-template-columns: 1fr; } .formRow { grid-template-columns: 1fr; } }
