@@ -43,6 +43,11 @@ export const metadata = {
   alternates: {
     canonical: 'https://www.sbboatcharters.com',
   },
+  icons: {
+    icon: '/favicon.jpg',
+    shortcut: '/favicon.jpg',
+    apple: '/favicon.jpg',
+  },
 };
 
 export default function RootLayout({ children }) {
