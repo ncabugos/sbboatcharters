@@ -136,7 +136,9 @@ html {
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
+  /* `clip` doesn't create a scroll container; falls back to `hidden` in old browsers */
   overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
@@ -146,8 +148,19 @@ body {
   color: var(--color-text-primary);
   background-color: #FFFFFF;
   overflow-x: hidden;
+  overflow-x: clip;
+  /* `position: relative` is needed so iOS Safari respects overflow when a child is fixed-positioned */
+  position: relative;
   width: 100%;
   min-height: 100%;
+}
+
+main {
+  /* Extra containment layer — keeps any rogue child from leaking horizontally */
+  display: block;
+  overflow-x: hidden;
+  overflow-x: clip;
+  width: 100%;
 }
 
 img, video, iframe, svg {
