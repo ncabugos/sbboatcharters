@@ -21,7 +21,7 @@
   justify-content: space-between;
   max-width: var(--max-width-wide);
   margin-inline: auto;
-  padding: 1.25rem var(--gutter);
+  padding: clamp(0.875rem, 2.5vw, 1.25rem) var(--gutter);
   transition: padding var(--duration-normal) var(--ease-out);
 }
 
@@ -40,14 +40,14 @@
 }
 
 .logoImg {
-  height: 36px;
+  height: clamp(28px, 5vw, 36px);
   width: auto;
   display: block;
   object-fit: contain;
 }
 
 .scrolled .logoImg {
-  height: 30px;
+  height: clamp(24px, 4vw, 30px);
 }
 
 .logoText {
@@ -58,17 +58,19 @@
 
 .logoName {
   font-family: var(--font-heading);
-  font-size: 1.1rem;
+  font-size: clamp(0.95rem, 3vw, 1.1rem);
   font-weight: var(--fw-semibold);
   letter-spacing: 0.02em;
+  white-space: nowrap;
 }
 
 .logoSub {
-  font-size: 0.7rem;
+  font-size: clamp(0.6rem, 1.8vw, 0.7rem);
   font-weight: var(--fw-medium);
   letter-spacing: 0.15em;
   text-transform: uppercase;
   opacity: 0.7;
+  white-space: nowrap;
 }
 
 /* Desktop Nav */
@@ -112,13 +114,16 @@
   left: 50%;
   transform: translateX(-50%) translateY(10px);
   min-width: 240px;
+  max-width: calc(100vw - 2 * var(--gutter));
   background: rgba(30, 30, 32, 0.98);
   backdrop-filter: blur(20px);
   border-radius: var(--radius-md);
   padding: var(--space-sm) 0;
   opacity: 0;
   visibility: hidden;
-  transition: all var(--duration-normal) var(--ease-out);
+  transition: opacity var(--duration-normal) var(--ease-out),
+              visibility var(--duration-normal) var(--ease-out),
+              transform var(--duration-normal) var(--ease-out);
   box-shadow: var(--shadow-xl);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -178,18 +183,27 @@
 .mobileToggle {
   display: none;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 5px;
-  padding: 8px;
+  width: 44px;
+  height: 44px;
+  padding: 10px;
   z-index: 1001;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  margin-right: -6px; /* visually align edge with content */
 }
 
 .mobileToggle span {
   display: block;
-  width: 24px;
+  width: 22px;
   height: 2px;
   background: white;
   border-radius: 0;
-  transition: all var(--duration-normal) var(--ease-out);
+  transition: transform var(--duration-normal) var(--ease-out),
+              opacity var(--duration-normal) var(--ease-out);
 }
 
 .mobileToggleActive span:nth-child(1) {
@@ -214,11 +228,15 @@
   bottom: 0;
   background: #1A1A1C;
   z-index: 999;
-  padding-top: 100px;
+  padding-top: clamp(70px, 14vw, 100px);
+  padding-bottom: env(safe-area-inset-bottom, 0);
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   opacity: 0;
   visibility: hidden;
-  transition: all var(--duration-slow) var(--ease-out);
+  transition: opacity var(--duration-slow) var(--ease-out),
+              visibility var(--duration-slow) var(--ease-out);
 }
 
 .mobileMenuOpen {
@@ -227,10 +245,12 @@
 }
 
 .mobileNav {
-  padding: var(--space-xl) var(--gutter);
+  padding: var(--space-xl) var(--gutter) calc(var(--space-3xl) + env(safe-area-inset-bottom, 0));
   display: flex;
   flex-direction: column;
   gap: var(--space-xs);
+  max-width: 720px;
+  margin-inline: auto;
 }
 
 .mobileLabel {
@@ -246,12 +266,13 @@
 .mobileLink {
   display: block;
   padding: 0.875rem 0;
+  min-height: 48px;
   color: rgba(255, 255, 255, 0.85);
   font-family: var(--font-heading);
-  font-size: 1.3rem;
+  font-size: clamp(1.05rem, 4vw, 1.3rem);
   font-weight: var(--fw-medium);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  transition: all var(--duration-fast);
+  transition: color var(--duration-fast), padding var(--duration-fast);
 }
 
 .mobileLink:hover {
@@ -271,6 +292,7 @@
   font-size: 1.1rem;
   font-weight: var(--fw-medium);
   padding: var(--space-md) 0;
+  min-height: 48px;
 }
 
 .mobileCTA {
@@ -292,11 +314,11 @@
   }
 }
 
-@media (max-width: 480px) {
-  .logoName {
-    font-size: 0.95rem;
+@media (max-width: 360px) {
+  .logoText {
+    display: none;
   }
-  .logoSub {
-    font-size: 0.6rem;
+  .logoImg {
+    height: clamp(26px, 7vw, 30px);
   }
 }

@@ -134,6 +134,9 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
 }
 
 body {
@@ -143,12 +146,23 @@ body {
   color: var(--color-text-primary);
   background-color: #FFFFFF;
   overflow-x: hidden;
+  width: 100%;
+  min-height: 100%;
 }
 
-img, video {
+img, video, iframe, svg {
   max-width: 100%;
   height: auto;
   display: block;
+}
+
+video {
+  height: auto;
+}
+
+/* Prevent iframe & embedded media from busting layout */
+iframe {
+  max-width: 100%;
 }
 
 a {
@@ -191,6 +205,9 @@ p {
   max-width: var(--max-width);
   margin-inline: auto;
   padding-inline: var(--gutter);
+  /* Respect iOS notch / Android cutout on edge-to-edge layouts */
+  padding-left: max(var(--gutter), env(safe-area-inset-left));
+  padding-right: max(var(--gutter), env(safe-area-inset-right));
 }
 
 .container--narrow {
@@ -211,9 +228,9 @@ p {
   align-items: center;
   justify-content: center;
   gap: var(--space-xs);
-  padding: 0.875rem 2rem;
+  padding: clamp(0.75rem, 2vw, 0.875rem) clamp(1.25rem, 4vw, 2rem);
   font-family: var(--font-heading);
-  font-size: 1rem;
+  font-size: clamp(0.85rem, 2vw, 1rem);
   font-weight: var(--fw-bold);
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -269,8 +286,8 @@ p {
 }
 
 .btn--large {
-  padding: 1.125rem 3rem;
-  font-size: 1.1rem;
+  padding: clamp(0.95rem, 2.5vw, 1.125rem) clamp(1.5rem, 5vw, 3rem);
+  font-size: clamp(0.95rem, 2.2vw, 1.1rem);
 }
 
 /* --- Section Heading --- */
@@ -439,13 +456,70 @@ p {
   }
 
   .section {
-    padding-block: clamp(3rem, 8vw, 5rem);
+    padding-block: clamp(2.5rem, 8vw, 5rem);
+  }
+
+  h1 { letter-spacing: 0.08em; }
+  h2 { letter-spacing: 0.08em; }
+  h3 { letter-spacing: 0.06em; }
+
+  p { line-height: 1.65; }
+
+  /* iOS Safari avoids zooming on focus when input font-size >= 16px */
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  /* Larger tap targets for inline links and buttons */
+  .btn {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  h1, h2 { letter-spacing: 0.05em; }
+  .section-title { letter-spacing: 0.02em; }
+  :root {
+    --gutter: clamp(1rem, 5vw, 1.5rem);
   }
 }
 
 @media (min-width: 769px) {
   .hide-desktop {
     display: none !important;
+  }
+}
+
+/* --- Accessibility: visible keyboard focus --- */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline-offset: 4px;
+}
+
+/* --- Reduced motion --- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal,
+  .reveal-right,
+  .stagger-children > * {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
 

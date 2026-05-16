@@ -1,7 +1,7 @@
 /* ===== ABOUT HERO ===== */
 .hero {
   position: relative;
-  min-height: 60vh;
+  min-height: clamp(420px, 60vh, 720px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -28,8 +28,8 @@
   position: relative;
   z-index: 2;
   text-align: center;
-  padding-top: 10rem;
-  padding-bottom: 4rem;
+  padding-top: clamp(6rem, 14vw, 10rem);
+  padding-bottom: clamp(2.5rem, 6vw, 4rem);
 }
 
 .heroLabel {
@@ -69,7 +69,7 @@
 .storyGrid {
   display: grid;
   grid-template-columns: 1fr 1.3fr;
-  gap: var(--space-4xl);
+  gap: clamp(2rem, 5vw, var(--space-4xl));
   align-items: start;
 }
 
@@ -129,8 +129,8 @@
 /* ===== IMAGE BREAK ===== */
 .imageBreak {
   position: relative;
-  height: 45vh;
-  min-height: 300px;
+  height: clamp(240px, 45vw, 45vh);
+  min-height: 240px;
   overflow: hidden;
 }
 
@@ -155,14 +155,14 @@
 .valuesGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-xl);
+  gap: clamp(1rem, 2.5vw, var(--space-xl));
   margin-top: var(--space-2xl);
 }
 
 .valueCard {
   background: white;
   border-radius: var(--radius-md);
-  padding: var(--space-2xl);
+  padding: clamp(1.25rem, 3vw, var(--space-2xl));
   text-align: center;
   border: 1px solid var(--color-border);
   transition: all var(--duration-normal) var(--ease-out);

@@ -42,6 +42,25 @@ export default function Header() {
     return () => { document.body.style.overflow = ''; };
   }, [mobileOpen]);
 
+  // Close mobile menu on Escape key
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const handleKey = (e) => {
+      if (e.key === 'Escape') setMobileOpen(false);
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [mobileOpen]);
+
+  // Auto-close mobile menu when viewport grows past breakpoint
+  useEffect(() => {
+    if (typeof window === 'undefined' || !mobileOpen) return;
+    const mq = window.matchMedia('(min-width: 1025px)');
+    const handleChange = (e) => { if (e.matches) setMobileOpen(false); };
+    mq.addEventListener('change', handleChange);
+    return () => mq.removeEventListener('change', handleChange);
+  }, [mobileOpen]);
+
   return (
     <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}>
       <div className={styles.inner}>

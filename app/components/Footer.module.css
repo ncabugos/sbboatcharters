@@ -4,13 +4,13 @@
 }
 
 .footerTop {
-  padding: var(--space-4xl) 0 var(--space-3xl);
+  padding: clamp(2.5rem, 7vw, var(--space-4xl)) 0 clamp(2rem, 5vw, var(--space-3xl));
 }
 
 .footerGrid {
   display: grid;
   grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
-  gap: var(--space-3xl);
+  gap: clamp(1.75rem, 4vw, var(--space-3xl));
 }
 
 /* Brand Column */
@@ -94,9 +94,11 @@
 }
 
 .footerLink {
+  display: inline-block;
+  padding-block: 4px;
   color: rgba(255, 255, 255, 0.6);
   font-size: var(--fs-small);
-  transition: all var(--duration-fast);
+  transition: color var(--duration-fast), padding-left var(--duration-fast);
 }
 
 .footerLink:hover {
@@ -118,6 +120,7 @@
   color: rgba(255, 255, 255, 0.6);
   font-size: var(--fs-small);
   transition: color var(--duration-fast);
+  word-break: break-word;
 }
 
 a.contactItem:hover {
@@ -163,12 +166,26 @@ a.contactItem:hover {
 @media (max-width: 640px) {
   .footerGrid {
     grid-template-columns: 1fr;
-    gap: var(--space-2xl);
+    gap: var(--space-xl);
   }
 
   .bottomInner {
     flex-direction: column;
     gap: var(--space-sm);
     text-align: center;
+  }
+
+  .footerCTA {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .brandDesc {
+    max-width: 100%;
+  }
+  .colTitle {
+    font-size: 0.7rem;
   }
 }

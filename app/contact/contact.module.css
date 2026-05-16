@@ -18,7 +18,7 @@
 /* ===== HERO ===== */
 .hero {
   position: relative;
-  min-height: 60vh;
+  min-height: clamp(380px, 50vh, 600px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -45,8 +45,8 @@
   position: relative;
   z-index: 2;
   text-align: center;
-  padding-top: 10rem;
-  padding-bottom: 4rem;
+  padding-top: clamp(6rem, 14vw, 10rem);
+  padding-bottom: clamp(2.5rem, 6vw, 4rem);
 }
 
 .heroLabel {
@@ -77,7 +77,7 @@
 
 /* ===== CONTACT SECTION ===== */
 .contactSection { background: var(--color-warm-white); }
-.contactGrid { display: grid; grid-template-columns: 1fr 1.1fr; gap: var(--space-4xl); align-items: start; }
+.contactGrid { display: grid; grid-template-columns: 1fr 1.1fr; gap: clamp(2rem, 5vw, var(--space-4xl)); align-items: start; }
 .contactText { color: var(--color-text-secondary); font-size: var(--fs-body-lg); line-height: 1.8; margin-bottom: var(--space-2xl); }
 
 /* ===== INFO CARDS ===== */
@@ -85,7 +85,7 @@
 .infoCard {
   background: var(--color-sand);
   border-radius: 0;
-  padding: var(--space-xl);
+  padding: clamp(1.25rem, 3vw, var(--space-xl));
   border: 1px solid var(--color-border);
   transition: all var(--duration-normal) var(--ease-out);
 }
@@ -105,7 +105,7 @@
 .infoNote { font-size: var(--fs-xs); color: var(--color-text-secondary); }
 
 /* ===== FORM CARD ===== */
-.formCard { background: white; border-radius: 0; padding: var(--space-2xl); box-shadow: var(--shadow-sm); border: 1px solid var(--color-border); }
+.formCard { background: white; border-radius: 0; padding: clamp(1.5rem, 4vw, var(--space-2xl)); box-shadow: var(--shadow-sm); border: 1px solid var(--color-border); }
 .formTitle { font-family: var(--font-heading); font-size: var(--fs-h3); color: var(--color-deep-navy); margin-bottom: var(--space-xs); }
 .formSubtitle { color: var(--color-text-secondary); font-size: var(--fs-small); margin-bottom: var(--space-xl); }
 
@@ -122,10 +122,34 @@
   color: var(--color-text-primary);
   transition: border-color var(--duration-fast);
   background: var(--color-warm-white);
+  width: 100%;
+  max-width: 100%;
+  min-width: 0; /* prevent overflow inside grid */
+}
+
+.form select.formInput {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M3 4.5L6 7.5L9 4.5' stroke='%234A505A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 2.5rem;
 }
 .formInput:focus, .formTextarea:focus { outline: none; border-color: var(--color-deep-navy); box-shadow: 0 0 0 2px rgba(10,22,40,0.08); }
 .formTextarea { resize: vertical; min-height: 120px; }
 
 /* ===== RESPONSIVE ===== */
-@media (max-width: 1024px) { .contactGrid { grid-template-columns: 1fr; } }
-@media (max-width: 640px) { .infoCards { grid-template-columns: 1fr; } .formRow { grid-template-columns: 1fr; } }
+@media (max-width: 1024px) {
+  .contactGrid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .infoCards { gap: var(--space-md); }
+  .successMsg { padding: var(--space-2xl) var(--space-lg); }
+}
+
+@media (max-width: 480px) {
+  .infoCards { grid-template-columns: 1fr; }
+  .formRow { grid-template-columns: 1fr; }
+  .form { gap: var(--space-md); }
+}

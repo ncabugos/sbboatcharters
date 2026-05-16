@@ -44,10 +44,20 @@ export const metadata = {
     canonical: 'https://www.sbboatcharters.com',
   },
   icons: {
-    icon: '/favicon.jpg',
-    shortcut: '/favicon.jpg',
-    apple: '/favicon.jpg',
+    icon: [
+      { url: '/logo-favicon.jpg', type: 'image/jpeg' },
+    ],
+    shortcut: '/logo-favicon.jpg',
+    apple: '/logo-favicon.jpg',
   },
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: 'cover',
+  themeColor: '#141618',
 };
 
 export default function RootLayout({ children }) {
@@ -58,7 +68,6 @@ export default function RootLayout({ children }) {
         <meta name="geo.placename" content="Santa Barbara" />
         <meta name="geo.position" content="34.4048;-119.6932" />
         <meta name="ICBM" content="34.4048, -119.6932" />
-        <link rel="icon" href="/favicon.jpg" type="image/jpeg" />
       </head>
       <body>
         <Header />

@@ -2,7 +2,7 @@
 
 .hero {
   position: relative;
-  min-height: 60vh;
+  min-height: clamp(420px, 60vh, 720px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -35,8 +35,8 @@
   position: relative;
   z-index: 2;
   text-align: center;
-  padding-top: 10rem;
-  padding-bottom: 4rem;
+  padding-top: clamp(6rem, 14vw, 10rem);
+  padding-bottom: clamp(2.5rem, 6vw, 4rem);
 }
 
 .heroLabel {
@@ -56,14 +56,17 @@
   margin-bottom: var(--space-lg);
   max-width: 18ch;
   margin-inline: auto;
+  text-wrap: balance;
 }
 
 .heroSubtitle {
-  font-size: var(--fs-body-lg);
+  font-size: clamp(0.95rem, 2.5vw, var(--fs-body-lg));
   color: rgba(255, 255, 255, 0.7);
   max-width: 55ch;
   margin-inline: auto;
-  line-height: 1.8;
+  line-height: 1.7;
+  padding-inline: var(--gutter);
+  text-wrap: pretty;
 }
 
 /* ===== INFO SECTION ===== */
@@ -74,7 +77,7 @@
 .infoGrid {
   display: grid;
   grid-template-columns: 1.2fr 1fr;
-  gap: var(--space-4xl);
+  gap: clamp(2rem, 5vw, var(--space-4xl));
   align-items: start;
 }
 
@@ -101,7 +104,7 @@
 .detailsCard {
   background: #FFFFFF;
   border-radius: var(--radius-md);
-  padding: var(--space-2xl);
+  padding: clamp(1.5rem, 4vw, var(--space-2xl));
   box-shadow: 0 2px 16px rgba(0,0,0,0.08);
   border: 1px solid rgba(0,0,0,0.08);
   position: sticky;
@@ -225,7 +228,7 @@
 }
 
 .highlightBody {
-  padding: var(--space-xl) var(--space-xl) var(--space-2xl);
+  padding: clamp(1.25rem, 3vw, var(--space-xl)) clamp(1.25rem, 3vw, var(--space-xl)) clamp(1.5rem, 4vw, var(--space-2xl));
   flex: 1;
 }
 
@@ -267,11 +270,11 @@
   gap: var(--space-xl);
 }
 
-@media (max-width: 1100px) {
-  .speciesGrid { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 1024px) {
+  .speciesGrid { grid-template-columns: repeat(2, 1fr); gap: var(--space-lg); }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 480px) {
   .speciesGrid { grid-template-columns: 1fr; }
 }
 
@@ -316,6 +319,7 @@
   position: absolute;
   bottom: var(--space-md);
   left: var(--space-lg);
+  right: var(--space-lg);
   font-family: var(--font-heading);
   font-size: var(--fs-h4);
   text-transform: uppercase;
@@ -365,7 +369,7 @@
 .logisticsCard {
   background: #FFFFFF;
   border-radius: var(--radius-md);
-  padding: var(--space-2xl);
+  padding: clamp(1.5rem, 4vw, var(--space-2xl));
   border: 1px solid rgba(0,0,0,0.07);
 }
 
@@ -401,7 +405,7 @@
 /* ===== SERVICE CTA ===== */
 .serviceCTA {
   position: relative;
-  padding: var(--space-4xl) 0;
+  padding: clamp(3rem, 9vw, var(--space-4xl)) 0;
   text-align: center;
   overflow: hidden;
   background: #0A0C0E;
@@ -451,12 +455,14 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-lg);
+  flex-wrap: wrap;
 }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1024px) {
   .infoGrid {
     grid-template-columns: 1fr;
+    gap: var(--space-2xl);
   }
 
   .detailsCard {
@@ -465,24 +471,32 @@
 
   .highlightsGrid {
     grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-lg);
   }
 }
 
 @media (max-width: 768px) {
-  .hero {
-    min-height: 50vh;
-  }
-
   .highlightsGrid {
     grid-template-columns: 1fr;
   }
 
   .logisticsGrid {
     grid-template-columns: 1fr;
+    gap: var(--space-lg);
   }
 
   .ctaActions {
     flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .ctaActions .btn {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .serviceCTA {
+    padding: var(--space-3xl) 0;
   }
 }
 
@@ -515,6 +529,12 @@
 }
 
 @media (max-width: 768px) {
+  .vesselGalleryGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
   .vesselGalleryGrid {
     grid-template-columns: 1fr;
   }

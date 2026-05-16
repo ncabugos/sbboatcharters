@@ -2,6 +2,7 @@
 .hero {
   position: relative;
   min-height: 100vh;
+  min-height: 100svh; /* small viewport units — avoids URL bar jump on iOS */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -44,8 +45,8 @@
   position: relative;
   z-index: 3;
   text-align: center;
-  padding-top: 8rem;
-  padding-bottom: 6rem;
+  padding-top: clamp(5rem, 12vw, 8rem);
+  padding-bottom: clamp(3rem, 8vw, 6rem);
 }
 
 .heroLabel {
@@ -61,12 +62,13 @@
 
 .heroTitle {
   font-family: var(--font-heading);
-  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-size: clamp(2rem, 6vw, 4rem);
   font-weight: var(--fw-semibold);
   color: white;
   line-height: var(--lh-tight);
   margin-bottom: var(--space-xl);
   text-shadow: 0 2px 30px rgba(0, 0, 0, 0.4);
+  text-wrap: balance;
   animation: fadeInUp 0.8s var(--ease-out) 0.4s both;
 }
 
@@ -86,7 +88,8 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-lg);
-  margin-bottom: var(--space-4xl);
+  margin-bottom: clamp(2.5rem, 8vw, var(--space-4xl));
+  flex-wrap: wrap;
   animation: fadeInUp 0.8s var(--ease-out) 0.8s both;
 }
 
@@ -94,7 +97,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-2xl);
+  gap: clamp(1rem, 4vw, var(--space-2xl));
+  flex-wrap: wrap;
   animation: fadeInUp 0.8s var(--ease-out) 1s both;
 }
 
@@ -107,7 +111,7 @@
 
 .statNumber {
   font-family: var(--font-heading);
-  font-size: 2.2rem;
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
   font-weight: var(--fw-bold);
   color: white;
   text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
@@ -170,8 +174,8 @@
 
 .photoStripItem {
   flex-shrink: 0;
-  width: 280px;
-  height: 180px;
+  width: clamp(180px, 30vw, 280px);
+  height: clamp(120px, 19vw, 180px);
   overflow: hidden;
   border-radius: 0;
 }
@@ -231,7 +235,7 @@
 
 .serviceImageWrap {
   position: relative;
-  height: 220px;
+  height: clamp(180px, 28vw, 220px);
   overflow: hidden;
 }
 
@@ -268,7 +272,7 @@
 }
 
 .serviceBody {
-  padding: var(--space-xl) var(--space-xl) var(--space-2xl);
+  padding: clamp(1.25rem, 3vw, var(--space-xl)) clamp(1.25rem, 3vw, var(--space-xl)) clamp(1.5rem, 4vw, var(--space-2xl));
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
@@ -306,8 +310,8 @@
 /* ===== IMAGE BREAK ===== */
 .imageBreak {
   position: relative;
-  height: 50vh;
-  min-height: 360px;
+  height: clamp(280px, 50vw, 50vh);
+  min-height: 280px;
   overflow: hidden;
 }
 
@@ -329,11 +333,13 @@
 
 .imageBreakText {
   font-family: var(--font-heading);
-  font-size: var(--fs-h2);
+  font-size: clamp(1.4rem, 4vw, var(--fs-h2));
   color: white;
   text-shadow: 0 2px 30px rgba(0, 0, 0, 0.4);
   text-align: center;
   max-width: 40ch;
+  padding-inline: var(--gutter);
+  text-wrap: balance;
 }
 
 /* ===== FEATURES ===== */
@@ -344,12 +350,12 @@
 .featuresGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-xl);
+  gap: clamp(1rem, 2.5vw, var(--space-xl));
 }
 
 .featureCard {
   text-align: center;
-  padding: var(--space-2xl) var(--space-lg);
+  padding: clamp(1.5rem, 4vw, var(--space-2xl)) clamp(1rem, 2.5vw, var(--space-lg));
   border-radius: var(--radius-md);
   background: white;
   border: 1px solid var(--color-border);
@@ -393,7 +399,7 @@
 .aboutGrid {
   display: grid;
   grid-template-columns: 1fr 1.1fr;
-  gap: var(--space-4xl);
+  gap: clamp(2rem, 5vw, var(--space-4xl));
   align-items: center;
 }
 
@@ -417,10 +423,10 @@
 
 .aboutBadge {
   position: absolute;
-  bottom: -20px;
-  right: -20px;
-  width: 130px;
-  height: 130px;
+  bottom: clamp(-10px, -2vw, -20px);
+  right: clamp(-10px, -2vw, -20px);
+  width: clamp(90px, 18vw, 130px);
+  height: clamp(90px, 18vw, 130px);
   border-radius: 50%;
   background: var(--color-coral);
   color: white;
@@ -433,7 +439,7 @@
 
 .badgeNumber {
   font-family: var(--font-heading);
-  font-size: 2rem;
+  font-size: clamp(1.4rem, 3.5vw, 2rem);
   font-weight: var(--fw-bold);
   line-height: 1;
 }
@@ -467,6 +473,7 @@
 
 .aboutActions {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-md);
   margin-top: var(--space-xl);
 }
@@ -543,14 +550,14 @@
 .testimonialGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-xl);
+  gap: clamp(1rem, 2.5vw, var(--space-xl));
 }
 
 .testimonialCard {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-md);
-  padding: var(--space-2xl);
+  padding: clamp(1.5rem, 4vw, var(--space-2xl));
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
@@ -622,7 +629,7 @@
 .vesselGrid {
   display: grid;
   grid-template-columns: 1.1fr 1fr;
-  gap: var(--space-4xl);
+  gap: clamp(2rem, 5vw, var(--space-4xl));
   align-items: center;
 }
 
@@ -649,7 +656,8 @@
 
 .vesselSpecs {
   display: flex;
-  gap: var(--space-2xl);
+  flex-wrap: wrap;
+  gap: clamp(1.5rem, 5vw, var(--space-2xl));
   margin-bottom: var(--space-xl);
   padding: var(--space-xl) 0;
   border-top: 1px solid var(--color-border);
@@ -660,6 +668,7 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+  min-width: 80px;
 }
 
 .specValue {
@@ -717,13 +726,13 @@
 .faqGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-xl);
+  gap: clamp(1rem, 2.5vw, var(--space-xl));
 }
 
 .faqCard {
   background: white;
   border-radius: var(--radius-md);
-  padding: var(--space-2xl);
+  padding: clamp(1.5rem, 4vw, var(--space-2xl));
   border: 1px solid var(--color-border);
   transition: all var(--duration-normal) var(--ease-out);
 }
@@ -754,7 +763,7 @@
 /* ===== FINAL CTA ===== */
 .finalCTA {
   position: relative;
-  padding: var(--space-5xl) 0;
+  padding: clamp(3rem, 8vw, var(--space-5xl)) 0;
   overflow: hidden;
 }
 
@@ -844,28 +853,24 @@
 }
 
 @media (max-width: 768px) {
-  .heroTitle {
-    font-size: clamp(2rem, 8vw, 3rem);
-  }
-
   .heroActions {
     flex-direction: column;
+    width: 100%;
   }
 
-  .heroStats {
-    gap: var(--space-lg);
-  }
-
-  .statNumber {
-    font-size: 1.6rem;
+  .heroActions .btn {
+    width: 100%;
+    max-width: 320px;
   }
 
   .servicesGrid {
     grid-template-columns: 1fr;
+    max-width: 480px;
+    margin-inline: auto;
   }
 
   .featuresGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .faqGrid {
@@ -874,28 +879,34 @@
 
   .vesselSpecs {
     gap: var(--space-lg);
+    flex-wrap: wrap;
   }
 
   .ctaActions {
     flex-direction: column;
+    gap: var(--space-md);
   }
 
-  .photoStripItem {
-    width: 200px;
-    height: 130px;
+  .ctaActions .btn {
+    width: 100%;
+    max-width: 320px;
   }
 
   .imageBreak {
-    height: 35vh;
-    min-height: 250px;
+    height: clamp(220px, 40vw, 320px);
+    min-height: 220px;
   }
 
   .imageBreakText {
-    font-size: var(--fs-h3);
+    font-size: clamp(1.3rem, 5vw, var(--fs-h3));
   }
 
   .wildlifeGrid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .statDivider {
+    display: none;
   }
 }
 
@@ -904,22 +915,37 @@
     display: none;
   }
 
-  .aboutBadge {
-    width: 90px;
-    height: 90px;
-    bottom: -10px;
-    right: -10px;
-  }
-
-  .badgeNumber {
-    font-size: 1.5rem;
+  .featuresGrid {
+    grid-template-columns: 1fr;
+    max-width: 380px;
+    margin-inline: auto;
   }
 
   .wildlifeGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 
-  .serviceImageWrap {
-    height: 180px;
+  .vesselSpecs {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .aboutActions .btn,
+  .aboutActions {
+    width: 100%;
+  }
+}
+
+/* Landscape phones: hero collapses if 100vh forces stacked content offscreen */
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 500px) {
+  .hero {
+    min-height: 560px;
+  }
+  .heroContent {
+    padding-top: 5rem;
+    padding-bottom: 2rem;
+  }
+  .scrollIndicator {
+    display: none;
   }
 }

@@ -1,7 +1,7 @@
 /* ===== HERO ===== */
 .hero {
   position: relative;
-  min-height: 60vh;
+  min-height: clamp(380px, 50vh, 600px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -28,8 +28,8 @@
   position: relative;
   z-index: 2;
   text-align: center;
-  padding-top: 10rem;
-  padding-bottom: 4rem;
+  padding-top: clamp(6rem, 14vw, 10rem);
+  padding-bottom: clamp(2.5rem, 6vw, 4rem);
 }
 
 .heroLabel {
@@ -101,7 +101,7 @@
 .videoGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-xl);
+  gap: clamp(1rem, 2.5vw, var(--space-xl));
 }
 
 .videoCard {
@@ -186,7 +186,7 @@
 }
 
 .videoInfo {
-  padding: var(--space-lg) var(--space-xl);
+  padding: clamp(0.875rem, 2vw, var(--space-lg)) clamp(1.25rem, 3vw, var(--space-xl));
 }
 
 .videoTitle {
@@ -784,12 +784,44 @@
 
 @media (max-width: 480px) {
   .hero {
-    min-height: 45vh;
+    min-height: clamp(320px, 55vh, 420px);
   }
 
   .sectionTitle {
     font-size: var(--fs-h3);
   }
 
+  .igGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3px;
+  }
 
+  .videoInfo {
+    padding: var(--space-md) var(--space-lg);
+  }
+
+  .igModalClose {
+    top: var(--space-sm);
+    right: var(--space-sm);
+    width: 38px;
+    height: 38px;
+  }
+
+  .igModalNav {
+    width: 40px;
+    height: 40px;
+  }
+
+  .igModalNavPrev { left: var(--space-sm); }
+  .igModalNavNext { right: var(--space-sm); }
+
+  .igModalInfo {
+    padding: var(--space-md);
+    gap: var(--space-md);
+  }
+
+  .modalClose {
+    width: 38px;
+    height: 38px;
+  }
 }
