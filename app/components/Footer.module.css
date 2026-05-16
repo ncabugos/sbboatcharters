@@ -149,6 +149,20 @@ a.contactItem:hover {
   color: rgba(255, 255, 255, 0.35);
 }
 
+.credit {
+  white-space: nowrap;
+}
+
+.creditLink {
+  color: rgba(255, 255, 255, 0.55);
+  text-decoration: none;
+  transition: color var(--duration-fast);
+}
+
+.creditLink:hover {
+  color: var(--color-seafoam);
+}
+
 .uscg {
   font-size: var(--fs-xs);
   color: rgba(255, 255, 255, 0.35);

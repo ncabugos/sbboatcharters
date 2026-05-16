@@ -112,6 +112,17 @@ export default function Footer() {
         <div className={`container ${styles.bottomInner}`}>
           <p className={styles.copyright}>
             © {new Date().getFullYear()} Santa Barbara Boat Charters. All rights reserved.
+            <span className={styles.credit}>
+              {' · '}Site design by{' '}
+              <a
+                href="https://nickcabugos.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.creditLink}
+              >
+                nickcabugos.com
+              </a>
+            </span>
           </p>
           <p className={styles.uscg}>
             USCG Licensed & Inspected · Six-Passenger Vessel
