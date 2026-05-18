@@ -40,6 +40,12 @@ export default function Footer() {
                   <circle cx="18" cy="6" r="1.5" fill="currentColor" stroke="none"/>
                 </svg>
               </a>
+              <a href="https://www.youtube.com/@sbboatcharters" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className={styles.socialLink}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.42a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19.1c1.72.42 8.6.42 8.6.42s6.88 0 8.6-.42a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.35z"/>
+                  <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" fill="currentColor" stroke="none"/>
+                </svg>
+              </a>
             </div>
           </div>
 
@@ -160,6 +166,7 @@ export default function Footer() {
             sameAs: [
               'https://www.instagram.com/sbboatcharters/',
               'https://www.facebook.com/boatcharterssb',
+              'https://www.youtube.com/@sbboatcharters',
             ],
           }),
         }}
