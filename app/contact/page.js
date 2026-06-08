@@ -1,24 +1,76 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import styles from './contact.module.css';
+
+// Set in Vercel env to turn Turnstile on. Until then, the widget is hidden and
+// the server-side Tier-1 checks (honeypot, time-trap, validation) carry the load.
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 export default function Contact() {
   const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', charter: '', message: '' });
+  const [company, setCompany] = useState(''); // honeypot — real users never see/fill this
   const [status, setStatus] = useState('idle'); // idle | sending | success | error
+  const startedAt = useRef(Date.now()); // time-trap: how long the form took to fill
+  const turnstileRef = useRef(null);
+  const turnstileId = useRef(null);
+  const [token, setToken] = useState('');
+
+  // Render the Cloudflare Turnstile widget once its script loads (only if a site key is configured).
+  useEffect(() => {
+    if (!TURNSTILE_SITE_KEY) return;
+    const renderWidget = () => {
+      if (!window.turnstile || !turnstileRef.current || turnstileId.current !== null) return;
+      turnstileId.current = window.turnstile.render(turnstileRef.current, {
+        sitekey: TURNSTILE_SITE_KEY,
+        callback: setToken,
+        'expired-callback': () => setToken(''),
+        'error-callback': () => setToken(''),
+      });
+    };
+    if (window.turnstile) {
+      renderWidget();
+    } else {
+      const s = document.createElement('script');
+      s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+      s.async = true;
+      s.defer = true;
+      s.onload = renderWidget;
+      document.head.appendChild(s);
+    }
+    return () => {
+      if (turnstileId.current !== null && window.turnstile) {
+        window.turnstile.remove(turnstileId.current);
+        turnstileId.current = null;
+      }
+    };
+  }, []);
 
   const handleChange = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (TURNSTILE_SITE_KEY && !token) {
+      setStatus('error');
+      return;
+    }
     setStatus('sending');
     try {
       const res = await fetch('/api/contact/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          company,
+          elapsedMs: Date.now() - startedAt.current,
+          turnstileToken: token,
+        }),
       });
       setStatus(res.ok ? 'success' : 'error');
+      if (!res.ok && window.turnstile && turnstileId.current !== null) {
+        window.turnstile.reset(turnstileId.current);
+        setToken('');
+      }
     } catch {
       setStatus('error');
     }
@@ -137,6 +189,13 @@ export default function Contact() {
                 <label className={styles.formLabel}>Message</label>
                 <textarea name="message" value={form.message} onChange={handleChange} className={styles.formTextarea} rows="4" placeholder="Tell us about the adventure you're imagining..." required></textarea>
               </div>
+              {/* Honeypot — visually hidden, off-screen, and skipped by tab/autofill. Bots fill it; humans don't. */}
+              <div aria-hidden="true" style={{ position: 'absolute', left: '-9999px', top: 'auto', width: '1px', height: '1px', overflow: 'hidden' }}>
+                <label>Company<input type="text" name="company" tabIndex={-1} autoComplete="off" value={company} onChange={(e) => setCompany(e.target.value)} /></label>
+              </div>
+              {TURNSTILE_SITE_KEY && (
+                <div ref={turnstileRef} className={styles.turnstile} style={{ marginBottom: '1rem' }} />
+              )}
               {status === 'error' && (
                 <p className={styles.errorMsg}>Something went wrong. Please try again or call us directly.</p>
               )}
