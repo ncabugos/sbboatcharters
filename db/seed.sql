@@ -1,6 +1,8 @@
--- Seed catalog. Base prices from FareHarbor where visible; rows marked
--- "TODO confirm" need client sign-off before cutover (Phase 5).
--- display_cents = base * 1.06 rounded UP to a whole dollar (6% booking fee, all-in per CA SB 478).
+-- Seed catalog — prices transcribed from the operator's live FareHarbor
+-- listings (July 2026 screenshots). FareHarbor advertises ALL-IN prices
+-- ("Prices include fees"): advertised = base + 6% booking fee. Sales tax
+-- (7.75% of base) is added at checkout on top, exactly as FareHarbor does.
+--   $530 advertised = $500 base + $30 fee;  tax $38.75;  total $568.75.
 
 BEGIN;
 
@@ -20,45 +22,57 @@ INSERT INTO tours (slug, name, tagline, description, max_party, min_notice_hours
  'A private whale watching cruise in the Santa Barbara Channel — humpbacks, grays, dolphins, and if we''re lucky, blue whales. Just your group and the captain.',
  6, 24, '/images/marine-wildlife.jpeg', 3,
  'Full refund for cancellations made 48 hours or more before departure. Weather cancellations by the captain are fully refundable or reschedulable.'),
-('sport-fishing', 'Sport Fishing & Spearfishing',
- 'Guided Trips in the Santa Barbara Channel',
- 'Guided sport fishing and spearfishing charters with premium tackle and electronics. Sea bass, yellowtail, tuna and more, with 16+ years of island diving experience aboard.',
+('sport-fishing', 'Sport Fishing',
+ '2 to 8 Hour Tours - Tailored Fishing Experience',
+ 'Guided sport fishing charters in the Santa Barbara Channel with premium tackle and electronics. Sea bass, yellowtail, tuna and more.',
  6, 48, '/images/sportfishing-sbboatcharters.jpg', 4,
  'Full refund for cancellations made 72 hours or more before departure. Weather cancellations by the captain are fully refundable or reschedulable.'),
+('spearfishing', 'Spear Fishing',
+ '8 Hours - Enjoy a Day of Adventure',
+ 'A full-day guided spearfishing expedition with 16+ years of island diving experience. Sea bass, yellowtail, tuna — gear guidance and expert local knowledge included.',
+ 6, 48, '/images/spearfishing-gallery-1.jpeg', 5,
+ 'Full refund for cancellations made 72 hours or more before departure. Weather cancellations by the captain are fully refundable or reschedulable.'),
 ('foiling', 'Foiling',
- 'Hydrofoil Sessions on the Santa Barbara Coast',
+ '2 to 4 Hour Tours - All Skill Levels',
  'Tow-in hydrofoil sessions along the Santa Barbara coastline. All skill levels welcome — gear and coaching included.',
- 6, 48, '/images/foiling-santa-barbara.webp', 5,
+ 6, 48, '/images/foiling-santa-barbara.webp', 6,
  'Full refund for cancellations made 48 hours or more before departure. Weather cancellations by the captain are fully refundable or reschedulable.'),
+-- Mirrors FareHarbor: "Call to book!" — min_notice 8760h keeps every date in
+-- the call-to-book state. Set back to 48 to enable instant online booking.
 ('create-your-own-adventure', 'Create Your Own Adventure',
  '2 to 8 Hour Tours - Let''s Create Your Adventure Together!',
- 'Mix and match: coastline cruising, island time, swimming, snorkeling, fishing, BBQ on board — tell us what your perfect day looks like and we''ll build it together.',
- 6, 48, '/images/experiences-custom-routes.jpeg', 6,
+ 'Mix and match: coastline cruising, island time, swimming, snorkeling, fishing, BBQ on board — tell us what your perfect day looks like and we''ll build it together. Call to plan your trip!',
+ 6, 8760, '/images/experiences-custom-routes.jpeg', 7,
  'Full refund for cancellations made 72 hours or more before departure. Weather cancellations by the captain are fully refundable or reschedulable.');
 
--- Pricing options. display = ceil(base * 1.06 to whole dollar).
--- FareHarbor's advertised prices are ALL-IN ("Prices include fees"), so the
--- operator bases are derived by dividing by 1.06: $530→$500, $795→$750,
--- $1,590→$1,500. Customers pay exactly what they pay on FareHarbor today.
+-- Pricing (all confirmed from FareHarbor screenshots).
+-- display = ceil(base * 1.06) to whole dollars: 500→530, 750→795, 1000→1060,
+-- 1250→1325, 1500→1590, 2000→2120.
 INSERT INTO pricing_options (tour_id, label, duration_min, base_cents, display_cents, sort_order)
 SELECT t.id, v.label, v.duration_min, v.base_cents, (ceil(v.base_cents * 1.06 / 100.0) * 100)::int, v.sort_order
 FROM tours t
 JOIN (VALUES
-  -- confirmed from FareHarbor (displays as 530 / 795 / 1590 all-in)
-  ('coastal-sunset-cruise',      'Two Hour Private Charter',    120,  50000, 1),
-  ('coastal-sunset-cruise',      'Three Hour Private Charter',  180,  75000, 2),
-  ('full-day-island-cruise',     'Six Hour Island Cruise',      360, 150000, 1),
-  ('full-day-island-cruise',     'Eight Hour Island Cruise',    480, 200000, 2),  -- TODO confirm (displays $2,120)
-  ('whale-watching',             'Two Hour Cruise',             120,  50000, 1),  -- FareHarbor "from $530"
-  ('whale-watching',             'Three Hour Cruise',           180,  75000, 2),  -- TODO confirm
-  ('whale-watching',             'Four Hour Cruise',            240, 100000, 3),  -- TODO confirm
-  ('sport-fishing',              'Half Day (4 Hours)',          240, 100000, 1),  -- TODO confirm
-  ('sport-fishing',              'Three Quarter Day (6 Hours)', 360, 150000, 2),  -- TODO confirm
-  ('foiling',                    'Two Hour Session',            120,  60000, 1),  -- TODO confirm (displays $636)
-  ('create-your-own-adventure',  'Two Hours',                   120,  50000, 1),  -- TODO confirm
-  ('create-your-own-adventure',  'Four Hours',                  240, 100000, 2),  -- TODO confirm
-  ('create-your-own-adventure',  'Six Hours',                   360, 150000, 3),  -- TODO confirm
-  ('create-your-own-adventure',  'Eight Hours',                 480, 200000, 4)   -- TODO confirm
+  ('coastal-sunset-cruise',     'Two Hour Private Charter',   120,  50000, 1),
+  ('coastal-sunset-cruise',     'Three Hour Private Charter', 180,  75000, 2),
+  ('full-day-island-cruise',    'Six Hour Private Charter',   360, 150000, 1),
+  ('full-day-island-cruise',    'Eight Hour Private Charter', 480, 200000, 2),
+  ('whale-watching',            'Two Hour Private Charter',   120,  50000, 1),
+  ('whale-watching',            'Three Hour Private Charter', 180,  75000, 2),
+  ('whale-watching',            'Four Hour Private Charter',  240, 100000, 3),
+  ('sport-fishing',             'Two Hour Private Charter',   120,  50000, 1),
+  ('sport-fishing',             'Three Hour Private Charter', 180,  75000, 2),
+  ('sport-fishing',             'Four Hour Private Charter',  240, 100000, 3),
+  ('sport-fishing',             'Six Hour Private Charter',   360, 125000, 4),
+  ('sport-fishing',             'Eight Hour Private Charter', 480, 150000, 5),
+  ('spearfishing',              'Eight Hour Private Charter', 480, 200000, 1),
+  ('foiling',                   'Two Hour Private Charter',   120,  50000, 1),
+  ('foiling',                   'Three Hour Private Charter', 180,  75000, 2),
+  ('foiling',                   'Four Hour Private Charter',  240, 100000, 3),
+  ('create-your-own-adventure', 'Two Hour Private Charter',   120,  50000, 1),
+  ('create-your-own-adventure', 'Three Hour Private Charter', 180,  75000, 2),
+  ('create-your-own-adventure', 'Four Hour Private Charter',  240, 100000, 3),
+  ('create-your-own-adventure', 'Six Hour Private Charter',   360, 125000, 4),
+  ('create-your-own-adventure', 'Eight Hour Private Charter', 480, 150000, 5)
 ) AS v(slug, label, duration_min, base_cents, sort_order) ON v.slug = t.slug;
 
 -- Global default schedule: any day, departures on the hour, boat out 8am, back by 8pm.

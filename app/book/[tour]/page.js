@@ -52,6 +52,7 @@ export default async function BookTourPage({ params }) {
           slug: tour.slug,
           name: tour.name,
           maxParty: tour.max_party,
+          minNoticeHours: tour.min_notice_hours,
           meetingPoint: tour.meeting_point,
           policyText: tour.policy_text,
           callToBookPhone: tour.call_to_book_phone,
@@ -62,6 +63,7 @@ export default async function BookTourPage({ params }) {
           id: o.id,
           label: o.label,
           durationMin: o.duration_min,
+          baseCents: o.base_cents,
           displayCents: o.display_cents,
         }))}
         stripeReady={stripeReady}

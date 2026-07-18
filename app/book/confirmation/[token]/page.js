@@ -69,6 +69,7 @@ export default async function ConfirmationPage({ params }) {
                 <Row label="Departure" value={`${when} (Pacific)`} />
                 <Row label="Guests" value={booking.party_size} />
                 <Row label="Meeting point" value={booking.meeting_point} />
+                {booking.tax_cents > 0 && <Row label="Taxes" value={formatUsd(booking.tax_cents)} />}
                 {booking.gift_card_cents > 0 && <Row label="Gift card applied" value={`−${formatUsd(booking.gift_card_cents)}`} />}
                 <Row label={isConfirmed ? 'Paid' : 'Total'} value={formatUsd(booking.charged_cents)} bold />
               </tbody>

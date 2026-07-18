@@ -5,17 +5,29 @@ This checklist covers everything needed to take it live. Until Stripe keys are s
 booking pages show "Online payment is being set up — call to book" instead of a
 payment form, so it is safe to deploy at any time.
 
-## Revenue model
+## Revenue model (mirrors FareHarbor's checkout exactly)
 
 - **6% customer-facing booking fee** — same as FareHarbor charges today.
 - Advertised prices are **all-in** (base × 1.06, rounded up to a whole dollar),
   shown with "Prices include all fees" — required by California SB 478.
+  Example: $500 base → $530 advertised.
+- **Sales tax (7.75% of the BASE) is added at checkout**, exactly like
+  FareHarbor: $530 subtotal + $38.75 tax = $568.75 total. The tax is part of
+  the charge and lands in the operator's account — the operator remits it; the
+  platform fee never takes a cut of tax. Rate lives in `lib/pricing.js`
+  (`TAX_RATE`) — update there if the district rate changes.
 - The fee is collected automatically on every payment via Stripe Connect
   `application_fee_amount` into YOUR platform Stripe account. The client (operator)
   is merchant-of-record: payments land in their Stripe account, they issue refunds
   from their own dashboard.
 - Gift cards: fee charged once at purchase ($100 card sells for $106); no fee
-  again at redemption.
+  again at redemption. No tax at purchase — tax is charged on the booking the
+  card pays for.
+- Catalog prices confirmed against the operator's live FareHarbor listings
+  (July 2026): all tours use the $530/$795/$1,060/$1,325/$1,590 ladder except
+  Island Cruise (6h $1,590 / 8h $2,120) and Spear Fishing (8h $2,120).
+  Create Your Own Adventure mirrors FareHarbor's "Call to book!" (set its
+  `min_notice_hours` from 8760 back to 48 to enable instant online booking).
 
 ## 1. Database — Neon via Vercel Marketplace
 

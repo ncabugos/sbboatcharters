@@ -6,6 +6,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import {
   Elements, PaymentElement, ExpressCheckoutElement, useStripe, useElements,
 } from '@stripe/react-stripe-js';
+import { taxFromBase } from '@/lib/pricing';
 import styles from './bookingFlow.module.css';
 
 const DOW = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
@@ -118,7 +119,11 @@ export default function BookingFlow({ tour, options, stripeReady }) {
   const times = dayInfo && option ? dayInfo.options?.[option.id] || [] : [];
   const callToBookOnly = dayInfo && dayInfo.callToBook && times.length === 0;
 
-  const totalCents = option ? option.displayCents : 0;
+  // Mirrors FareHarbor: subtotal (base + 6% fee, advertised all-in) + sales tax.
+  const subtotalCents = option ? option.displayCents : 0;
+  const taxCents = option ? taxFromBase(option.baseCents) : 0;
+  const feeCents = option ? option.displayCents - option.baseCents : 0;
+  const totalCents = subtotalCents + taxCents;
   const giftApplied = gift ? Math.min(gift.balanceCents, totalCents) : 0;
   const dueCents = totalCents - giftApplied;
 
@@ -240,7 +245,9 @@ export default function BookingFlow({ tour, options, stripeReady }) {
             {callToBookOnly || (dayInfo && times.length === 0) ? (
               <div className={styles.callToBook}>
                 {dayInfo?.callToBook
-                  ? <>This date is inside our short-notice window. Call <a href={`tel:${tour.callToBookPhone.replace(/[^0-9+]/g, '')}`}>{tour.callToBookPhone}</a> to book it.</>
+                  ? tour.minNoticeHours >= 8760
+                    ? <>Custom adventures are planned together — call <a href={`tel:${tour.callToBookPhone.replace(/[^0-9+]/g, '')}`}>{tour.callToBookPhone}</a> and we&apos;ll build your perfect day on the water.</>
+                    : <>This date is inside our short-notice window. Call <a href={`tel:${tour.callToBookPhone.replace(/[^0-9+]/g, '')}`}>{tour.callToBookPhone}</a> to book it.</>
                   : <>No start times fit this charter length on this date — try another date or a shorter charter.</>}
               </div>
             ) : (
@@ -377,6 +384,8 @@ export default function BookingFlow({ tour, options, stripeReady }) {
         <div className={styles.summaryRow}><span>Time</span><strong>{time ? to12h(time) : '—'}</strong></div>
         <div className={styles.summaryRow}><span>Guests</span><strong>{party}</strong></div>
         <div className={styles.summaryRow}><span>Meeting point</span><strong style={{ maxWidth: '14rem' }}>{tour.meetingPoint}</strong></div>
+        <div className={styles.summaryRow}><span>Subtotal</span><strong>{option ? formatUsd(subtotalCents) : '—'}</strong></div>
+        <div className={styles.summaryRow}><span>Taxes</span><strong>{option ? formatUsd(taxCents) : '—'}</strong></div>
         {gift && (
           <div className={styles.summaryRow}><span>Gift card</span><strong>−{formatUsd(giftApplied)}</strong></div>
         )}
@@ -384,7 +393,11 @@ export default function BookingFlow({ tour, options, stripeReady }) {
           <span>Total</span>
           <strong>{option ? formatUsd(dueCents) : '—'}</strong>
         </div>
-        <div className={styles.summaryFee}>Price includes all fees. Free cancellation per policy below.</div>
+        <div className={styles.summaryFee}>
+          {option
+            ? `A ${formatUsd(feeCents)} booking fee (6%) is included in the subtotal for secure online booking and payment processing.`
+            : 'Prices include all booking fees.'}
+        </div>
         {tour.policyText && <p className={styles.policy}>{tour.policyText}</p>}
       </aside>
     </div>

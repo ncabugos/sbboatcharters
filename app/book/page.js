@@ -71,7 +71,8 @@ export default async function BookPage() {
             </article>
           </div>
           <p className={styles.feeNote}>
-            All prices are in US dollars and include all fees. Questions? Call{' '}
+            All prices are in US dollars and include all booking fees. Taxes are calculated at
+            checkout. Questions? Call{' '}
             <a href="tel:+18057222282" style={{ color: 'var(--color-accent)' }}>(805) 722-2282</a>.
           </p>
         </div>

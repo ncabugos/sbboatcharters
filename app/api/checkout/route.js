@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { sql, withTransaction } from '@/lib/db';
 import { validateSlot, BUFFER_MIN } from '@/lib/availability';
-import { feePortion } from '@/lib/pricing';
+import { taxFromBase } from '@/lib/pricing';
 import { findActiveCard, redeemWithinTx } from '@/lib/giftCards';
 import { getStripe, onConnected, stripeConfigured } from '@/lib/stripe';
 import { sendBookingConfirmation, sendCaptainNotification } from '@/lib/email';
@@ -91,10 +91,15 @@ export async function POST(request) {
       if (!card) return bad('Gift card code is invalid or has no remaining balance');
     }
 
-    const totalCents = option.display_cents;
+    // Mirrors FareHarbor: advertised price (base + 6% fee) + sales tax on the base.
+    const taxCents = taxFromBase(option.base_cents);
+    const totalCents = option.display_cents + taxCents;
     const giftCardCents = card ? Math.min(card.balance_cents, totalCents) : 0;
     const chargeCents = totalCents - giftCardCents;
-    const applicationFee = feePortion(chargeCents);
+    // Platform fee = the 6% built into the advertised price — never a cut of
+    // the tax, which passes through to the operator in full. Capped by the
+    // actual charge when a gift card covers most of it.
+    const applicationFee = Math.min(option.display_cents - option.base_cents, chargeCents);
 
     // 4. Insert the pending hold (+ customer) in one transaction.
     let booking;
@@ -107,13 +112,13 @@ export async function POST(request) {
           INSERT INTO bookings (
             tour_id, pricing_option_id, customer_id, party_size,
             trip_start, trip_end, block_range, status, expires_at,
-            base_cents, fee_cents, gift_card_cents, charged_cents, notes
+            base_cents, fee_cents, tax_cents, gift_card_cents, charged_cents, notes
           ) VALUES (
             ${tour.id}, ${option.id}, ${customerId}, ${party},
             ${tripStart.toISOString()}, ${tripEnd.toISOString()},
             tstzrange(${tripStart.toISOString()}, ${new Date(tripEnd.getTime() + BUFFER_MIN * 60000).toISOString()}),
             'pending', now() + (${HOLD_MINUTES} * interval '1 minute'),
-            ${option.base_cents}, ${applicationFee}, ${giftCardCents}, ${chargeCents}, ${cleanNotes || null}
+            ${option.base_cents}, ${applicationFee}, ${taxCents}, ${giftCardCents}, ${chargeCents}, ${cleanNotes || null}
           )
           RETURNING id, confirmation_token`;
         return rows[0];

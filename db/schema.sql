@@ -82,6 +82,7 @@ CREATE TABLE bookings (
   expires_at         timestamptz,  -- pending holds only
   base_cents         int NOT NULL,
   fee_cents          int NOT NULL,
+  tax_cents          int NOT NULL DEFAULT 0,
   gift_card_cents    int NOT NULL DEFAULT 0,
   charged_cents      int NOT NULL,
   stripe_payment_intent_id text,
