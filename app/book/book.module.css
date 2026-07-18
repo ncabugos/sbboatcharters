@@ -1,0 +1,109 @@
+.hero {
+  background: var(--color-graphite, #141618);
+  padding: 7rem 0 3rem;
+  text-align: center;
+}
+
+.heroTitle {
+  color: var(--color-white-ice, #E8ECF0);
+  font-size: var(--fs-h1, clamp(2rem, 4vw, 3rem));
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 300;
+  margin: 0.5rem 0;
+}
+
+.heroSubtitle {
+  color: var(--color-silver, #9BA5B4);
+  font-size: 1rem;
+  max-width: 40rem;
+  margin: 0 auto;
+}
+
+/* Tighten the hero on phones so the calendar/booking UI is reachable sooner. */
+@media (max-width: 600px) {
+  .hero {
+    padding: 4.5rem 0 1.75rem;
+  }
+  .heroTitle {
+    font-size: 1.9rem;
+    letter-spacing: 0.06em;
+  }
+  .heroSubtitle {
+    font-size: 0.9rem;
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(13, 15, 17, 0.08);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(13, 15, 17, 0.14);
+}
+
+.cardImage {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  display: block;
+}
+
+.cardBody {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  flex: 1;
+}
+
+.cardTitle {
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+  margin: 0;
+  color: var(--color-void, #0D0F11);
+}
+
+.cardTagline {
+  color: var(--color-silver, #6b7686);
+  font-size: 0.9rem;
+  margin: 0;
+  flex: 1;
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.75rem;
+}
+
+.fromPrice {
+  font-size: 0.85rem;
+  color: var(--color-void, #0D0F11);
+}
+
+.fromPrice strong {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.feeNote {
+  text-align: center;
+  color: var(--color-silver, #6b7686);
+  font-size: 0.8rem;
+  margin-top: 2rem;
+}
