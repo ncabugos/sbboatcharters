@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import styles from './coastal-sunset-cruises.module.css';
 
 export const metadata = {
@@ -47,7 +48,7 @@ export default function CoastalSunsetCruises() {
             Panoramic views of the American Riviera from the water. The best way to experience Santa Barbara's legendary coastline and sunsets.
           </p>
           <div className={styles.heroActions}>
-            <a href="https://fareharbor.com/embeds/book/boatcharterssb/items/620777/?full-items=yes&flow=1368983" target="_blank" rel="noopener noreferrer" className="btn btn--primary btn--large">Book a Cruise</a>
+            <Link href="/book/coastal-sunset-cruise/" className="btn btn--primary btn--large">Book a Cruise</Link>
             <a href="tel:+18057222282" className="btn btn--secondary btn--large">Call (805) 722-2282</a>
           </div>
         </div>
@@ -85,7 +86,7 @@ export default function CoastalSunsetCruises() {
                 <div><span className={styles.detailLabel}>{d.label}</span><span className={styles.detailValue}>{d.value}</span></div>
               </div>
             ))}
-            <a href="https://fareharbor.com/embeds/book/boatcharterssb/items/620777/?full-items=yes&flow=1368983" target="_blank" rel="noopener noreferrer" className={`btn btn--primary ${styles.bookingCTA}`}>Book a Cruise</a>
+            <Link href="/book/coastal-sunset-cruise/" className={`btn btn--primary ${styles.bookingCTA}`}>Book a Cruise</Link>
             <a href="tel:+18057222282" className={styles.phoneLink}>Or call (805) 722-2282</a>
           </div>
         </div>
@@ -122,7 +123,7 @@ export default function CoastalSunsetCruises() {
           <h2 className={styles.ctaTitle}>Book Your Coastal Experience</h2>
           <p className={styles.ctaText}>There's no better way to see Santa Barbara than from the water. Reserve your private cruise for an unforgettable experience on the American Riviera.</p>
           <div className={styles.ctaActions}>
-            <a href="https://fareharbor.com/embeds/book/boatcharterssb/items/620777/?full-items=yes&flow=1368983" target="_blank" rel="noopener noreferrer" className="btn btn--primary btn--large">Book Your Cruise</a>
+            <Link href="/book/coastal-sunset-cruise/" className="btn btn--primary btn--large">Book Your Cruise</Link>
             <a href="tel:+18057222282" className="btn btn--secondary btn--large">Call (805) 722-2282</a>
           </div>
         </div>

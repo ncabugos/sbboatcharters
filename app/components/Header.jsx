@@ -113,14 +113,12 @@ export default function Header() {
             </svg>
             <span className={styles.phoneText}>(805) 722-2282</span>
           </a>
-          <a
-            href="https://fareharbor.com/embeds/book/boatcharterssb/?full-items=yes"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/book/"
             className={`btn btn--primary ${styles.bookBtn}`}
           >
             Book Now
-          </a>
+          </Link>
         </div>
 
         {/* Mobile Toggle */}
@@ -154,14 +152,13 @@ export default function Header() {
           <a href="tel:+18057222282" className={styles.mobilePhone}>
             📞 (805) 722-2282
           </a>
-          <a
-            href="https://fareharbor.com/embeds/book/boatcharterssb/?full-items=yes"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/book/"
             className={`btn btn--primary btn--large ${styles.mobileCTA}`}
+            onClick={() => setMobileOpen(false)}
           >
             Book Your Adventure
-          </a>
+          </Link>
         </nav>
       </div>
     </header>

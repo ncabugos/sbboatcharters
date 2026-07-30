@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import styles from '../components/ServicePage.module.css';
 
 export const metadata = {
@@ -66,7 +67,7 @@ export default function Foiling() {
                 <div><span className={styles.detailLabel}>{d.label}</span><span className={styles.detailValue}>{d.value}</span></div>
               </div>
             ))}
-            <a href="https://fareharbor.com/embeds/book/boatcharterssb/?full-items=yes" target="_blank" rel="noopener noreferrer" className={`btn btn--primary ${styles.bookingCTA}`}>Book Foiling</a>
+            <Link href="/book/foiling/" className={`btn btn--primary ${styles.bookingCTA}`}>Book Foiling</Link>
             <a href="tel:+18057222282" className={styles.phoneLink}>Or call (805) 722-2282</a>
           </div>
         </div>
@@ -92,7 +93,7 @@ export default function Foiling() {
           <h2 className={styles.ctaTitle}>Ready to Fly?</h2>
           <p className={styles.ctaText}>Contact us to arrange your foiling lesson and experience the future of water sports in Santa Barbara.</p>
           <div className={styles.ctaActions}>
-            <a href="https://fareharbor.com/embeds/book/boatcharterssb/?full-items=yes" target="_blank" rel="noopener noreferrer" className="btn btn--primary btn--large">Book Foiling</a>
+            <Link href="/book/foiling/" className="btn btn--primary btn--large">Book Foiling</Link>
             <a href="tel:+18057222282" className="btn btn--secondary btn--large">Call (805) 722-2282</a>
           </div>
         </div>

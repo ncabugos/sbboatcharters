@@ -101,14 +101,12 @@ export default function Footer() {
                 Santa Barbara Harbor, Marina 3
               </div>
             </div>
-            <a
-              href="https://fareharbor.com/embeds/book/boatcharterssb/?full-items=yes"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/book/"
               className={`btn btn--primary ${styles.footerCTA}`}
             >
               Book Your Adventure
-            </a>
+            </Link>
           </div>
         </div>
       </div>

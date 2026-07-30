@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import styles from '../about/about.module.css';
 
 export const metadata = {
@@ -45,9 +46,9 @@ export default function GiftCards() {
             holiday gift.
           </p>
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <a href="https://fareharbor.com/embeds/book/boatcharterssb/?full-items=yes" target="_blank" rel="noopener noreferrer" className="btn btn--primary btn--large">
+            <Link href="/gift-cards/purchase/" className="btn btn--primary btn--large">
               Purchase Gift Card
-            </a>
+            </Link>
             <a href="tel:+18057222282" className="btn btn--outline-dark btn--large">
               Call to Order
             </a>

@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import styles from '../components/ServicePage.module.css';
 import PageSlideshow from '../components/PageSlideshow';
 
@@ -89,7 +90,7 @@ export default function SportFishing() {
                 <div><span className={styles.detailLabel}>{d.label}</span><span className={styles.detailValue}>{d.value}</span></div>
               </div>
             ))}
-            <a href="https://fareharbor.com/embeds/book/boatcharterssb/?full-items=yes" target="_blank" rel="noopener noreferrer" className={`btn btn--primary ${styles.bookingCTA}`}>Book Sport Fishing</a>
+            <Link href="/book/sport-fishing/" className={`btn btn--primary ${styles.bookingCTA}`}>Book Sport Fishing</Link>
             <a href="tel:+18057222282" className={styles.phoneLink}>Or call (805) 722-2282</a>
           </div>
         </div>
@@ -116,7 +117,7 @@ export default function SportFishing() {
           <h2 className={styles.ctaTitle}>Let's Go Fishing</h2>
           <p className={styles.ctaText}>Book your private sport fishing charter and experience Santa Barbara's world-class fishing from a vessel built for the job.</p>
           <div className={styles.ctaActions}>
-            <a href="https://fareharbor.com/embeds/book/boatcharterssb/?full-items=yes" target="_blank" rel="noopener noreferrer" className="btn btn--primary btn--large">Book Sport Fishing</a>
+            <Link href="/book/sport-fishing/" className="btn btn--primary btn--large">Book Sport Fishing</Link>
             <a href="tel:+18057222282" className="btn btn--secondary btn--large">Call (805) 722-2282</a>
           </div>
         </div>

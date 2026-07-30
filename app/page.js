@@ -173,14 +173,9 @@ export default function HomePage() {
             Channel Islands. Over 20 years of coastal expertise at your service.
           </p>
           <div className={styles.heroActions}>
-            <a
-              href="https://fareharbor.com/embeds/book/boatcharterssb/?full-items=yes"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn--primary btn--large"
-            >
+            <Link href="/book/" className="btn btn--primary btn--large">
               Book Your Adventure
-            </a>
+            </Link>
             <Link href="/channel-islands-tour" className="btn btn--secondary btn--large">
               Explore Charters
             </Link>
@@ -471,14 +466,9 @@ export default function HomePage() {
             catch of a lifetime — let's make it happen.
           </p>
           <div className={styles.ctaActions}>
-            <a
-              href="https://fareharbor.com/embeds/book/boatcharterssb/?full-items=yes"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn--primary btn--large"
-            >
+            <Link href="/book/" className="btn btn--primary btn--large">
               Book Your Adventure
-            </a>
+            </Link>
             <a href="tel:+18057222282" className="btn btn--secondary btn--large">
               Call (805) 722-2282
             </a>

@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import styles from '../components/ServicePage.module.css';
 import PageSlideshow from '../components/PageSlideshow';
 
@@ -157,9 +158,9 @@ export default function Spearfishing() {
                 </div>
               </div>
             ))}
-            <a href="https://fareharbor.com/embeds/book/boatcharterssb/items/620851/?full-items=yes&flow=1368984" target="_blank" rel="noopener noreferrer" className={`btn btn--primary ${styles.bookingCTA}`}>
+            <Link href="/book/spearfishing/" className={`btn btn--primary ${styles.bookingCTA}`}>
               Book Spearfishing
-            </a>
+            </Link>
             <a href="tel:+18057222282" className={styles.phoneLink}>Or call (805) 722-2282</a>
           </div>
         </div>
@@ -185,9 +186,9 @@ export default function Spearfishing() {
             location, and target species to maximize your chances.
           </p>
           <div className={styles.ctaActions}>
-            <a href="https://fareharbor.com/embeds/book/boatcharterssb/items/620851/?full-items=yes&flow=1368984" target="_blank" rel="noopener noreferrer" className="btn btn--primary btn--large">
+            <Link href="/book/spearfishing/" className="btn btn--primary btn--large">
               Book Spearfishing
-            </a>
+            </Link>
             <a href="tel:+18057222282" className="btn btn--secondary btn--large">Call (805) 722-2282</a>
           </div>
         </div>
