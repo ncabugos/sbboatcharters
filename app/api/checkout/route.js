@@ -97,9 +97,13 @@ export async function POST(request) {
     const giftCardCents = card ? Math.min(card.balance_cents, totalCents) : 0;
     const chargeCents = totalCents - giftCardCents;
     // Platform fee = the 6% built into the advertised price — never a cut of
-    // the tax, which passes through to the operator in full. Capped by the
-    // actual charge when a gift card covers most of it.
-    const applicationFee = Math.min(option.display_cents - option.base_cents, chargeCents);
+    // the tax, which passes through to the operator in full. When a gift card
+    // covers most of the booking, the fee yields to the tax: the operator has
+    // to remit it, so the remaining charge pays the tax before the platform.
+    const applicationFee = Math.max(
+      0,
+      Math.min(option.display_cents - option.base_cents, chargeCents - taxCents)
+    );
 
     // 4. Insert the pending hold (+ customer) in one transaction.
     let booking;
