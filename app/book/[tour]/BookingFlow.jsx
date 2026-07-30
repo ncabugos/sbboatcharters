@@ -119,7 +119,8 @@ export default function BookingFlow({ tour, options, stripeReady }) {
   const times = dayInfo && option ? dayInfo.options?.[option.id] || [] : [];
   const callToBookOnly = dayInfo && dayInfo.callToBook && times.length === 0;
 
-  // Mirrors FareHarbor: subtotal (base + 6% fee, advertised all-in) + sales tax.
+  // Advertised all-in price (base + 6% fee). Tax is currently disabled, so
+  // taxCents is 0 and the tax/subtotal rows drop out of the summary.
   const subtotalCents = option ? option.displayCents : 0;
   const taxCents = option ? taxFromBase(option.baseCents) : 0;
   const feeCents = option ? option.displayCents - option.baseCents : 0;
@@ -384,8 +385,14 @@ export default function BookingFlow({ tour, options, stripeReady }) {
         <div className={styles.summaryRow}><span>Time</span><strong>{time ? to12h(time) : '—'}</strong></div>
         <div className={styles.summaryRow}><span>Guests</span><strong>{party}</strong></div>
         <div className={styles.summaryRow}><span>Meeting point</span><strong style={{ maxWidth: '14rem' }}>{tour.meetingPoint}</strong></div>
-        <div className={styles.summaryRow}><span>Subtotal</span><strong>{option ? formatUsd(subtotalCents) : '—'}</strong></div>
-        <div className={styles.summaryRow}><span>Taxes</span><strong>{option ? formatUsd(taxCents) : '—'}</strong></div>
+        {/* Subtotal only earns its place when something is added or deducted
+            below it; with tax off and no gift card it just repeats the total. */}
+        {(taxCents > 0 || gift) && (
+          <div className={styles.summaryRow}><span>Subtotal</span><strong>{option ? formatUsd(subtotalCents) : '—'}</strong></div>
+        )}
+        {taxCents > 0 && (
+          <div className={styles.summaryRow}><span>Taxes</span><strong>{formatUsd(taxCents)}</strong></div>
+        )}
         {gift && (
           <div className={styles.summaryRow}><span>Gift card</span><strong>−{formatUsd(giftApplied)}</strong></div>
         )}

@@ -1,8 +1,8 @@
 -- Seed catalog — prices transcribed from the operator's live FareHarbor
--- listings (July 2026 screenshots). FareHarbor advertises ALL-IN prices
--- ("Prices include fees"): advertised = base + 6% booking fee. Sales tax
--- (7.75% of base) is added at checkout on top, exactly as FareHarbor does.
---   $530 advertised = $500 base + $30 fee;  tax $38.75;  total $568.75.
+-- listings (July 2026 screenshots). Prices are ALL-IN ("Prices include fees"):
+-- advertised = base + 6% booking fee, and that is the full amount charged.
+--   $530 advertised = $500 base + $30 fee;  total $530.
+-- Sales tax was removed 2026-07-30 (TAX_RATE = 0 in lib/pricing.js).
 
 BEGIN;
 
@@ -11,39 +11,39 @@ INSERT INTO tours (slug, name, tagline, description, max_party, min_notice_hours
  '2 and 3 Hour Tours - The Best View of the American Riviera',
  'Our private coastal and sunset cruises offer gorgeous panoramic views of the American Riviera, from Carpinteria to Hollister Ranch. Bring up to six guests aboard The Belafonte for an unforgettable evening on the water.',
  6, 24, '/images/sunset-cruise.webp', 1,
- 'Full refund for cancellations made 48 hours or more before departure. Weather cancellations by the captain are fully refundable or reschedulable.'),
+ 'Full refund for cancellations made two weeks or more before departure. Weather cancellations by the captain are fully refundable or reschedulable.'),
 ('full-day-island-cruise', 'Full Day Island Cruise',
  '6 or 8 Hour Tours - Private Island Cruise Tailored Just for YOU!',
  'A private full-day excursion to Santa Cruz Island and the Channel Islands: sea caves, snorkeling, wildlife, and secluded anchorages — tailored just for you and up to five guests.',
  6, 48, '/images/santa-cruz-island.webp', 2,
- 'Full refund for cancellations made 72 hours or more before departure. Weather cancellations by the captain are fully refundable or reschedulable.'),
+ 'Full refund for cancellations made two weeks or more before departure. Weather cancellations by the captain are fully refundable or reschedulable.'),
 ('whale-watching', 'Whale Watching',
  '2 to 4 Hour Tours - Private Whale Watching Cruise',
  'A private whale watching cruise in the Santa Barbara Channel — humpbacks, grays, dolphins, and if we''re lucky, blue whales. Just your group and the captain.',
  6, 24, '/images/marine-wildlife.jpeg', 3,
- 'Full refund for cancellations made 48 hours or more before departure. Weather cancellations by the captain are fully refundable or reschedulable.'),
+ 'Full refund for cancellations made two weeks or more before departure. Weather cancellations by the captain are fully refundable or reschedulable.'),
 ('sport-fishing', 'Sport Fishing',
  '2 to 8 Hour Tours - Tailored Fishing Experience',
  'Guided sport fishing charters in the Santa Barbara Channel with premium tackle and electronics. Sea bass, yellowtail, tuna and more.',
  6, 48, '/images/sportfishing-sbboatcharters.jpg', 4,
- 'Full refund for cancellations made 72 hours or more before departure. Weather cancellations by the captain are fully refundable or reschedulable.'),
+ 'Full refund for cancellations made two weeks or more before departure. Weather cancellations by the captain are fully refundable or reschedulable.'),
 ('spearfishing', 'Spear Fishing',
  '8 Hours - Enjoy a Day of Adventure',
  'A full-day guided spearfishing expedition with 16+ years of island diving experience. Sea bass, yellowtail, tuna — gear guidance and expert local knowledge included.',
  6, 48, '/images/spearfishing-gallery-1.jpeg', 5,
- 'Full refund for cancellations made 72 hours or more before departure. Weather cancellations by the captain are fully refundable or reschedulable.'),
+ 'Full refund for cancellations made two weeks or more before departure. Weather cancellations by the captain are fully refundable or reschedulable.'),
 ('foiling', 'Foiling',
  '2 to 4 Hour Tours - All Skill Levels',
  'Tow-in hydrofoil sessions along the Santa Barbara coastline. All skill levels welcome — gear and coaching included.',
  6, 48, '/images/foiling-santa-barbara.webp', 6,
- 'Full refund for cancellations made 48 hours or more before departure. Weather cancellations by the captain are fully refundable or reschedulable.'),
+ 'Full refund for cancellations made two weeks or more before departure. Weather cancellations by the captain are fully refundable or reschedulable.'),
 -- Mirrors FareHarbor: "Call to book!" — min_notice 8760h keeps every date in
 -- the call-to-book state. Set back to 48 to enable instant online booking.
 ('create-your-own-adventure', 'Create Your Own Adventure',
  '2 to 8 Hour Tours - Let''s Create Your Adventure Together!',
  'Mix and match: coastline cruising, island time, swimming, snorkeling, fishing, BBQ on board — tell us what your perfect day looks like and we''ll build it together. Call to plan your trip!',
  6, 8760, '/images/experiences-custom-routes.jpeg', 7,
- 'Full refund for cancellations made 72 hours or more before departure. Weather cancellations by the captain are fully refundable or reschedulable.');
+ 'Full refund for cancellations made two weeks or more before departure. Weather cancellations by the captain are fully refundable or reschedulable.');
 
 -- Pricing (all confirmed from FareHarbor screenshots).
 -- display = ceil(base * 1.06) to whole dollars: 500→530, 750→795, 1000→1060,

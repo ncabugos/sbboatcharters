@@ -91,7 +91,10 @@ export async function POST(request) {
       if (!card) return bad('Gift card code is invalid or has no remaining balance');
     }
 
-    // Mirrors FareHarbor: advertised price (base + 6% fee) + sales tax on the base.
+    // Advertised price (base + 6% fee). Sales tax is currently disabled
+    // (TAX_RATE = 0 in lib/pricing.js), so this resolves to 0 and the total is
+    // simply the advertised price. Kept in the math so re-enabling tax is a
+    // one-line change rather than a rewrite of the fee logic below.
     const taxCents = taxFromBase(option.base_cents);
     const totalCents = option.display_cents + taxCents;
     const giftCardCents = card ? Math.min(card.balance_cents, totalCents) : 0;
