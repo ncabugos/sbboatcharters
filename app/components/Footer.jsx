@@ -129,7 +129,7 @@ export default function Footer() {
             </span>
           </p>
           <p className={styles.uscg}>
-            USCG Licensed & Inspected · Six-Passenger Vessel
+            USCG Examined OUPV · Six-Passenger Vessel
           </p>
         </div>
       </div>

@@ -4,7 +4,7 @@ import styles from '../components/ServicePage.module.css';
 export const metadata = {
   title: 'The Belafonte | Stabicraft 2500 Ultracab XL Charter Boat',
   description:
-    'Meet the Belafonte — a brand new Stabicraft 2500 Ultracab XL with twin Yamaha 200hp outboards. Built in New Zealand, 100% aluminum construction, USCG inspected. Your vessel for Santa Barbara adventures.',
+    'Meet the Belafonte — a brand new Stabicraft 2500 Ultracab XL with twin Yamaha 200hp outboards. Built in New Zealand, 100% aluminum construction, USCG examined. Your vessel for Santa Barbara adventures.',
   openGraph: {
     title: 'The Belafonte | Santa Barbara Boat Charters',
     description: 'The Belafonte — Stabicraft 2500 Ultracab XL with twin Yamaha 200hp outboards. Built for rough seas, perfect for the Santa Barbara Channel.',
@@ -71,7 +71,7 @@ export default function TheBelafonte() {
             <div className={styles.detailItem}><span className={styles.detailIcon}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span><div><span className={styles.detailLabel}>Construction</span><span className={styles.detailValue}>100% aluminum with 9,000 lbs buoyancy</span></div></div>
             <div className={styles.detailItem}><span className={styles.detailIcon}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></span><div><span className={styles.detailLabel}>Built In</span><span className={styles.detailValue}>South Island, New Zealand</span></div></div>
             <div className={styles.detailItem}><span className={styles.detailIcon}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></span><div><span className={styles.detailLabel}>Capacity</span><span className={styles.detailValue}>6 passengers</span></div></div>
-            <div className={styles.detailItem}><span className={styles.detailIcon}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></span><div><span className={styles.detailLabel}>Safety</span><span className={styles.detailValue}>USCG inspected annually</span></div></div>
+            <div className={styles.detailItem}><span className={styles.detailIcon}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></span><div><span className={styles.detailLabel}>Safety</span><span className={styles.detailValue}>USCG examined annually</span></div></div>
             <Link href="/book/" className={`btn btn--primary ${styles.bookingCTA}`}>Book Your Charter</Link>
           </div>
         </div>

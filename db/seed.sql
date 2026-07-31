@@ -45,15 +45,18 @@ INSERT INTO tours (slug, name, tagline, description, max_party, min_notice_hours
  6, 8760, '/images/experiences-custom-routes.jpeg', 7,
  'Full refund for cancellations made two weeks or more before departure. Weather cancellations by the captain are fully refundable or reschedulable.');
 
--- Pricing (all confirmed from FareHarbor screenshots).
--- display = ceil(base * 1.06) to whole dollars: 500→530, 750→795, 1000→1060,
--- 1250→1325, 1500→1590, 2000→2120.
+-- Pricing. display = ceil(base * 1.06) to whole dollars: 500→530, 600→636,
+-- 750→795, 900→954, 1000→1060, 1250→1325, 1500→1590, 2000→2120.
+-- Base rate is $250/hr across the catalog, except Coastal & Sunset at $300/hr
+-- (raised 2026-07-30). Sport Fishing and Create Your Own Adventure keep their
+-- volume discount on 6h/8h ($208/hr and $187.50/hr).
 INSERT INTO pricing_options (tour_id, label, duration_min, base_cents, display_cents, sort_order)
 SELECT t.id, v.label, v.duration_min, v.base_cents, (ceil(v.base_cents * 1.06 / 100.0) * 100)::int, v.sort_order
 FROM tours t
 JOIN (VALUES
-  ('coastal-sunset-cruise',     'Two Hour Private Charter',   120,  50000, 1),
-  ('coastal-sunset-cruise',     'Three Hour Private Charter', 180,  75000, 2),
+  -- Coastal & Sunset moved to $300/hr on 2026-07-30; every other tour stays $250/hr.
+  ('coastal-sunset-cruise',     'Two Hour Private Charter',   120,  60000, 1),
+  ('coastal-sunset-cruise',     'Three Hour Private Charter', 180,  90000, 2),
   ('full-day-island-cruise',    'Six Hour Private Charter',   360, 150000, 1),
   ('full-day-island-cruise',    'Eight Hour Private Charter', 480, 200000, 2),
   ('whale-watching',            'Two Hour Private Charter',   120,  50000, 1),
