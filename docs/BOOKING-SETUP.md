@@ -1,126 +1,245 @@
-# Booking System — Go-Live Setup
+# Booking System — Live Reference
 
-The custom booking system (replacing FareHarbor) is fully built and verified locally.
-This checklist covers everything needed to take it live. Until Stripe keys are set,
-booking pages show "Online payment is being set up — call to book" instead of a
-payment form, so it is safe to deploy at any time.
+**Status: LIVE in production since 2026-07-31.** FareHarbor links were swapped on
+2026-07-30 (commit `78e1915`) and the first real customer booking confirmed
+end-to-end on 2026-07-31 — live card charge → webhook → booking confirmed →
+confirmation + captain emails delivered → 6% application fee collected.
 
-## Revenue model (mirrors FareHarbor's checkout exactly)
+Keep the FareHarbor account open as fallback until **~2026-08-29**.
 
-- **6% customer-facing booking fee** — same as FareHarbor charges today.
-- Advertised prices are **all-in** (base × 1.06, rounded up to a whole dollar),
-  shown with "Prices include all fees" — required by California SB 478.
-  Example: $500 base → $530 advertised.
-- **Sales tax (7.75% of the BASE) is added at checkout**, exactly like
-  FareHarbor: $530 subtotal + $38.75 tax = $568.75 total. The tax is part of
-  the charge and lands in the operator's account — the operator remits it; the
-  platform fee never takes a cut of tax. Rate lives in `lib/pricing.js`
-  (`TAX_RATE`) — update there if the district rate changes.
-- The fee is collected automatically on every payment via Stripe Connect
-  `application_fee_amount` into YOUR platform Stripe account. The client (operator)
-  is merchant-of-record: payments land in their Stripe account, they issue refunds
-  from their own dashboard.
-- Gift cards: fee charged once at purchase ($100 card sells for $106); no fee
-  again at redemption. No tax at purchase — tax is charged on the booking the
-  card pays for.
-- Catalog prices confirmed against the operator's live FareHarbor listings
-  (July 2026): all tours use the $530/$795/$1,060/$1,325/$1,590 ladder except
-  Island Cruise (6h $1,590 / 8h $2,120) and Spear Fishing (8h $2,120).
-  Create Your Own Adventure mirrors FareHarbor's "Call to book!" (set its
-  `min_notice_hours` from 8760 back to 48 to enable instant online booking).
+---
 
-## 1. Database — Neon via Vercel Marketplace
+## The one thing that catches everyone
 
-1. Vercel dashboard → Storage → Create Database → **Neon Postgres** → link to the
-   sb-boat-charters project. This sets `DATABASE_URL` automatically.
-2. Apply schema + seed (from your machine, with the Neon URL):
-   ```sh
-   psql "$NEON_DATABASE_URL" -f db/schema.sql
-   psql "$NEON_DATABASE_URL" -f db/seed.sql
-   ```
-3. **Before cutover:** confirm real prices/durations with the client and update the
-   rows marked `TODO confirm` in `db/seed.sql` (island cruise 8-hr, whale watching
-   3/4-hr, sport fishing, foiling, create-your-own).
+**Prices, cancellation policy, tour names, and availability rules live in the
+Neon database — not in the code.** Editing `db/seed.sql` only affects a fresh
+install. To change production you run SQL against Neon.
 
-Local dev database (already running):
-`docker start sbbc-postgres` → `postgresql://postgres:sbbc_dev@localhost:54329/sbbc`
+Vercel → Storage → your Neon database → **Query** (SSO, no separate login).
 
-## 2. Stripe Connect (your platform + client's account)
+```sql
+-- Change the cancellation policy on every tour
+UPDATE tours SET policy_text = 'Full refund for cancellations made two weeks or more before departure. Weather cancellations by the captain are fully refundable or reschedulable.';
 
-1. Create/use YOUR Stripe account as the **platform**: Dashboard → Connect →
-   Get started → choose **Standard** accounts (platform profile setup).
-2. Connect → Accounts → Create → send the onboarding link to the client
-   (Garrick). He completes KYC + bank details on Stripe's hosted flow.
-3. Record his account id (`acct_...`) → `NEXT_PUBLIC_STRIPE_CONNECTED_ACCOUNT_ID`.
-4. Webhook: Dashboard → Developers → Webhooks → Add endpoint
-   `https://www.sbboatcharters.com/api/webhooks/stripe/`
-   - ⚠️ **Include the TRAILING SLASH.** The site uses `trailingSlash: true`, so
-     `/api/webhooks/stripe` (no slash) returns a 308 redirect that Stripe does
-     NOT follow — webhooks silently fail and bookings never confirm. Always use
-     the slash, both locally and in production.
-   - **Check "Listen to events on Connected accounts"** (required — direct charges)
-   - Events: `payment_intent.succeeded`, `payment_intent.payment_failed`
-   - Copy the signing secret → `STRIPE_WEBHOOK_SECRET`
-5. Test mode first! Create a test connected account, use test keys, book with
-   card `4242 4242 4242 4242`, and verify the 6% application fee shows in your
-   platform test dashboard under Collected fees.
-   Local webhook forwarding (note the trailing slash):
-   ```sh
-   stripe listen --api-key sk_test_... \
-     --forward-connect-to "localhost:3000/api/webhooks/stripe/" \
-     --events payment_intent.succeeded,payment_intent.payment_failed,payment_intent.canceled
-   ```
-   Test-account onboarding tip: to pass identity verification instantly with no
-   document upload, use DOB **01/01/1901** + SSN **000000000** (other DOBs trigger
-   a document requirement). Phone: "Use test phone number" → code `000000`.
+-- Reprice one tour (display_cents is derived, never hand-typed)
+UPDATE pricing_options o
+SET base_cents = 60000, display_cents = (ceil(60000 * 1.06 / 100.0) * 100)::int
+FROM tours t
+WHERE t.id = o.tour_id AND t.slug = 'coastal-sunset-cruise' AND o.duration_min = 120;
+```
 
-## 3. Environment variables (Vercel → Settings → Environment Variables)
+Write repricing SQL as **explicit target values**, never `base_cents * 1.2` — a
+multiplier compounds silently if the statement is ever run twice.
+
+Always update `db/seed.sql` to match, so a fresh install matches production.
+
+**The one exception:** `app/foiling/page.js` hardcodes its prices in the details
+card. Every other page reads the catalog. Grep for `$` amounts in `app/` after
+any repricing.
+
+---
+
+## Revenue model
+
+- **6% customer-facing booking fee**, matching what FareHarbor charged.
+- Advertised prices are **all-in**: `base × 1.06`, rounded up to a whole dollar.
+  $600 base → $636 advertised, and $636 is the full amount charged.
+  Required by **California SB 478** — mandatory fees must be *inside* the
+  advertised price, not disclosed beside it. Never advertise the ex-fee hourly
+  rate (that mistake was corrected in `fafd9e8`); quote package prices.
+- **No sales tax.** Removed 2026-07-30. `TAX_RATE = 0` in `lib/pricing.js`; the
+  plumbing is intact, so setting it back to `0.0775` re-enables the tax line in
+  the summary, confirmation page and emails, all of which render it only when
+  non-zero. Bookings taken while tax was charged keep their `tax_cents`.
+- The fee is collected as Stripe Connect `application_fee_amount` into YOUR
+  platform account. The operator is **merchant of record** — payments land in
+  their account and they issue refunds from their own dashboard.
+- **The fee yields to tax if tax is ever re-enabled.** In `app/api/checkout`:
+  `applicationFee = max(0, min(display − base, chargeCents − taxCents))`.
+  Without the `− taxCents`, a gift card covering most of a booking hands the
+  platform the entire remainder and leaves the operator owing tax out of pocket
+  (fixed in `e301064`).
+- **Stripe processing (~2.9% + 30¢) is paid by the operator**, not the platform
+  (`controller.fees.payer: account`, fixed at account creation). On a $530
+  booking: $15.67 to Stripe, $30 to the platform, $484.33 net to the operator.
+  The Express Dashboard labels the combined $45.67 as "Processing fees", which
+  looks alarming until expanded — expect the operator to ask about this.
+- Gift cards: fee charged once at purchase ($100 card sells for $106), none
+  again at redemption. Amounts $50–$2,000, whole dollars.
+
+### Current catalog — $300/hr base (raised from $250 on 2026-07-30, +20%)
+
+| Tour | 2h | 3h | 4h | 6h | 8h |
+|---|---|---|---|---|---|
+| Coastal & Sunset | $636 | $954 | — | — | — |
+| Whale Watching | $636 | $954 | $1,272 | — | — |
+| Foiling | $636 | $954 | $1,272 | — | — |
+| Sport Fishing | $636 | $954 | $1,272 | $1,590 | $1,908 |
+| Create Your Own | $636 | $954 | $1,272 | $1,590 | $1,908 |
+| Island Cruise | — | — | — | $1,908 | $2,544 |
+| Spearfishing | — | — | — | — | $2,544 |
+
+Sport Fishing and Create Your Own keep a volume discount on long trips: 6h works
+out to $250/hr and 8h to $225/hr. Every other row is a flat $300/hr.
+
+Create Your Own Adventure is **call-to-book only** via `min_notice_hours = 8760`.
+Set it to 48 to enable instant online booking.
+
+---
+
+## Live accounts and IDs
+
+| | |
+|---|---|
+| Platform Stripe account | `acct_1THSG56lYeMpqwzv` (b3creative) |
+| Operator connected account | `acct_1TwRmg7KkijAT9TT` — **Express**, charges + payouts enabled |
+| Live webhook endpoint | `we_1Tz1Yr6lYeMpqwzvyBKnKOYT` |
+| Database | Neon `neon-alizarin-car`, via Vercel Storage |
+| Vercel project | `prj_diGDj1gI1sSItFVNsreQAXFNpE7e` |
+
+The connected account is **Express**, not Standard. That means the operator uses
+the **Express Dashboard** — browser only, no Stripe mobile app, and no password:
+he signs in at <https://connect.stripe.com/express_login> with an emailed or
+texted one-time code. Google login and the Dashboard mobile app do not apply to
+him. He can see his payments, balance, payouts and issue refunds there. Platform
+branding shown in his dashboard is set at
+Stripe → Settings → Connect → Express Dashboard → Branding (platform-wide, not
+per account).
+
+---
+
+## Webhook
+
+Endpoint URL — **the trailing slash is mandatory**:
+
+```
+https://www.sbboatcharters.com/api/webhooks/stripe/
+```
+
+`trailingSlash: true` means the slashless URL returns a 308, and **Stripe does
+not follow redirects on webhook delivery**. It fails silently: customer charged,
+booking stuck `pending`, no confirmation email.
+
+- **"Listen to events on Connected accounts" must be checked** — we use direct
+  charges, so events originate on the operator's account, not the platform's.
+- Events: `payment_intent.succeeded`, `payment_intent.payment_failed`
+- Signing secret → `STRIPE_WEBHOOK_SECRET`. It starts with `whsec_`.
+  **`we_...` is the endpoint ID, not the signing secret** — pasting the endpoint
+  ID into Vercel is a real mistake that happened here and breaks every delivery.
+
+### Verify it without moving money
+
+```sh
+STRIPE_WEBHOOK_SECRET=whsec_... node scripts/verify-live-webhook.js
+```
+
+Sends a properly-signed synthetic event with empty metadata, so the handler
+no-ops. Maps each status to its cause: **200** pass · **400** wrong signing
+secret · **503** missing Vercel key · **308** lost trailing slash. Run it after
+any webhook or secret change.
+
+Local forwarding during development (note the slash):
+
+```sh
+stripe listen --api-key sk_test_... \
+  --forward-connect-to "localhost:3000/api/webhooks/stripe/" \
+  --events payment_intent.succeeded,payment_intent.payment_failed,payment_intent.canceled
+```
+
+Test-account onboarding tip: DOB **01/01/1901** + SSN **000000000** passes
+identity verification instantly with no document upload. Phone: "Use test phone
+number" → code `000000`.
+
+---
+
+## Environment variables (Vercel → Settings → Environment Variables)
 
 | Var | Value |
 |---|---|
-| `DATABASE_URL` | set by Neon integration |
+| `DATABASE_URL` | set by the Neon integration |
 | `STRIPE_SECRET_KEY` | platform secret key (`sk_live_...`) |
-| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | platform publishable key |
-| `NEXT_PUBLIC_STRIPE_CONNECTED_ACCOUNT_ID` | client's `acct_...` |
-| `STRIPE_WEBHOOK_SECRET` | from webhook endpoint |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | platform publishable key (`pk_live_...`) |
+| `NEXT_PUBLIC_STRIPE_CONNECTED_ACCOUNT_ID` | `acct_1TwRmg7KkijAT9TT` |
+| `STRIPE_WEBHOOK_SECRET` | signing secret (`whsec_...`) |
 | `ADMIN_PASSWORD` | captain's login for /admin |
 | `ADMIN_SESSION_SECRET` | 32+ random chars (`openssl rand -hex 32`) |
 | `NEXT_PUBLIC_SITE_URL` | `https://www.sbboatcharters.com` |
 | `RESEND_API_KEY` | already configured |
-| `BOOKING_NOTIFY_EMAIL` | omit in production (defaults to garrick.gch@gmail.com); set in dev to avoid emailing the captain |
+| `BOOKING_NOTIFY_EMAIL` | **must be absent in production** — it overrides the captain's address, so booking alerts would go to you instead of him. Set it in dev. |
 
-## 4. Cutover (last step, one commit)
+`NEXT_PUBLIC_*` vars are inlined **at build time** — changing one requires a
+redeploy, not just a save. Server-side vars also need a redeploy to take effect.
 
-Swap the ~13 FareHarbor links after client sign-off and a successful live test
-booking (book the cheapest option, then refund from the client's Stripe dashboard):
+To confirm a deploy actually picked them up, fetch a booking page and grep the
+JS chunks for `pk_live` and the `acct_` id.
 
-- Header/Footer/homepage/the-belafonte "Book Now" → `/book`
-- channel-islands-tour → `/book/full-day-island-cruise`
-- coastal-sunset-cruises → `/book/coastal-sunset-cruise`
-- spearfishing + sport-fishing → `/book/sport-fishing`
-- foiling → `/book/foiling`
-- gift-cards "Purchase Gift Card" → `/gift-cards/purchase`
+---
 
-Keep the FareHarbor account open ~30 days as fallback. Monitor Stripe webhook
-delivery dashboard + Vercel logs the first week.
+## Local development
+
+```sh
+docker start sbbc-postgres   # postgresql://postgres:sbbc_dev@localhost:54329/sbbc
+npm run dev
+```
+
+`psql` lives at `/opt/homebrew/opt/libpq/bin/psql`. Keep **test** keys in
+`.env.local` (`sk_test_`/`pk_test_`) — if `STRIPE_SECRET_KEY` is unset, booking
+pages fall back to "call to book", which is the safe state. Never put a live
+secret key in `STRIPE_SECRET_KEY` locally; the dev server would transact against
+live Stripe. `.env*` is gitignored.
+
+`trailingSlash: true` means curl needs `-L` against these routes.
+
+---
+
+## Cutover — completed 2026-07-30 (`78e1915`)
+
+All 19 FareHarbor links replaced with `next/link` internal routes:
+
+| Page | Destination |
+|---|---|
+| Header ×2, Footer, home ×2, the-belafonte ×2 | `/book/` |
+| channel-islands-tour ×2 | `/book/full-day-island-cruise/` |
+| coastal-sunset-cruises ×3 | `/book/coastal-sunset-cruise/` |
+| spearfishing ×2 | `/book/spearfishing/` |
+| sport-fishing ×2 | `/book/sport-fishing/` |
+| foiling ×2 | `/book/foiling/` |
+| gift-cards | `/gift-cards/purchase/` |
+
+Spearfishing has its **own** tour and price ladder — it is not part of Sport
+Fishing. An earlier version of this doc mapped it wrongly.
+
+---
 
 ## Day-to-day operation (captain)
 
-- **/admin** — upcoming bookings, cancel (frees slot; refund via Stripe dashboard)
-- **/admin/manual** — enter phone bookings (blocks the calendar)
+- **/admin** — upcoming bookings, cancel (frees the slot; refund separately in Stripe)
+- **/admin/manual** — enter phone bookings so they block the calendar
 - **/admin/blackouts** — block days off
 - **/admin/gift-cards** — balances, disable lost codes
+- **Express Dashboard** — money: payments, payouts, refunds
+
+Rule of thumb: **/admin is for bookings, Stripe is for money.**
+
+---
 
 ## Architecture notes
 
 - One boat = one availability pool. Double-booking is impossible at the database
-  level (Postgres exclusion constraint on the booking time range + 30-min
-  turnaround buffer, covering pending + confirmed bookings).
-- Checkout creates a 30-minute pending hold; stale holds are swept lazily.
-  If a payment lands after the hold expired *and* the slot was retaken, the
-  webhook auto-refunds and emails an apology (the only automated refund).
+  level — a Postgres exclusion constraint on the booking time range plus a 30-min
+  turnaround buffer, covering `pending` and `confirmed`. Never bypass it; catch
+  SQLSTATE `23P01` and return 409. Verified: overlaps are rejected *across
+  different tours*, not just within one.
+- Checkout creates a 30-minute pending hold; stale holds are swept lazily at the
+  top of `/api/checkout` (no cron). If a payment lands after the hold expired
+  *and* the slot was retaken, the webhook auto-refunds and emails an apology —
+  the only automated refund in the system.
 - Availability is computed on the fly from `schedule_rules` − blackouts −
-  bookings − minimum-notice hours (48h notice shows "Call to book", matching
-  FareHarbor). All times Pacific.
+  bookings − minimum notice (24h or 48h depending on tour; inside that window the
+  day shows "Call to book"). All times Pacific. Foiling runs on fixed start times.
+- Gift card balances are only decremented on payment confirmation, never on a
+  pending hold, so an abandoned checkout can't burn a card.
 - Emails via Resend: customer confirmation, captain notification, gift card
   delivery + receipt.
+- **Never verified in live mode:** the gift-card purchase flow. It has its own
+  webhook branch separate from bookings. Test it before promoting gift cards.
