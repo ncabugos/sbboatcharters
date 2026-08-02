@@ -45,37 +45,37 @@ INSERT INTO tours (slug, name, tagline, description, max_party, min_notice_hours
  6, 8760, '/images/experiences-custom-routes.jpeg', 7,
  'Full refund for cancellations made two weeks or more before departure. Weather cancellations by the captain are fully refundable or reschedulable.');
 
--- Pricing. display = ceil(base * 1.06) to whole dollars: 500→530, 600→636,
--- 750→795, 900→954, 1000→1060, 1250→1325, 1500→1590, 2000→2120.
--- Base rate is $250/hr across the catalog, except Coastal & Sunset at $300/hr
--- (raised 2026-07-30). Sport Fishing and Create Your Own Adventure keep their
--- volume discount on 6h/8h ($208/hr and $187.50/hr).
+-- Pricing. display = ceil(base * 1.06) to whole dollars: 600→636, 900→954,
+-- 1200→1272, 1500→1590, 1800→1908, 2400→2544.
+-- Base rate is $300/hr across the catalog (raised from $250/hr on 2026-07-30,
+-- a uniform +20%). Sport Fishing and Create Your Own Adventure keep their
+-- volume discount on 6h/8h, which scaled with everything else to $250/hr and
+-- $225/hr respectively.
 INSERT INTO pricing_options (tour_id, label, duration_min, base_cents, display_cents, sort_order)
 SELECT t.id, v.label, v.duration_min, v.base_cents, (ceil(v.base_cents * 1.06 / 100.0) * 100)::int, v.sort_order
 FROM tours t
 JOIN (VALUES
-  -- Coastal & Sunset moved to $300/hr on 2026-07-30; every other tour stays $250/hr.
   ('coastal-sunset-cruise',     'Two Hour Private Charter',   120,  60000, 1),
   ('coastal-sunset-cruise',     'Three Hour Private Charter', 180,  90000, 2),
-  ('full-day-island-cruise',    'Six Hour Private Charter',   360, 150000, 1),
-  ('full-day-island-cruise',    'Eight Hour Private Charter', 480, 200000, 2),
-  ('whale-watching',            'Two Hour Private Charter',   120,  50000, 1),
-  ('whale-watching',            'Three Hour Private Charter', 180,  75000, 2),
-  ('whale-watching',            'Four Hour Private Charter',  240, 100000, 3),
-  ('sport-fishing',             'Two Hour Private Charter',   120,  50000, 1),
-  ('sport-fishing',             'Three Hour Private Charter', 180,  75000, 2),
-  ('sport-fishing',             'Four Hour Private Charter',  240, 100000, 3),
-  ('sport-fishing',             'Six Hour Private Charter',   360, 125000, 4),
-  ('sport-fishing',             'Eight Hour Private Charter', 480, 150000, 5),
-  ('spearfishing',              'Eight Hour Private Charter', 480, 200000, 1),
-  ('foiling',                   'Two Hour Private Charter',   120,  50000, 1),
-  ('foiling',                   'Three Hour Private Charter', 180,  75000, 2),
-  ('foiling',                   'Four Hour Private Charter',  240, 100000, 3),
-  ('create-your-own-adventure', 'Two Hour Private Charter',   120,  50000, 1),
-  ('create-your-own-adventure', 'Three Hour Private Charter', 180,  75000, 2),
-  ('create-your-own-adventure', 'Four Hour Private Charter',  240, 100000, 3),
-  ('create-your-own-adventure', 'Six Hour Private Charter',   360, 125000, 4),
-  ('create-your-own-adventure', 'Eight Hour Private Charter', 480, 150000, 5)
+  ('full-day-island-cruise',    'Six Hour Private Charter',   360, 180000, 1),
+  ('full-day-island-cruise',    'Eight Hour Private Charter', 480, 240000, 2),
+  ('whale-watching',            'Two Hour Private Charter',   120,  60000, 1),
+  ('whale-watching',            'Three Hour Private Charter', 180,  90000, 2),
+  ('whale-watching',            'Four Hour Private Charter',  240, 120000, 3),
+  ('sport-fishing',             'Two Hour Private Charter',   120,  60000, 1),
+  ('sport-fishing',             'Three Hour Private Charter', 180,  90000, 2),
+  ('sport-fishing',             'Four Hour Private Charter',  240, 120000, 3),
+  ('sport-fishing',             'Six Hour Private Charter',   360, 150000, 4),
+  ('sport-fishing',             'Eight Hour Private Charter', 480, 180000, 5),
+  ('spearfishing',              'Eight Hour Private Charter', 480, 240000, 1),
+  ('foiling',                   'Two Hour Private Charter',   120,  60000, 1),
+  ('foiling',                   'Three Hour Private Charter', 180,  90000, 2),
+  ('foiling',                   'Four Hour Private Charter',  240, 120000, 3),
+  ('create-your-own-adventure', 'Two Hour Private Charter',   120,  60000, 1),
+  ('create-your-own-adventure', 'Three Hour Private Charter', 180,  90000, 2),
+  ('create-your-own-adventure', 'Four Hour Private Charter',  240, 120000, 3),
+  ('create-your-own-adventure', 'Six Hour Private Charter',   360, 150000, 4),
+  ('create-your-own-adventure', 'Eight Hour Private Charter', 480, 180000, 5)
 ) AS v(slug, label, duration_min, base_cents, sort_order) ON v.slug = t.slug;
 
 -- Global default schedule: any day, departures on the hour, boat out 8am, back by 8pm.
