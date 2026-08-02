@@ -21,7 +21,7 @@ const SERVICES = [
     description: 'Panoramic views of the American Riviera coastline from Carpinteria to Hollister Ranch. Perfect for celebrations and special occasions.',
     href: '/coastal-sunset-cruises',
     icon: <IconSunset />,
-    tag: 'From $300/hr',
+    tag: 'From $636',
     image: '/images/sunset-cruise.webp',
   },
   {

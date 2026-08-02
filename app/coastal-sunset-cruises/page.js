@@ -4,10 +4,10 @@ import styles from './coastal-sunset-cruises.module.css';
 export const metadata = {
   title: 'Coastal & Sunset Cruises Santa Barbara | Private Boat Charter',
   description:
-    'Private coastal and sunset cruises in Santa Barbara. Watch the sun set over the Pacific from the water. Wildlife, celebrations, photography & custom routes. From $300/hr. Up to 6 passengers.',
+    'Private coastal and sunset cruises in Santa Barbara. Watch the sun set over the Pacific from the water. Wildlife, celebrations, photography & custom routes. From $636 for two hours, all fees included. Up to 6 passengers.',
   openGraph: {
     title: 'Coastal & Sunset Cruises | Santa Barbara Boat Charters',
-    description: 'Private sunset cruises on the Santa Barbara Channel. Dolphins, sea caves, golden hour views — from $300/hr for up to 6 passengers.',
+    description: 'Private sunset cruises on the Santa Barbara Channel. Dolphins, sea caves, golden hour views — from $636 for up to 6 passengers.',
     images: [{ url: 'https://www.sbboatcharters.com/images/sunset-cruise.webp', width: 1200, height: 630, alt: 'Sunset cruise Santa Barbara' }],
   },
   twitter: {
@@ -42,7 +42,7 @@ export default function CoastalSunsetCruises() {
         <img src="/images/sunset-cruise.webp" alt="Sunset cruise on the Santa Barbara Channel" className={styles.heroBgImage} loading="eager" fetchPriority="high" />
         <div className={styles.heroOverlay} />
         <div className={`container ${styles.heroContent}`}>
-          <span className={styles.heroLabel}>Private Cruises · From $300/hr</span>
+          <span className={styles.heroLabel}>Private Cruises · From $636</span>
           <h1 className={styles.heroTitle}>Coastal &amp; Sunset Cruises</h1>
           <p className={styles.heroSubtitle}>
             Panoramic views of the American Riviera from the water. The best way to experience Santa Barbara's legendary coastline and sunsets.
@@ -76,7 +76,7 @@ export default function CoastalSunsetCruises() {
             <h3 className={styles.detailsTitle}>Cruise Details</h3>
             {[
               { icon: 'clock', label: 'Duration', value: '2-hour minimum (customizable)' },
-              { icon: 'dollar', label: 'Pricing', value: '$300 per hour' },
+              { icon: 'dollar', label: 'Pricing', value: '$636 (2 hrs) · $954 (3 hrs) — all fees included' },
               { icon: 'users', label: 'Capacity', value: 'Up to 6 passengers' },
               { icon: 'pin', label: 'Departure', value: 'Santa Barbara Harbor, Marina 3' },
               { icon: 'sun', label: 'Best Time', value: 'Late afternoon for golden hour & sunset' },
