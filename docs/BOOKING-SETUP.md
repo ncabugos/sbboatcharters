@@ -17,6 +17,10 @@ install. To change production you run SQL against Neon.
 
 Vercel → Storage → your Neon database → **Query** (SSO, no separate login).
 
+⚠️ **Neon's Query editor runs ONE statement per execution.** Pasting several at
+once fails with `cannot insert multiple commands into a prepared statement`.
+Run them one at a time, in order.
+
 ```sql
 -- Change the cancellation policy on every tour
 UPDATE tours SET policy_text = 'Full refund for cancellations made two weeks or more before departure. Weather cancellations by the captain are fully refundable or reschedulable.';
