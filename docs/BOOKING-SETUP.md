@@ -165,7 +165,7 @@ number" → code `000000`.
 | `ADMIN_SESSION_SECRET` | 32+ random chars (`openssl rand -hex 32`) |
 | `NEXT_PUBLIC_SITE_URL` | `https://www.sbboatcharters.com` |
 | `RESEND_API_KEY` | already configured |
-| `BOOKING_NOTIFY_EMAIL` | **must be absent in production** — it overrides the captain's address, so booking alerts would go to you instead of him. Set it in dev. |
+| `BOOKING_NOTIFY_EMAIL` | **must be absent in production** — it replaces the entire booking-alert list (captain + Nick), so alerts would go only to whatever you set. Set it in dev (comma-separated for several addresses). |
 
 `NEXT_PUBLIC_*` vars are inlined **at build time** — changing one requires a
 redeploy, not just a save. Server-side vars also need a redeploy to take effect.
