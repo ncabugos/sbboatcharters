@@ -3,6 +3,14 @@ import { sql } from '@/lib/db';
 import { loadBookingDetails } from '@/lib/bookings';
 import { sendReviewRequest } from '@/lib/email';
 
+// Scheduled from vercel.json: "0 17 * * *" (cron is always UTC — 10am PDT).
+//
+// The registered path there MUST keep its trailing slash. next.config sets
+// trailingSlash: true, so /api/cron/review-requests returns a 308, and Vercel
+// cron does not follow redirects — the job would report success daily while
+// never actually running. Same trap that silently broke the Stripe webhook.
+// (vercel.json is strict JSON and rejects unknown keys, so this note lives
+// here rather than as a comment beside the path.)
 export const dynamic = 'force-dynamic';
 
 // Only trips that finished at least this long ago are eligible, so a guest who
