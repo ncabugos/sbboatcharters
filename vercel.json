@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "crons": [
+    {
+      "_comment": "TRAILING SLASH REQUIRED. next.config has trailingSlash: true, and Vercel cron does not follow redirects — the slashless path returns 308 and the job completes without ever running. Same trap as the Stripe webhook. Schedule is always UTC: 17:00 UTC = 10am PDT / 9am PST.",
+      "path": "/api/cron/review-requests/",
+      "schedule": "0 17 * * *"
+    }
+  ]
+}

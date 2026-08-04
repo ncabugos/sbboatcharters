@@ -171,6 +171,8 @@ number" → code `000000`.
 | `ADMIN_SESSION_SECRET` | 32+ random chars (`openssl rand -hex 32`) |
 | `NEXT_PUBLIC_SITE_URL` | `https://www.sbboatcharters.com` |
 | `RESEND_API_KEY` | already configured |
+| `CRON_SECRET` | 16+ random chars. Vercel sends it as `Authorization: Bearer …` on cron invocations; the route 401s without it. |
+| `GOOGLE_REVIEW_URL` | Google review link. **Until this is set the review-request cron no-ops** — that is the feature's off switch. |
 | `BOOKING_NOTIFY_EMAIL` | **must be absent in production** — it replaces the entire booking-alert list (captain + Nick), so alerts would go only to whatever you set. Set it in dev (comma-separated for several addresses). |
 
 `NEXT_PUBLIC_*` vars are inlined **at build time** — changing one requires a
@@ -178,6 +180,47 @@ redeploy, not just a save. Server-side vars also need a redeploy to take effect.
 
 To confirm a deploy actually picked them up, fetch a booking page and grep the
 JS chunks for `pk_live` and the `acct_` id.
+
+---
+
+## Post-trip review request (daily cron)
+
+The morning after a charter, the guest gets a thank-you from Captain Garrick
+asking for a Google review. Configured in `vercel.json`:
+
+```json
+{ "path": "/api/cron/review-requests/", "schedule": "0 17 * * *" }
+```
+
+- ⚠️ **The path needs the TRAILING SLASH.** `trailingSlash: true` means the
+  slashless path 308s, and **Vercel cron does not follow redirects** — the job
+  would complete without ever running. Identical trap to the Stripe webhook.
+- **Schedules are always UTC.** `0 17 * * *` is 10am PDT / 9am PST.
+- Eligibility: `status = 'confirmed'`, trip ended **12 h – 7 days** ago, and
+  `review_email_sent_at IS NULL`. The 7-day ceiling means a missed run still
+  catches up, and stops a first deploy from mailing the entire back catalogue.
+- Rows are **claimed before sending** (`UPDATE … RETURNING`, `SKIP LOCKED`).
+  Vercel documents that cron can fire the same run twice, and a duplicate
+  "thanks for coming out" is worse than a missed one. A send failure releases
+  the row so the next day retries it.
+- Bookings with no email (phone bookings via `/admin/manual`) are released,
+  never marked sent.
+
+To switch it on, in this order:
+
+1. `ALTER TABLE bookings ADD COLUMN IF NOT EXISTS review_email_sent_at timestamptz;`
+   plus the backfill guard, so past trips aren't emailed retroactively.
+2. Set `CRON_SECRET` and `GOOGLE_REVIEW_URL` in Vercel.
+3. Redeploy.
+
+Doing 2 before 1 makes the first run 500 on a missing column.
+
+Get the review link from Google Business Profile → **Ask for reviews**, which
+gives a `g.page/r/…` short link. The long form also works:
+`https://search.google.com/local/writereview?placeid=YOUR_PLACE_ID`.
+
+Note the email deliberately makes **one** ask with **one** link, and invites
+unhappy guests to reply privately rather than routing everyone to Google.
 
 ---
 

@@ -90,6 +90,9 @@ CREATE TABLE bookings (
   source             text NOT NULL DEFAULT 'web' CHECK (source IN ('web','admin')),
   notes              text,
   created_at         timestamptz NOT NULL DEFAULT now(),
+  -- Post-trip review request. Claimed atomically by the daily cron before the
+  -- email is sent, so a duplicate cron invocation can't email a guest twice.
+  review_email_sent_at timestamptz,
   -- One boat: no two live bookings may overlap. This is the system's core guarantee.
   CONSTRAINT no_overlap EXCLUDE USING gist (block_range WITH &&)
     WHERE (status IN ('pending','confirmed'))
