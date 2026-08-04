@@ -5,7 +5,7 @@ import { redeemWithinTx } from '@/lib/giftCards';
 import { loadBookingDetails } from '@/lib/bookings';
 import {
   sendBookingConfirmation, sendCaptainNotification, sendBookingApology,
-  sendGiftCardDelivery, sendGiftCardReceipt,
+  sendGiftCardDelivery, sendGiftCardReceipt, sendGiftCardSaleNotification,
 } from '@/lib/email';
 
 export const dynamic = 'force-dynamic';
@@ -113,4 +113,5 @@ async function handleGiftCardPaid(intent) {
   const withCharge = { ...card, charged_cents: intent.amount };
   await sendGiftCardDelivery(withCharge);
   await sendGiftCardReceipt(withCharge);
+  await sendGiftCardSaleNotification(withCharge);
 }
