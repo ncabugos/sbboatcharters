@@ -380,15 +380,26 @@ export default function BookingFlow({ tour, options, stripeReady }) {
       <aside className={styles.summary}>
         {tour.imageUrl && <img src={tour.imageUrl} alt="" className={styles.summaryImage} />}
         <h3 className={styles.summaryTitle}>{tour.name}</h3>
-        {option && <div className={styles.summaryRow}><span>Charter</span><strong>{option.label}</strong></div>}
         <div className={styles.summaryRow}><span>Date</span><strong>{date ? prettyDate(date) : '—'}</strong></div>
         <div className={styles.summaryRow}><span>Time</span><strong>{time ? to12h(time) : '—'}</strong></div>
         <div className={styles.summaryRow}><span>Guests</span><strong>{party}</strong></div>
         <div className={styles.summaryRow}><span>Meeting point</span><strong style={{ maxWidth: '14rem' }}>{tour.meetingPoint}</strong></div>
+        {/* The 6% fee stays inside the advertised price (CA SB 478) — this only
+            itemizes what that price is made of. Base + fee = the same total. */}
+        {option && (
+          <>
+            <div className={styles.summaryRow}>
+              <span>{option.label}</span><strong>{formatUsd(option.baseCents)}</strong>
+            </div>
+            <div className={styles.summaryRow}>
+              <span>Booking fee</span><strong>{formatUsd(feeCents)}</strong>
+            </div>
+          </>
+        )}
         {/* Subtotal only earns its place when something is added or deducted
-            below it; with tax off and no gift card it just repeats the total. */}
-        {(taxCents > 0 || gift) && (
-          <div className={styles.summaryRow}><span>Subtotal</span><strong>{option ? formatUsd(subtotalCents) : '—'}</strong></div>
+            below it; otherwise it just repeats the total. */}
+        {option && (taxCents > 0 || gift) && (
+          <div className={styles.summaryRow}><span>Subtotal</span><strong>{formatUsd(subtotalCents)}</strong></div>
         )}
         {taxCents > 0 && (
           <div className={styles.summaryRow}><span>Taxes</span><strong>{formatUsd(taxCents)}</strong></div>
@@ -402,7 +413,7 @@ export default function BookingFlow({ tour, options, stripeReady }) {
         </div>
         <div className={styles.summaryFee}>
           {option
-            ? `A ${formatUsd(feeCents)} booking fee (6%) is included in the subtotal for secure online booking and payment processing.`
+            ? 'The total above is the full amount due — nothing further is added at checkout.'
             : 'Prices include all booking fees.'}
         </div>
         {tour.policyText && <p className={styles.policy}>{tour.policyText}</p>}

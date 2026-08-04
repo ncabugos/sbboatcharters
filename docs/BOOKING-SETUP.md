@@ -47,6 +47,12 @@ any repricing.
   Required by **California SB 478** — mandatory fees must be *inside* the
   advertised price, not disclosed beside it. Never advertise the ex-fee hourly
   rate (that mistake was corrected in `fafd9e8`); quote package prices.
+- The checkout summary **itemizes** that all-in price (`Three Hour Private
+  Charter $900` / `Booking fee $54` / `Total $954`). This is disclosure, not
+  drip pricing: every number the customer sees before checkout is still the
+  all-in one, and the total never changes between the tour page and checkout.
+  Do not "simplify" this by moving the fee out of the advertised price — that
+  is the SB 478 violation. Considered and rejected 2026-08-03.
 - **No sales tax.** Removed 2026-07-30. `TAX_RATE = 0` in `lib/pricing.js`; the
   plumbing is intact, so setting it back to `0.0775` re-enables the tax line in
   the summary, confirmation page and emails, all of which render it only when
