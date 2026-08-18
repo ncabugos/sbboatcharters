@@ -2,12 +2,12 @@ import Link from 'next/link';
 import styles from '../components/ServicePage.module.css';
 
 export const metadata = {
-  title: 'Channel Islands Private Boat Tour | Full Day Excursion',
+  title: 'Channel Islands Private Boat Tour | 6 or 8 Hour Charters',
   description:
-    'Private Channel Islands boat tour from Santa Barbara. 8-hour excursion to Santa Cruz Island with snorkeling, sea caves, whale watching & more. Up to 6 passengers. Book your private island adventure today.',
+    'Private Channel Islands boat tour from Santa Barbara. Six-hour (3/4 day) or eight-hour (full day) excursions to Santa Cruz Island with snorkeling, sea caves, whale watching & more. Up to 6 passengers. Book your private island adventure today.',
   openGraph: {
     title: 'Channel Islands Private Boat Tour | Santa Barbara Boat Charters',
-    description: 'Private 8-hour excursion to Santa Cruz Island. Snorkeling, sea caves, whale watching & beach activities for up to 6 passengers.',
+    description: 'Private 6-hour (3/4 day) or 8-hour (full day) excursion to Santa Cruz Island. Snorkeling, sea caves, whale watching & beach activities for up to 6 passengers.',
     images: [{ url: 'https://www.sbboatcharters.com/images/hero-channel-islands.jpg', width: 1200, height: 630, alt: 'Channel Islands from the water' }],
   },
   twitter: {
@@ -39,10 +39,10 @@ export default function ChannelIslandsTour() {
         />
         <div className={styles.heroImageOverlay}></div>
         <div className={`container ${styles.heroContent}`}>
-          <span className={styles.heroLabel}>Full Day Charter · 8 Hours</span>
+          <span className={styles.heroLabel}>Private Island Charter · 6 or 8 Hours</span>
           <h1 className={styles.heroTitle}>Channel Islands Private Boat Tour</h1>
           <p className={styles.heroSubtitle}>
-            An eight-hour private excursion to Santa Cruz Island and the Channel Islands.
+            A six-hour (3/4 day) or eight-hour (full day) private excursion to Santa Cruz Island and the Channel Islands.
             Explore sea caves, snorkel in kelp forests, and discover California's Galápagos.
           </p>
         </div>
@@ -55,7 +55,7 @@ export default function ChannelIslandsTour() {
             <h2 className="section-title">Your Private Island Adventure</h2>
             <div className={styles.divider}></div>
             <p className={styles.infoText}>
-              Our private island charter is an eight-hour excursion tailored entirely to your desires.
+              Our private island charter runs six hours (3/4 day) or eight hours (full day), tailored entirely to your desires.
               With over one hundred miles of coastline, we frequently head to <strong>Santa Cruz Island</strong> —
               the largest island in California and the crown jewel of the Channel Islands archipelago.
             </p>
@@ -67,13 +67,13 @@ export default function ChannelIslandsTour() {
             <p className={styles.infoText}>
               Whether you want to explore the world-famous <strong>Painted Cave</strong>, search for
               whales and dolphins, swim through lush kelp forests, or simply anchor in a private cove
-              for drinks and food — this full-day charter has you covered.
+              for drinks and food — this island charter has you covered.
             </p>
           </div>
           <div className={styles.detailsCard}>
             <h3 className={styles.detailsTitle}>Trip Details</h3>
             {[
-              { svg: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>, label: 'Duration', value: '8 hours (full day)' },
+              { svg: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>, label: 'Duration', value: '6 hours (3/4 day) or 8 hours (full day)' },
               { svg: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>, label: 'Capacity', value: 'Up to 6 passengers' },
               { svg: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>, label: 'Departure', value: 'Santa Barbara Harbor, Marina 3' },
               { svg: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 17l4-8 4 4 3-5 4 9"/></svg>, label: 'Crossing Time', value: '~1 hour to Santa Cruz Island' },
@@ -156,7 +156,7 @@ export default function ChannelIslandsTour() {
         <div className="container">
           <h2 className={styles.ctaTitle}>Ready to Explore the Channel Islands?</h2>
           <p className={styles.ctaText}>
-            Book your private full-day excursion and discover why Captain Garrick's guests
+            Book your private island excursion and discover why Captain Garrick's guests
             call this "one of the best days of my life."
           </p>
           <div className={styles.ctaActions}>

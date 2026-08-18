@@ -10,10 +10,10 @@ const IconWave = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="non
 const SERVICES = [
   {
     title: 'Channel Islands Tour',
-    description: 'Full-day private excursions to Santa Cruz Island with snorkeling, sea caves, and wildlife. An 8-hour adventure tailored to your desires.',
+    description: 'Private excursions to Santa Cruz Island with snorkeling, sea caves, and wildlife. A 6-hour (3/4 day) or 8-hour (full day) adventure tailored to your desires.',
     href: '/channel-islands-tour',
     icon: <IconIsland />,
-    tag: 'Full Day',
+    tag: '6 or 8 Hours',
     image: '/images/santa-cruz-island.webp',
   },
   {
