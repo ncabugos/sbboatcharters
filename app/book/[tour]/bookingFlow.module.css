@@ -235,6 +235,16 @@
   border-color: transparent;
 }
 
+/* Custom gift-card amount, which sits inline among the preset chips rather
+   than in the stacked field grid. .input is width:100%, so it needs an
+   explicit width here; the floor is sized to hold the "Custom ($50–2,000)"
+   placeholder, which a plain max-width was cropping. */
+.amountInput {
+  width: auto;
+  min-width: 14rem;
+  flex: 0 1 auto;
+}
+
 .giftLink {
   background: none;
   border: none;

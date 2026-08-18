@@ -103,8 +103,7 @@ export default function GiftCardForm({ stripeReady }) {
             </button>
           ))}
           <input
-            className={styles.input}
-            style={{ maxWidth: '10rem' }}
+            className={`${styles.input} ${styles.amountInput}`}
             type="number" min="50" max="2000" step="1"
             placeholder="Custom ($50–2,000)"
             value={custom}
