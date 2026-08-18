@@ -52,7 +52,28 @@ function fromEnvFiles() {
     if (!fs.existsSync(full)) continue;
     const vars = parseEnvFile(full);
     for (const key of KEYS) {
-      if (usable(vars[key])) return { value: vars[key], source: `${file} (${key})` };
+      const value = vars[key];
+      if (value === undefined || value === '') continue; // absent or blank: keep looking
+      if (usable(value)) return { value, source: `${file} (${key})` };
+
+      // Present but not a postgres URL. Vercel redacts env vars marked
+      // sensitive, so `vercel env pull` writes DATABASE_URL="[SENSITIVE]" —
+      // every Neon credential on this project comes back that way. Falling
+      // through would reach .env.local's localhost string and cheerfully
+      // rewrite the dev catalog while reporting success.
+      const redacted = /^\[SENSITIVE\]$/.test(value);
+      console.error(
+        `${file} sets ${key} to ${redacted ? 'the placeholder [SENSITIVE]' : `"${value}"`}, ` +
+          'which is not a postgres URL.\n' +
+          (redacted
+            ? '\nVercel redacts variables marked sensitive, so `vercel env pull` cannot\n' +
+              'retrieve this one. Copy the connection string from Vercel → Storage →\n' +
+              'your Neon database → Connect, and paste it into .env.local as:\n\n' +
+              '  NEON_DATABASE_URL=postgresql://...\n'
+            : '\nFix or remove that line.\n') +
+          '\nStopping rather than falling back, so this cannot hit the wrong database.'
+      );
+      process.exit(1);
     }
   }
   return null;
