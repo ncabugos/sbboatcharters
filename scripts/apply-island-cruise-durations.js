@@ -10,20 +10,86 @@
  * affects a fresh install (see docs/BOOKING-SETUP.md). This is the production
  * half of that change.
  *
- * Usage (get the connection string from Vercel → Storage → Neon → Connect):
- *   DATABASE_URL='postgresql://...' node scripts/apply-island-cruise-durations.js
+ * Usage — no arguments, just:
+ *   node scripts/apply-island-cruise-durations.js
+ *
+ * The connection string is read from the first of these that holds a real
+ * postgres URL: the DATABASE_URL env var, then .env.production.local (what
+ * `vercel env pull` writes), then .env.local. Putting it in a file rather than
+ * on the command line avoids the shell mangling passwords that contain $, !,
+ * or & — and .env* is gitignored, so it can't be committed by accident.
  *
  * Safe to re-run: every statement sets an explicit literal value, so a second
  * run is a no-op rather than something that compounds.
  */
+const fs = require('fs');
+const path = require('path');
 const { Pool } = require('pg');
 
-const connectionString = process.env.DATABASE_URL;
-if (!connectionString) {
+const ROOT = path.join(__dirname, '..');
+const ENV_FILES = ['.env.production.local', '.env.local'];
+// Priority order, NOT file order. .env.local ships a localhost DATABASE_URL for
+// dev, so a production string pasted into NEON_DATABASE_URL has to outrank it —
+// otherwise this quietly edits the docker catalog and reports success.
+const KEYS = ['NEON_DATABASE_URL', 'POSTGRES_URL', 'DATABASE_URL'];
+
+// A usable value is a postgres URL — not blank, and not the placeholder from
+// the instructions, which otherwise fails later as a baffling DNS error.
+const usable = (v) => typeof v === 'string' && /^postgres(ql)?:\/\/.+@.+/.test(v.trim());
+
+function parseEnvFile(full) {
+  const found = {};
+  for (const line of fs.readFileSync(full, 'utf8').split('\n')) {
+    const m = line.match(/^\s*(?:export\s+)?([A-Z_]+)\s*=\s*(.*)$/);
+    if (m && KEYS.includes(m[1])) found[m[1]] = m[2].trim().replace(/^["']|["']$/g, '');
+  }
+  return found;
+}
+
+function fromEnvFiles() {
+  for (const file of ENV_FILES) {
+    const full = path.join(ROOT, file);
+    if (!fs.existsSync(full)) continue;
+    const vars = parseEnvFile(full);
+    for (const key of KEYS) {
+      if (usable(vars[key])) return { value: vars[key], source: `${file} (${key})` };
+    }
+  }
+  return null;
+}
+
+// An explicitly-passed DATABASE_URL that isn't a valid postgres URL is a typo,
+// not a reason to look elsewhere. Falling back to .env.local here would quietly
+// run against the local docker catalog while the operator believed they were
+// updating production.
+if (process.env.DATABASE_URL && !usable(process.env.DATABASE_URL)) {
   console.error(
-    'Missing DATABASE_URL.\n\n' +
-      'Vercel → Storage → your Neon database → Connect → copy the connection string, then:\n' +
-      "  DATABASE_URL='postgresql://...' node scripts/apply-island-cruise-durations.js"
+    `DATABASE_URL is set but is not a valid postgres URL:\n\n  ${process.env.DATABASE_URL}\n\n` +
+      'Expected postgresql://user:password@host/dbname. Refusing to fall back to\n' +
+      'another connection string, so this cannot silently hit the wrong database.'
+  );
+  process.exit(1);
+}
+
+let connectionString = process.env.DATABASE_URL;
+let source = 'DATABASE_URL env var';
+if (!usable(connectionString)) {
+  const found = fromEnvFiles();
+  if (found) {
+    connectionString = found.value;
+    source = found.source;
+  }
+}
+
+if (!usable(connectionString)) {
+  console.error(
+    'No usable Postgres connection string found.\n\n' +
+      'Get the production one from Vercel → your project → Storage → the Neon\n' +
+      'database → Connect, then paste it into .env.local on this line:\n\n' +
+      '  NEON_DATABASE_URL=postgresql://user:password@host.neon.tech/dbname?sslmode=require\n\n' +
+      'Then re-run this script with no arguments. Paste the real string — a\n' +
+      'placeholder like PASTE_NEON_CONNECTION_STRING_HERE is not a hostname.\n\n' +
+      `Looked in: DATABASE_URL env var, ${ENV_FILES.join(', ')}`
   );
   process.exit(1);
 }
@@ -61,9 +127,25 @@ async function show(client, when) {
 }
 
 (async () => {
-  const client = await pool.connect();
+  // Announce the target BEFORE connecting, so a connection failure still tells
+  // you which database was attempted.
+  console.log(`Target: ${isLocal ? 'LOCAL Postgres' : 'REMOTE'} — ${new URL(connectionString).host}`);
+  console.log(`Source: ${source}`);
+
+  let client;
   try {
-    console.log(`Target: ${isLocal ? 'LOCAL Postgres' : 'REMOTE (Neon)'}`);
+    client = await pool.connect();
+  } catch (err) {
+    console.error(
+      `\nCould not connect: ${err.message}\n\n` +
+        'Check the connection string was copied whole, including the ?sslmode=require\n' +
+        'suffix, and that it is the one Vercel shows under Storage → Connect.'
+    );
+    await pool.end().catch(() => {});
+    process.exit(1);
+  }
+
+  try {
     const found = await show(client, 'BEFORE');
     if (found !== 2) {
       throw new Error(`Expected 2 pricing options for ${SLUG}, found ${found}`);
