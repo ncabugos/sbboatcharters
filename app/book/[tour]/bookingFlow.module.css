@@ -245,6 +245,15 @@
   flex: 0 1 auto;
 }
 
+/* Muted note under a field group. Carries wording that will not survive in a
+   placeholder — placeholders are width-bound and vanish the moment the field
+   is typed into, so anything the buyer needs while typing belongs here. */
+.fieldHint {
+  margin-top: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--color-silver, #6b7686);
+}
+
 .giftLink {
   background: none;
   border: none;

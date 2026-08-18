@@ -126,11 +126,14 @@ export default function GiftCardForm({ stripeReady }) {
             value={form.purchaserEmail} onChange={(e) => { setForm({ ...form, purchaserEmail: e.target.value }); setCheckout(null); }} />
           <input className={styles.input} placeholder="Recipient name (optional)"
             value={form.recipientName} onChange={(e) => { setForm({ ...form, recipientName: e.target.value }); setCheckout(null); }} />
-          <input className={styles.input} type="email" placeholder="Recipient email (optional — defaults to you)"
+          <input className={styles.input} type="email" placeholder="Recipient email (optional)"
             value={form.recipientEmail} onChange={(e) => { setForm({ ...form, recipientEmail: e.target.value }); setCheckout(null); }} />
           <textarea className={`${styles.input} ${styles.full}`} rows={2} placeholder="Gift message (optional)"
             value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
         </div>
+        <p className={styles.fieldHint}>
+          Leave the recipient fields blank and we&apos;ll email the gift card to you.
+        </p>
       </section>
 
       <section>
