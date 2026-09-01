@@ -30,7 +30,7 @@ INSERT INTO tours (slug, name, tagline, description, max_party, min_notice_hours
 ('spearfishing', 'Spear Fishing',
  '8 Hours - Enjoy a Day of Adventure',
  'A full-day guided spearfishing expedition with 16+ years of island diving experience. Sea bass, yellowtail, tuna — gear guidance and expert local knowledge included.',
- 6, 48, '/images/spearfishing-gallery-1.jpeg', 5,
+ 4, 48, '/images/spearfishing-gallery-1.jpeg', 5,  -- 4 divers max, not the boat's 6
  'Full refund for cancellations made two weeks or more before departure. Weather cancellations by the captain are fully refundable or reschedulable.'),
 ('foiling', 'Foiling',
  '2 to 4 Hour Tours - All Skill Levels',
