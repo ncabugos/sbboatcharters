@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { sql } from '@/lib/db';
 import { formatUsd } from '@/lib/pricing';
+import { buildTourListSchema, jsonLdString } from '@/lib/structuredData';
 import styles from './book.module.css';
 
 export const dynamic = 'force-dynamic';
@@ -23,6 +24,11 @@ export default async function BookPage() {
 
   return (
     <>
+      {/* ItemList of every bookable tour, so crawlers find each Product page from here */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdString(buildTourListSchema(tours)) }}
+      />
       <section className={styles.hero}>
         <div className="container">
           <span className="section-label" style={{ color: 'var(--color-accent)' }}>

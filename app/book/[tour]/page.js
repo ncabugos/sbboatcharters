@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { sql } from '@/lib/db';
+import { buildTourProductSchema, jsonLdString } from '@/lib/structuredData';
 import BookingFlow from './BookingFlow';
 import styles from '../book.module.css';
 
@@ -35,6 +36,11 @@ export default async function BookTourPage({ params }) {
 
   return (
     <>
+      {/* Product/Offer schema from the live catalog — see lib/structuredData.js */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdString(buildTourProductSchema(tour, options)) }}
+      />
       <section className={styles.hero} style={{ paddingBottom: '2rem' }}>
         <div className="container">
           <p style={{ margin: '0 0 0.5rem' }}>
