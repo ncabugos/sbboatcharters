@@ -571,6 +571,80 @@
   border-color: rgba(168, 213, 186, 0.15);
 }
 
+/* Aggregate bar above the grid. This is the part that can't be faked: the figure
+   and the count are pulled live and always match the listing. */
+.googleSummary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg) clamp(1.25rem, 3vw, var(--space-xl));
+  margin-bottom: clamp(1.5rem, 4vw, var(--space-2xl));
+  backdrop-filter: blur(10px);
+}
+
+.googleSummaryFigures {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.googleRatingValue {
+  font-family: var(--font-heading);
+  font-size: 1.75rem;
+  line-height: 1;
+  color: white;
+  font-weight: var(--fw-semibold);
+}
+
+.googleSummaryStars {
+  color: #F4C542;
+  font-size: 1.05rem;
+  letter-spacing: 2px;
+}
+
+.googleSummaryCount {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: var(--fs-small);
+}
+
+.googleSummaryLink {
+  margin-left: auto;
+  color: var(--color-seafoam);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(168, 213, 186, 0.4);
+  padding-bottom: 2px;
+  transition: color var(--duration-normal) var(--ease-out);
+}
+
+.googleSummaryLink:hover {
+  color: white;
+  border-bottom-color: white;
+}
+
+.testimonialCardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.cardGoogleLink {
+  display: inline-flex;
+  opacity: 0.75;
+  transition: opacity var(--duration-normal) var(--ease-out);
+}
+
+.cardGoogleLink:hover {
+  opacity: 1;
+}
+
 .testimonialStars {
   color: #F4C542;
   font-size: 1.1rem;
@@ -583,6 +657,15 @@
   line-height: 1.8;
   font-style: italic;
   flex: 1;
+  /* Live reviews are whatever length the guest felt like writing — the longest
+     currently in the feed is ~680 characters, which pushed the cards to 749px and
+     dragged all three to match via grid stretch. Curated quotes were uniform and
+     never needed this. Nine lines fits the longest of the short reviews whole and
+     trims only the outliers; the full text is one click away on Google. */
+  display: -webkit-box;
+  -webkit-line-clamp: 9;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .testimonialAuthor {
@@ -612,6 +695,24 @@
   color: white;
   font-weight: var(--fw-semibold);
   font-size: var(--fs-small);
+  text-decoration: none;
+}
+
+/* Reviewer names link out to their real Google profile when the data is live —
+   that outbound link is a large part of what makes the wall read as verified
+   rather than transcribed, so it gets a visible affordance on hover. */
+a.authorName:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.authorPhoto {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .authorService {
@@ -845,6 +946,18 @@
     grid-template-columns: 1fr;
     max-width: 600px;
     margin-inline: auto;
+  }
+
+  .googleSummary {
+    max-width: 600px;
+    margin-inline: auto;
+    justify-content: center;
+    text-align: center;
+  }
+
+  /* margin-left:auto would strand the link on its own line once the bar wraps. */
+  .googleSummaryLink {
+    margin-left: 0;
   }
 
   .wildlifeGrid {

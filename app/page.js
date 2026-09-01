@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import styles from './page.module.css';
+import { getGoogleReviews } from '@/lib/googleReviews';
 
 const IconIsland = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 17h18"/><path d="M12 3C8 3 5 8 5 11h14c0-3-3-8-7-8z"/><path d="M8 17c0 2 1.5 3 4 3s4-1 4-3"/></svg>;
 const IconSunset = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>;
@@ -50,6 +51,10 @@ const SERVICES = [
   },
 ];
 
+// Fallback only — shown when the live Google fetch returns null (no API key
+// locally, or Google is down). Deliberately rendered WITHOUT the Google badge:
+// these are transcribed by hand, so the verified styling would be a claim we
+// can't back. See lib/googleReviews.js.
 const TESTIMONIALS = [
   {
     text: "Captain Garrick is incredibly knowledgeable, skilled and accommodating. He gave us a magical tour of the islands on a perfect day out on the channel. His experience on boats and as a spear fisherman showed in his amazing stories, local knowledge of the islands and its wildlife, and in his smooth demeanor. And such good pricing! Would highly recommend chartering him.",
@@ -143,7 +148,30 @@ const INSTAGRAM_GRID = [
   { src: '/images/instagram/SBCharters-IG-4.jpeg', alt: 'Ocean Exploration' },
 ];
 
-export default function HomePage() {
+// Google's four-colour "G". Used as attribution for the live review data, which
+// their Maps Platform terms require alongside a link back to the listing.
+const GoogleG = ({ size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+    <path fill="#4285F4" d="M45.1 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h11.8c-.5 2.7-2 5-4.4 6.6v5.5h7.1c4.1-3.8 6.6-9.4 6.6-16.1z"/>
+    <path fill="#34A853" d="M24 46c5.9 0 10.9-2 14.5-5.4l-7.1-5.5c-2 1.3-4.5 2.1-7.4 2.1-5.7 0-10.6-3.9-12.3-9.1H4.3v5.7C7.9 41.1 15.4 46 24 46z"/>
+    <path fill="#FBBC05" d="M11.7 28.1c-.4-1.3-.7-2.7-.7-4.1s.2-2.8.7-4.1v-5.7H4.3C2.8 17.1 2 20.4 2 24s.8 6.9 2.3 9.8l7.4-5.7z"/>
+    <path fill="#EA4335" d="M24 10.8c3.2 0 6.1 1.1 8.4 3.3l6.3-6.3C34.9 4.2 29.9 2 24 2 15.4 2 7.9 6.9 4.3 14.2l7.4 5.7c1.7-5.2 6.6-9.1 12.3-9.1z"/>
+  </svg>
+);
+
+const Stars = ({ rating = 5, className }) => (
+  <span className={className} aria-label={`${rating} out of 5 stars`}>
+    {'★★★★★'.slice(0, Math.round(rating))}
+    <span aria-hidden="true" style={{ opacity: 0.25 }}>
+      {'★★★★★'.slice(Math.round(rating))}
+    </span>
+  </span>
+);
+
+export default async function HomePage() {
+  // null when the key is absent or Google errors — the section then renders the
+  // curated fallback with no Google branding.
+  const google = await getGoogleReviews();
   return (
     <>
       {/* ===== HERO WITH VIDEO BACKGROUND ===== */}
@@ -351,22 +379,100 @@ export default function HomePage() {
             <span className="section-label section-label--light">Guest Experiences</span>
             <h2 className="section-title section-title--light">What Our Guests Say</h2>
           </div>
-          <div className={styles.testimonialGrid}>
-            {TESTIMONIALS.map((t, i) => (
-              <div key={i} className={styles.testimonialCard}>
-                <div className={styles.testimonialStars}>★★★★★</div>
-                <blockquote className={styles.testimonialText}>
-                  &ldquo;{t.text}&rdquo;
-                </blockquote>
-                <div className={styles.testimonialAuthor}>
-                  <div className={styles.authorAvatar}>{t.author[0]}</div>
-                  <div>
-                    <span className={styles.authorName}>{t.author}</span>
-                    <span className={styles.authorService}>{t.service}</span>
-                  </div>
-                </div>
+          {google && (
+            <div className={styles.googleSummary}>
+              <GoogleG size={26} />
+              <div className={styles.googleSummaryFigures}>
+                <span className={styles.googleRatingValue}>{google.rating?.toFixed(1)}</span>
+                <Stars rating={google.rating} className={styles.googleSummaryStars} />
               </div>
-            ))}
+              <span className={styles.googleSummaryCount}>
+                Rated by {google.totalCount} guests on Google
+              </span>
+              <a
+                href={google.mapsUri}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.googleSummaryLink}
+              >
+                Read all reviews
+              </a>
+            </div>
+          )}
+
+          <div className={styles.testimonialGrid}>
+            {google
+              ? google.reviews.map((r) => (
+                  <figure key={r.id} className={styles.testimonialCard}>
+                    <div className={styles.testimonialCardTop}>
+                      <Stars rating={r.rating} className={styles.testimonialStars} />
+                      {/* Doubles as the overflow affordance: longer reviews are
+                          clamped at 9 lines, so the mark is the way through to the
+                          full text — and it satisfies the link-back that Google's
+                          terms require for displayed review content. */}
+                      <a
+                        href={r.reviewUri ?? google.mapsUri}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.cardGoogleLink}
+                        aria-label={`Read ${r.authorName}'s full review on Google`}
+                      >
+                        <GoogleG />
+                      </a>
+                    </div>
+                    <blockquote className={styles.testimonialText}>
+                      &ldquo;{r.text}&rdquo;
+                    </blockquote>
+                    <figcaption className={styles.testimonialAuthor}>
+                      {r.authorPhoto ? (
+                        // Plain <img>: next/image would need remotePatterns for
+                        // googleusercontent, and images are unoptimized project-wide
+                        // anyway (see next.config.mjs), so it would buy nothing.
+                        <img
+                          src={r.authorPhoto}
+                          alt=""
+                          width={44}
+                          height={44}
+                          loading="lazy"
+                          referrerPolicy="no-referrer"
+                          className={styles.authorPhoto}
+                        />
+                      ) : (
+                        <div className={styles.authorAvatar}>{r.authorName[0]}</div>
+                      )}
+                      <div>
+                        <a
+                          href={r.authorUri ?? r.reviewUri ?? google.mapsUri}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={styles.authorName}
+                        >
+                          {r.authorName}
+                        </a>
+                        <span className={styles.authorService}>
+                          {r.relativeTime} · Google review
+                        </span>
+                      </div>
+                    </figcaption>
+                  </figure>
+                ))
+              : TESTIMONIALS.map((t, i) => (
+                  <figure key={i} className={styles.testimonialCard}>
+                    <div className={styles.testimonialCardTop}>
+                      <Stars rating={5} className={styles.testimonialStars} />
+                    </div>
+                    <blockquote className={styles.testimonialText}>
+                      &ldquo;{t.text}&rdquo;
+                    </blockquote>
+                    <figcaption className={styles.testimonialAuthor}>
+                      <div className={styles.authorAvatar}>{t.author[0]}</div>
+                      <div>
+                        <span className={styles.authorName}>{t.author}</span>
+                        <span className={styles.authorService}>{t.service}</span>
+                      </div>
+                    </figcaption>
+                  </figure>
+                ))}
           </div>
         </div>
       </section>
