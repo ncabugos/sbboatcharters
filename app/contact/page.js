@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import styles from './contact.module.css';
+import { gaEvent } from '@/lib/analytics';
 
 // Set in Vercel env to turn Turnstile on. Until then, the widget is hidden and
 // the server-side Tier-1 checks (honeypot, time-trap, validation) carry the load.
@@ -67,6 +68,11 @@ export default function Contact() {
         }),
       });
       setStatus(res.ok ? 'success' : 'error');
+      if (res.ok) {
+        // The site's other conversion: an enquiry that never touches the booking
+        // engine. `charter` tells us which trip the enquiry was about.
+        gaEvent('generate_lead', { form_name: 'contact', charter: form.charter || 'unspecified' });
+      }
       if (!res.ok && window.turnstile && turnstileId.current !== null) {
         window.turnstile.reset(turnstileId.current);
         setToken('');

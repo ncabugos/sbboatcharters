@@ -7,6 +7,7 @@ import {
   Elements, PaymentElement, ExpressCheckoutElement, useStripe, useElements,
 } from '@stripe/react-stripe-js';
 import { taxFromBase } from '@/lib/pricing';
+import { gaEvent, usd } from '@/lib/analytics';
 import styles from './bookingFlow.module.css';
 
 const DOW = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
@@ -95,6 +96,30 @@ export default function BookingFlow({ tour, options, stripeReady }) {
 
   const days = availability[month];
   const option = options.find((o) => o.id === optionId) || options[0];
+
+  // One shape reused by every funnel event, so GA4 can tie view_item →
+  // begin_checkout → purchase back to the same tour.
+  const gaItem = useMemo(() => ({
+    item_id: tour.slug,
+    item_name: tour.name,
+    item_category: 'charter',
+    item_variant: option?.label,
+    price: option ? usd(option.displayCents) : undefined,
+    quantity: 1,
+  }), [tour.slug, tour.name, option]);
+
+  // Fires once per tour, not once per render. `options` arrives as a fresh array on
+  // each render of the client transition, so it can't be used as a dependency.
+  const viewedTour = useRef(null);
+  useEffect(() => {
+    if (viewedTour.current === tour.slug) return;
+    viewedTour.current = tour.slug;
+    gaEvent('view_item', {
+      currency: 'USD',
+      value: usd(options[0]?.displayCents || 0),
+      items: [{ item_id: tour.slug, item_name: tour.name, item_category: 'charter' }],
+    });
+  }, [tour.slug, tour.name, options]);
 
   const fetchMonth = useCallback(async (m) => {
     setLoadingMonth(true);
@@ -189,10 +214,22 @@ export default function BookingFlow({ tour, options, stripeReady }) {
         throw new Error(data.error || 'Could not start checkout');
       }
       if (data.confirmed) {
+        gaEvent('begin_checkout', {
+          currency: 'USD',
+          value: 0,
+          coupon: 'gift_card',
+          items: [{ ...gaItem, quantity: party }],
+        });
         router.push(`/book/confirmation/${data.token}`);
         return;
       }
       setCheckout(data);
+      gaEvent('begin_checkout', {
+        currency: 'USD',
+        value: usd(data.amountCents ?? dueCents),
+        coupon: gift ? 'gift_card' : undefined,
+        items: [{ ...gaItem, quantity: party }],
+      });
     } catch (err) {
       setError(err.message || 'Something went wrong.');
     } finally {
@@ -213,7 +250,10 @@ export default function BookingFlow({ tour, options, stripeReady }) {
             selected={date}
             optionId={option?.id}
             onMonth={(m) => setMonth(m)}
-            onSelect={(d) => { setDate(d); setTime(null); invalidateCheckout(); }}
+            onSelect={(d) => {
+              setDate(d); setTime(null); invalidateCheckout();
+              gaEvent('select_date', { item_id: tour.slug, trip_date: d });
+            }}
           />
         </section>
 
@@ -227,7 +267,13 @@ export default function BookingFlow({ tour, options, stripeReady }) {
                   key={o.id}
                   type="button"
                   className={`${styles.chip} ${o.id === option?.id ? styles.chipSelected : ''}`}
-                  onClick={() => { setOptionId(o.id); setTime(null); invalidateCheckout(); }}
+                  onClick={() => {
+                    setOptionId(o.id); setTime(null); invalidateCheckout();
+                    gaEvent('select_item', {
+                      item_list_name: 'charter_length',
+                      items: [{ item_id: tour.slug, item_name: tour.name, item_variant: o.label, price: usd(o.displayCents) }],
+                    });
+                  }}
                 >
                   {o.label}
                   <span className={styles.chipPrice}>{formatUsd(o.displayCents)}</span>
@@ -258,7 +304,10 @@ export default function BookingFlow({ tour, options, stripeReady }) {
                     key={t}
                     type="button"
                     className={`${styles.chip} ${t === time ? styles.chipSelected : ''}`}
-                    onClick={() => { setTime(t); invalidateCheckout(); }}
+                    onClick={() => {
+                      setTime(t); invalidateCheckout();
+                      gaEvent('select_time', { item_id: tour.slug, trip_date: date, trip_time: t });
+                    }}
                   >
                     {to12h(t)}
                   </button>
@@ -369,7 +418,7 @@ export default function BookingFlow({ tour, options, stripeReady }) {
                 stripe={getStripePromise()}
                 options={{ clientSecret: checkout.clientSecret, appearance: APPEARANCE, fonts: FONTS }}
               >
-                <PaymentStep checkout={checkout} onError={setError} />
+                <PaymentStep checkout={checkout} onError={setError} gaItem={gaItem} party={party} />
               </Elements>
             )}
           </section>
@@ -422,7 +471,7 @@ export default function BookingFlow({ tour, options, stripeReady }) {
   );
 }
 
-function PaymentStep({ checkout, onError }) {
+function PaymentStep({ checkout, onError, gaItem, party }) {
   const stripe = useStripe();
   const elements = useElements();
   const [paying, setPaying] = useState(false);
@@ -436,12 +485,22 @@ function PaymentStep({ checkout, onError }) {
     if (!stripe || !elements) return;
     setPaying(true);
     onError('');
+    gaEvent('add_payment_info', {
+      currency: 'USD',
+      value: usd(checkout.amountCents),
+      items: gaItem ? [{ ...gaItem, quantity: party }] : undefined,
+    });
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: { return_url: returnUrl },
     });
     // Only reached on immediate failure (declined card etc.) — success redirects.
-    if (error) onError(error.message || 'Payment failed. Please try another card.');
+    if (error) {
+      // Worth measuring: a spike here means cards are being declined, not that
+      // people changed their minds.
+      gaEvent('payment_failed', { currency: 'USD', value: usd(checkout.amountCents) });
+      onError(error.message || 'Payment failed. Please try another card.');
+    }
     setPaying(false);
   }
 

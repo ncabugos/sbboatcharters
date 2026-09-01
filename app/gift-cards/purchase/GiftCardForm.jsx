@@ -1,10 +1,11 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import styles from '../../book/[tour]/bookingFlow.module.css';
+import { gaEvent, gaEventOnce, usd } from '@/lib/analytics';
 
 const PRESETS = [10000, 25000, 50000, 100000];
 
@@ -39,6 +40,24 @@ const APPEARANCE = {
 export default function GiftCardForm({ stripeReady }) {
   const searchParams = useSearchParams();
   const complete = searchParams.get('redirect_status') === 'succeeded';
+
+  const paymentIntent = searchParams.get('payment_intent') || 'unknown';
+  // Stripe's return_url carries no amount, so the charge rides along on the URL we
+  // hand it (see GiftPaymentStep). Reading it back here keeps the revenue figure
+  // correct even if the customer lands on this page in a fresh tab, which anything
+  // stored in the browser would not survive.
+  const chargedCents = Number(searchParams.get('ga_value')) || 0;
+
+  // Runs on the success screen only; `complete` gates the render below.
+  useEffect(() => {
+    if (!complete) return;
+    gaEventOnce(`purchase:${paymentIntent}`, 'purchase', {
+      transaction_id: paymentIntent,
+      currency: 'USD',
+      value: usd(chargedCents),
+      items: [{ item_id: 'gift-card', item_name: 'Gift Card', item_category: 'gift_card', price: usd(chargedCents), quantity: 1 }],
+    });
+  }, [complete, paymentIntent, chargedCents]);
 
   const [amount, setAmount] = useState(25000);
   const [custom, setCustom] = useState('');
@@ -80,6 +99,12 @@ export default function GiftCardForm({ stripeReady }) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Could not start purchase');
       setCheckout(data);
+      const chargeCents = chargeFor(valueCents);
+      gaEvent('begin_checkout', {
+        currency: 'USD',
+        value: usd(chargeCents),
+        items: [{ item_id: 'gift-card', item_name: 'Gift Card', item_category: 'gift_card', price: usd(chargeCents), quantity: 1 }],
+      });
     } catch (err) {
       setError(err.message || 'Something went wrong.');
     } finally {
@@ -167,7 +192,12 @@ function GiftPaymentStep({ chargeCents, onError }) {
   const stripe = useStripe();
   const elements = useElements();
   const [paying, setPaying] = useState(false);
-  const returnUrl = useMemo(() => `${window.location.origin}/gift-cards/purchase`, []);
+  // ga_value rides along so the success screen can report real revenue to GA;
+  // Stripe appends payment_intent and redirect_status to whatever it is given.
+  const returnUrl = useMemo(
+    () => `${window.location.origin}/gift-cards/purchase/?ga_value=${chargeCents}`,
+    [chargeCents]
+  );
 
   async function confirm() {
     if (!stripe || !elements) return;

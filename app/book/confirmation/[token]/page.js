@@ -4,6 +4,7 @@ import { loadBookingByToken } from '@/lib/bookings';
 import { formatUsd } from '@/lib/pricing';
 import { formatPt } from '@/lib/availability';
 import PendingRefresher from './PendingRefresher';
+import PurchaseTracker from './PurchaseTracker';
 import styles from '../../book.module.css';
 
 export const dynamic = 'force-dynamic';
@@ -34,6 +35,15 @@ export default async function ConfirmationPage({ params }) {
               <p className={styles.heroSubtitle}>
                 A confirmation email is on its way to {booking.customer_email}.
               </p>
+              <PurchaseTracker
+                bookingId={booking.id}
+                tourSlug={booking.tour_slug}
+                tourName={booking.tour_name}
+                optionLabel={booking.option_label}
+                partySize={booking.party_size}
+                chargedCents={booking.charged_cents}
+                giftCardCents={booking.gift_card_cents || 0}
+              />
             </>
           ) : isPending ? (
             <>

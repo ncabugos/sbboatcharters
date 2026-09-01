@@ -2,6 +2,7 @@ import './globals.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ScrollReveal from './components/ScrollReveal';
+import Analytics from './components/Analytics';
 
 export const metadata = {
   title: {
@@ -74,6 +75,7 @@ export default function RootLayout({ children }) {
         <ScrollReveal />
         <main>{children}</main>
         <Footer />
+        <Analytics />
       </body>
     </html>
   );
