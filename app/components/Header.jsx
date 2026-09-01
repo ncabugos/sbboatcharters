@@ -66,7 +66,7 @@ export default function Header() {
       <div className={styles.inner}>
         {/* Logo */}
         <Link href="/" className={styles.logo} onClick={() => setMobileOpen(false)}>
-          <img src="/images/logo/logo-white.png" alt="Santa Barbara Boat Charters" className={styles.logoImg} />
+          <img src="/images/logo/logo-white.svg" alt="Santa Barbara Boat Charters" className={styles.logoImg} />
           <div className={styles.logoText}>
             <span className={styles.logoName}>Santa Barbara</span>
             <span className={styles.logoSub}>Boat Charters</span>

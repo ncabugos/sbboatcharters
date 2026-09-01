@@ -26,7 +26,7 @@ export default function Footer() {
           {/* Brand Column */}
           <div className={styles.brandCol}>
             <Link href="/" className={styles.footerLogo}>
-              <img src="/images/logo/logo-white.png" alt="Santa Barbara Boat Charters" style={{ height: '32px', width: 'auto' }} />
+              <img src="/images/logo/logo-white.svg" alt="Santa Barbara Boat Charters" style={{ height: '32px', width: 'auto' }} />
             </Link>
             <p className={styles.brandDesc}>
               Private 6-passenger boat charters in the Santa Barbara Channel.
