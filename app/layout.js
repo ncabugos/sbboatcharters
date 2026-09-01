@@ -10,13 +10,14 @@ export const metadata = {
     template: '%s | Santa Barbara Boat Charters',
   },
   description:
-    'Private boat charters in Santa Barbara. Channel Islands tours, sunset cruises, spearfishing, sport fishing & foiling. 20+ years experience. USCG licensed. Book your private 6-passenger adventure today.',
+    'Private boat charters in Santa Barbara. Channel Islands tours, sunset cruises, spearfishing, lobster diving, sport fishing & foiling. 20+ years experience. USCG licensed. Book your private 6-passenger adventure today.',
   keywords: [
     'Santa Barbara boat charter',
     'private boat charter Santa Barbara',
     'Channel Islands tour',
     'Santa Barbara sunset cruise',
     'spearfishing Santa Barbara',
+    'lobster diving Santa Barbara',
     'sport fishing Santa Barbara',
     'Santa Barbara private yacht',
     'Santa Cruz Island boat tour',

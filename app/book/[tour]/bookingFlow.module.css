@@ -162,6 +162,18 @@
   margin-top: 0.15rem;
 }
 
+.seasonNote {
+  font-size: 0.9rem;
+  color: #4a5262;
+  margin: -0.25rem 0 1rem;
+}
+
+.calNote {
+  font-size: 0.85rem;
+  color: #6b7686;
+  margin-top: 0.5rem;
+}
+
 .callToBook {
   background: #fdf1e8;
   border: 1px solid #f3d9c2;

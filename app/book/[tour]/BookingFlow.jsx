@@ -8,6 +8,7 @@ import {
 } from '@stripe/react-stripe-js';
 import { taxFromBase } from '@/lib/pricing';
 import { gaEvent, usd } from '@/lib/analytics';
+import { seasonLabel } from '@/lib/season';
 import styles from './bookingFlow.module.css';
 
 const DOW = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
@@ -37,6 +38,13 @@ function currentMonthPt() {
     timeZone: 'America/Los_Angeles', year: 'numeric', month: '2-digit',
   }).format(new Date());
   return parts.replace('/', '-').slice(0, 7);
+}
+
+// A seasonal tour opens on its first bookable month instead of an empty one.
+function initialMonth(season) {
+  const current = currentMonthPt();
+  const opens = season?.start?.slice(0, 7);
+  return opens && opens > current ? opens : current;
 }
 
 function to12h(hhmm) {
@@ -78,7 +86,7 @@ export default function BookingFlow({ tour, options, stripeReady }) {
   const router = useRouter();
   const startedAt = useRef(Date.now());
 
-  const [month, setMonth] = useState(currentMonthPt());
+  const [month, setMonth] = useState(() => initialMonth(tour.season));
   const [availability, setAvailability] = useState({}); // monthStr -> days map
   const [loadingMonth, setLoadingMonth] = useState(true);
   const [date, setDate] = useState(null);
@@ -243,6 +251,11 @@ export default function BookingFlow({ tour, options, stripeReady }) {
         {/* Step 1 — date */}
         <section>
           <h2 className={styles.stepTitle}><span className={styles.stepNumber}>1</span> Choose a date</h2>
+          {tour.season && (
+            <p className={styles.seasonNote}>
+              Season: {seasonLabel(tour.season.start, tour.season.end)}. Dates outside the season can&apos;t be booked.
+            </p>
+          )}
           <Calendar
             month={month}
             days={days}
@@ -569,7 +582,10 @@ function Calendar({ month, days, loading, selected, optionId, onMonth, onSelect 
           );
         })}
       </div>
-      {loading && <p style={{ fontSize: '0.85rem', color: '#6b7686', marginTop: '0.5rem' }}>Checking availability…</p>}
+      {loading && <p className={styles.calNote}>Checking availability…</p>}
+      {!loading && days && Object.keys(days).length === 0 && (
+        <p className={styles.calNote}>No dates available this month.</p>
+      )}
     </div>
   );
 }

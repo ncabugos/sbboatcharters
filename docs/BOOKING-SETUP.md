@@ -88,12 +88,21 @@ any repricing.
 | Create Your Own | $636 | $954 | $1,272 | $1,590 | $1,908 |
 | Island Cruise | — | — | — | $1,908 | $2,544 |
 | Spearfishing | — | — | — | — | $2,544 |
+| Lobster Diving | — | — | — | — | $2,544 (Day or Night) |
 
 Sport Fishing and Create Your Own keep a volume discount on long trips: 6h works
 out to $250/hr and 8h to $225/hr. Every other row is a flat $300/hr.
 
 Create Your Own Adventure is **call-to-book only** via `min_notice_hours = 8760`.
 Set it to 48 to enable instant online booking.
+
+**Lobster Diving is seasonal** (`tours.season_start` / `season_end`, currently
+2026-10-02 → 2027-03-17): the availability API returns no slots outside those
+dates and the calendar opens on the season's first month. Update the two dates
+each year — nothing else needs to change. Its two options, Day and Night, each
+have their own `schedule_rules` row pinned via `pricing_option_id`; the Night
+window is `16:00`–`02:00`, and a `window_end` at or before `window_start` means
+"the next day". Added by `scripts/apply-lobster-diving.js`.
 
 ---
 

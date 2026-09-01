@@ -186,6 +186,13 @@
   margin-top: var(--space-2xl);
 }
 
+/* Two-card variant (Day / Night); the mobile query below still collapses it. */
+.highlightsTwo {
+  grid-template-columns: repeat(2, 1fr);
+  max-width: 60rem;
+  margin-inline: auto;
+}
+
 .highlightCard {
   background: #FFFFFF;
   border-radius: var(--radius-md);

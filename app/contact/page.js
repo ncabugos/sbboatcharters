@@ -186,6 +186,7 @@ export default function Contact() {
                   <option>Channel Islands Tour</option>
                   <option>Coastal / Sunset Cruise</option>
                   <option>Spearfishing</option>
+                  <option>Lobster Diving</option>
                   <option>Sport Fishing</option>
                   <option>Foiling</option>
                   <option>Custom Experience</option>

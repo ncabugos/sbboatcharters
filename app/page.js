@@ -6,6 +6,7 @@ const IconIsland = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="n
 const IconSunset = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>;
 const IconDive = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h4m16 0h-4M12 6v2m0 8v2"/></svg>;
 const IconFish = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6.5 12c.94-3.46 4.94-6 8.5-6 3.56 0 6.06 3.15 5.5 6.5-.48 2.9-2.84 4.9-5 6.5"/><path d="M2 12c.5-4 4-7 8-7"/><circle cx="6" cy="18" r="2"/></svg>;
+const IconMoon = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>;
 const IconWave = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12c1.5-3 3.5-4.5 6-4s5 3 8 3 4.5-1.5 6-4"/><path d="M2 18c1.5-3 3.5-4.5 6-4s5 3 8 3 4.5-1.5 6-4"/></svg>;
 
 const SERVICES = [
@@ -32,6 +33,14 @@ const SERVICES = [
     icon: <IconDive />,
     tag: 'Expert Guided',
     image: '/images/spearfishing-gallery-1.jpeg',
+  },
+  {
+    title: 'Lobster Diving',
+    description: 'Guided California spiny lobster dives, by day or after dark. Eight private hours on the reefs and kelp of the Channel Islands, October through March.',
+    href: '/lobster-diving',
+    icon: <IconMoon />,
+    tag: 'Day & Night · Oct to Mar',
+    image: '/images/lobster-diving-gallery-1.jpeg',
   },
   {
     title: 'Sport Fishing',

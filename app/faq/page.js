@@ -4,7 +4,7 @@ import { useState } from 'react';
 import styles from './faq.module.css';
 
 const FAQS = [
-  { q: 'How many passengers can go on a charter?', a: 'SB Boat Charters is limited to six passengers per charter. This ensures an intimate, personalized experience on every outing. For spearfishing trips, the limit is 4 passengers.' },
+  { q: 'How many passengers can go on a charter?', a: 'SB Boat Charters is limited to six passengers per charter. This ensures an intimate, personalized experience on every outing. For spearfishing and lobster diving trips, the limit is 4 passengers.' },
   { q: 'Where do we meet?', a: 'We meet at the Santa Barbara Harbor, at the Marina 3 gate (in the pay parking lot). We recommend arriving 10-15 minutes early so you can get settled and we can depart on time.' },
   { q: 'Is there parking?', a: 'Yes! Marina 3 is adjacent to the paid harbor lot. Parking is $2.50 per hour. There is typically plenty of parking available.' },
   { q: 'Do you provide food and drinks?', a: 'Food and drinks can be provided by special request. Please let us know in advance if this is an option you\'d like to add. Many guests choose to bring their own cooler with beverages and snacks.' },

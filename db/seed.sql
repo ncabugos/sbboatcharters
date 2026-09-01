@@ -35,15 +35,26 @@ INSERT INTO tours (slug, name, tagline, description, max_party, min_notice_hours
 ('foiling', 'Foiling',
  '2 to 4 Hour Tours - All Skill Levels',
  'Tow-in hydrofoil sessions along the Santa Barbara coastline. All skill levels welcome — gear and coaching included.',
- 6, 48, '/images/foiling-santa-barbara.webp', 6,
+ 6, 48, '/images/foiling-santa-barbara.webp', 7,
  'Full refund for cancellations made two weeks or more before departure. Weather cancellations by the captain are fully refundable or reschedulable.'),
 -- Mirrors FareHarbor: "Call to book!" — min_notice 8760h keeps every date in
 -- the call-to-book state. Set back to 48 to enable instant online booking.
 ('create-your-own-adventure', 'Create Your Own Adventure',
  '2 to 8 Hour Tours - Let''s Create Your Adventure Together!',
  'Mix and match: coastline cruising, island time, swimming, snorkeling, fishing, BBQ on board — tell us what your perfect day looks like and we''ll build it together. Call to plan your trip!',
- 6, 8760, '/images/experiences-custom-routes.jpeg', 7,
+ 6, 8760, '/images/experiences-custom-routes.jpeg', 8,
  'Full refund for cancellations made two weeks or more before departure. Weather cancellations by the captain are fully refundable or reschedulable.');
+
+-- Lobster Diving is seasonal (California spiny lobster season) and has a Day
+-- and a Night option at the same price. Update the season each year; the
+-- booking calendar and the marketing page both read it from here.
+INSERT INTO tours (slug, name, tagline, description, max_party, min_notice_hours, image_url, sort_order, policy_text, season_start, season_end) VALUES
+('lobster-diving', 'Lobster Diving',
+ '8 Hour Day or Night Trips - Lobster Season Only',
+ 'A private eight-hour guided California spiny lobster dive in the Santa Barbara Channel and Channel Islands, by day or after dark. Up to four divers, October through March.',
+ 4, 48, '/images/lobster-diving-hero.jpg', 6,  -- 4 divers max, like spearfishing
+ 'Full refund for cancellations made two weeks or more before departure. Weather cancellations by the captain are fully refundable or reschedulable.',
+ '2026-10-02', '2027-03-17');
 
 -- Pricing. display = ceil(base * 1.06) to whole dollars: 600→636, 900→954,
 -- 1200→1272, 1500→1590, 1800→1908, 2400→2544.
@@ -68,6 +79,8 @@ JOIN (VALUES
   ('sport-fishing',             'Six Hour Private Charter',   360, 150000, 4),
   ('sport-fishing',             'Eight Hour Private Charter', 480, 180000, 5),
   ('spearfishing',              'Eight Hour Private Charter', 480, 240000, 1),
+  ('lobster-diving',            'Day',                        480, 240000, 1),
+  ('lobster-diving',            'Night',                      480, 240000, 2),
   ('foiling',                   'Two Hour Private Charter',   120,  60000, 1),
   ('foiling',                   'Three Hour Private Charter', 180,  90000, 2),
   ('foiling',                   'Four Hour Private Charter',  240, 120000, 3),
@@ -87,5 +100,17 @@ INSERT INTO schedule_rules (tour_id, days_of_week, window_start, window_end, sta
 SELECT id, '{0,1,2,3,4,5,6}', '08:00', '20:00',
        '{08:00,11:00,12:00,13:00,14:00,16:00,17:00}'::time[]
 FROM tours WHERE slug = 'foiling';
+
+-- Lobster Diving: each rule is pinned to its pricing option, so a night
+-- departure never shows under "Day". Day uses the default window (8 AM–12 PM
+-- departures for 8 hours); Night departs 4–6 PM and runs past midnight — an
+-- end before the start means the next day.
+INSERT INTO schedule_rules (tour_id, pricing_option_id, days_of_week, window_start, window_end, slot_step_min)
+SELECT t.id, p.id, '{0,1,2,3,4,5,6}', v.window_start::time, v.window_end::time, 60
+FROM tours t
+JOIN pricing_options p ON p.tour_id = t.id
+JOIN (VALUES ('Day', '08:00', '20:00'), ('Night', '16:00', '02:00')) AS v(label, window_start, window_end)
+  ON v.label = p.label
+WHERE t.slug = 'lobster-diving';
 
 COMMIT;

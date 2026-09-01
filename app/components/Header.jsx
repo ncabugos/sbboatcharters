@@ -11,6 +11,7 @@ const NAV_LINKS = [
       { label: 'Channel Islands Tour', href: '/channel-islands-tour' },
       { label: 'Coastal & Sunset Cruises', href: '/coastal-sunset-cruises' },
       { label: 'Spearfishing', href: '/spearfishing' },
+      { label: 'Lobster Diving', href: '/lobster-diving' },
       { label: 'Sport Fishing', href: '/sport-fishing' },
       { label: 'Foiling', href: '/foiling' },
     ],

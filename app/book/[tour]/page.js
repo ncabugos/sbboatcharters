@@ -58,6 +58,7 @@ export default async function BookTourPage({ params }) {
           callToBookPhone: tour.call_to_book_phone,
           imageUrl: tour.image_url,
           description: tour.description,
+          season: tour.season_start ? { start: tour.season_start, end: tour.season_end } : null,
         }}
         options={options.map((o) => ({
           id: o.id,

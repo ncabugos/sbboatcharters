@@ -16,6 +16,7 @@ const MARKETING = [
   '/channel-islands-tour/',
   '/coastal-sunset-cruises/',
   '/spearfishing/',
+  '/lobster-diving/',
   '/sport-fishing/',
   '/foiling/',
   '/gallery/',

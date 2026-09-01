@@ -15,6 +15,10 @@ CREATE TABLE tours (
   meeting_point    text NOT NULL DEFAULT '302 W. Cabrillo Blvd. Santa Barbara, CA 93109 - Marina 3 Gate',
   max_party        int  NOT NULL DEFAULT 6,
   min_notice_hours int  NOT NULL DEFAULT 24,
+  -- Seasonal tours (lobster diving) take no bookings outside [season_start, season_end].
+  -- NULL = year-round.
+  season_start     date,
+  season_end       date,
   call_to_book_phone text NOT NULL DEFAULT '(805) 722-2282',
   policy_text      text,
   image_url        text,
@@ -41,8 +45,11 @@ CREATE TABLE schedule_rules (
   tour_id       int REFERENCES tours(id),
   days_of_week  int[] NOT NULL DEFAULT '{0,1,2,3,4,5,6}',  -- 0=Sunday
   window_start  time NOT NULL DEFAULT '08:00',              -- earliest departure
-  window_end    time NOT NULL DEFAULT '20:00',              -- latest return
+  window_end    time NOT NULL DEFAULT '20:00',              -- latest return; at or before window_start = next day (night trips)
   start_times   time[],                                     -- if set, only these departures
+  -- If set, the rule applies to this pricing option only (a night-trip rule);
+  -- NULL = every option of the tour.
+  pricing_option_id int REFERENCES pricing_options(id),
   slot_step_min int NOT NULL DEFAULT 60,
   active        boolean NOT NULL DEFAULT true
 );
