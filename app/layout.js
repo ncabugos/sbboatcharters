@@ -42,7 +42,7 @@ export const metadata = {
     follow: true,
   },
   alternates: {
-    canonical: 'https://www.sbboatcharters.com',
+    canonical: 'https://www.sbboatcharters.com/',
   },
   icons: {
     icon: [

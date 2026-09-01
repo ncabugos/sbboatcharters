@@ -13,7 +13,7 @@ export async function generateMetadata({ params }) {
   return {
     title: `Book ${rows[0].name}`,
     description: rows[0].tagline,
-    alternates: { canonical: `https://www.sbboatcharters.com/book/${slug}` },
+    alternates: { canonical: `https://www.sbboatcharters.com/book/${slug}/` },
   };
 }
 

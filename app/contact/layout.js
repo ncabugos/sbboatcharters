@@ -11,7 +11,7 @@ export const metadata = {
     card: 'summary_large_image',
     images: ['https://www.sbboatcharters.com/images/hero-channel-islands.jpg'],
   },
-  alternates: { canonical: 'https://www.sbboatcharters.com/contact' },
+  alternates: { canonical: 'https://www.sbboatcharters.com/contact/' },
 };
 
 export default function ContactLayout({ children }) {

@@ -9,7 +9,7 @@ export const metadata = {
   title: 'Book Your Adventure',
   description:
     'Book a private Santa Barbara boat charter: coastal & sunset cruises, Channel Islands tours, whale watching, fishing, foiling, and custom adventures.',
-  alternates: { canonical: 'https://www.sbboatcharters.com/book' },
+  alternates: { canonical: 'https://www.sbboatcharters.com/book/' },
 };
 
 export default async function BookPage() {

@@ -4,7 +4,7 @@ export const metadata = {
   title: 'About Captain Garrick | 20+ Years of Ocean Expertise',
   description:
     'Meet Captain Garrick — over 20 years of diving and exploring the California coast and all 8 Channel Islands. USCG licensed captain offering private boat charters in Santa Barbara.',
-  alternates: { canonical: 'https://www.sbboatcharters.com/about' },
+  alternates: { canonical: 'https://www.sbboatcharters.com/about/' },
   openGraph: {
     title: 'About Captain Garrick | Santa Barbara Boat Charters',
     description: 'Meet Captain Garrick — 20+ years exploring the California coast and all 8 Channel Islands. USCG licensed. Your expert guide on the water.',

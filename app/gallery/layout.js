@@ -11,7 +11,7 @@ export const metadata = {
     card: 'summary_large_image',
     images: ['https://www.sbboatcharters.com/images/hero-orcas-channel.jpg'],
   },
-  alternates: { canonical: 'https://www.sbboatcharters.com/gallery' },
+  alternates: { canonical: 'https://www.sbboatcharters.com/gallery/' },
 };
 
 export default function GalleryLayout({ children }) {

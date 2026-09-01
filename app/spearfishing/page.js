@@ -24,7 +24,7 @@ export const metadata = {
     card: 'summary_large_image',
     images: ['https://www.sbboatcharters.com/images/spearfishing-gallery-1.jpeg'],
   },
-  alternates: { canonical: 'https://www.sbboatcharters.com/spearfishing' },
+  alternates: { canonical: 'https://www.sbboatcharters.com/spearfishing/' },
 };
 
 const ADVANTAGES = [

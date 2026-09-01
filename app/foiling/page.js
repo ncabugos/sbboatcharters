@@ -14,7 +14,7 @@ export const metadata = {
     card: 'summary_large_image',
     images: ['https://www.sbboatcharters.com/images/foiling-sbboatcharters.jpeg'],
   },
-  alternates: { canonical: 'https://www.sbboatcharters.com/foiling' },
+  alternates: { canonical: 'https://www.sbboatcharters.com/foiling/' },
 };
 
 export default function Foiling() {

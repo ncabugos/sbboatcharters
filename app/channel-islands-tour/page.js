@@ -14,7 +14,7 @@ export const metadata = {
     card: 'summary_large_image',
     images: ['https://www.sbboatcharters.com/images/hero-channel-islands.jpg'],
   },
-  alternates: { canonical: 'https://www.sbboatcharters.com/channel-islands-tour' },
+  alternates: { canonical: 'https://www.sbboatcharters.com/channel-islands-tour/' },
 };
 
 const HIGHLIGHTS = [

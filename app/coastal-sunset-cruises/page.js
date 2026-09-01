@@ -14,7 +14,7 @@ export const metadata = {
     card: 'summary_large_image',
     images: ['https://www.sbboatcharters.com/images/sunset-cruise.webp'],
   },
-  alternates: { canonical: 'https://www.sbboatcharters.com/coastal-sunset-cruises' },
+  alternates: { canonical: 'https://www.sbboatcharters.com/coastal-sunset-cruises/' },
 };
 
 const HIGHLIGHTS = [

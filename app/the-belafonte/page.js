@@ -14,7 +14,7 @@ export const metadata = {
     card: 'summary_large_image',
     images: ['https://www.sbboatcharters.com/images/belafonte/boating-in-santa-barbara.webp'],
   },
-  alternates: { canonical: 'https://www.sbboatcharters.com/the-belafonte' },
+  alternates: { canonical: 'https://www.sbboatcharters.com/the-belafonte/' },
 };
 
 export default function TheBelafonte() {

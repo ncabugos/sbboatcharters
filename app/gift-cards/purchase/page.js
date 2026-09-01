@@ -7,7 +7,7 @@ export const metadata = {
   title: 'Buy a Gift Card',
   description:
     'Give the gift of a private Santa Barbara boat charter. Gift cards in any amount from $50 to $2,000 — delivered instantly by email, never expire.',
-  alternates: { canonical: 'https://www.sbboatcharters.com/gift-cards/purchase' },
+  alternates: { canonical: 'https://www.sbboatcharters.com/gift-cards/purchase/' },
 };
 
 export default function GiftCardPurchasePage() {

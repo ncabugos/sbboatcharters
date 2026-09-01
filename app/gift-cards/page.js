@@ -13,7 +13,7 @@ export const metadata = {
     card: 'summary_large_image',
     images: ['https://www.sbboatcharters.com/images/sunset-cruise.webp'],
   },
-  alternates: { canonical: 'https://www.sbboatcharters.com/gift-cards' },
+  alternates: { canonical: 'https://www.sbboatcharters.com/gift-cards/' },
 };
 
 export default function GiftCards() {

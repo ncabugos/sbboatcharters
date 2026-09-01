@@ -24,7 +24,7 @@ export const metadata = {
     card: 'summary_large_image',
     images: ['https://www.sbboatcharters.com/images/hero-sportfishing-sbboatcharters.jpg'],
   },
-  alternates: { canonical: 'https://www.sbboatcharters.com/sport-fishing' },
+  alternates: { canonical: 'https://www.sbboatcharters.com/sport-fishing/' },
 };
 
 const HIGHLIGHTS = [
