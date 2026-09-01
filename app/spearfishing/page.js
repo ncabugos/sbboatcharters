@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import styles from '../components/ServicePage.module.css';
 import PageSlideshow from '../components/PageSlideshow';
+import { getTourPricingLabel } from '@/lib/catalog';
 
 const SLIDES = [
   { src: '/images/generated/spearfishing-underwater.png', alt: 'Spearfishing underwater', caption: 'Hunt the Santa Barbara Channel' },
@@ -10,6 +11,11 @@ const SLIDES = [
   { src: '/images/instagram/SBCharters-IG-1.jpg', alt: 'Charter boat in Santa Barbara', caption: 'White Sea Bass, Yellowtail & Bluefin Tuna' },
   { src: '/images/belafonte/boating-in-santa-barbara.webp', alt: 'Boat on the water', caption: 'State-of-the-Art Electronics & Local Knowledge' },
 ];
+
+
+// Prices come from the same catalog rows checkout uses, regenerated hourly, so a
+// price changed in the database shows here without a deploy.
+export const revalidate = 3600;
 
 export const metadata = {
   title: 'Spearfishing Charters Santa Barbara | Expert Guided Expeditions',
@@ -101,7 +107,8 @@ const SPECIES = [
 ];
 
 
-export default function Spearfishing() {
+export default async function Spearfishing() {
+  const pricing = await getTourPricingLabel('spearfishing');
   return (
     <>
       <section className={styles.hero}>
@@ -148,7 +155,7 @@ export default function Spearfishing() {
               { svg: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>, label: 'Capacity', value: 'Up to 4 passengers' },
               { svg: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>, label: 'Departure', value: 'Santa Barbara Harbor, Marina 3' },
               { svg: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>, label: 'Target Species', value: 'White Sea Bass, Yellowtail, Bluefin Tuna, Lingcod, Sheephead' },
-              { svg: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>, label: 'Pricing', value: 'Please inquire for custom pricing' },
+              { svg: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>, label: 'Pricing', value: pricing },
             ].map((d) => (
               <div key={d.label} className={styles.detailItem}>
                 <span className={styles.detailIcon}>{d.svg}</span>

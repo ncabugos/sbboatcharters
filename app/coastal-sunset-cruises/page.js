@@ -1,21 +1,29 @@
 import Link from 'next/link';
 import styles from './coastal-sunset-cruises.module.css';
+import { getTourPricing, CALL_FOR_PRICING } from '@/lib/catalog';
 
-export const metadata = {
-  title: 'Coastal & Sunset Cruises Santa Barbara | Private Boat Charter',
-  description:
-    'Private coastal and sunset cruises in Santa Barbara. Watch the sun set over the Pacific from the water. Wildlife, celebrations, photography & custom routes. From $636 for two hours, all fees included. Up to 6 passengers.',
-  openGraph: {
-    title: 'Coastal & Sunset Cruises | Santa Barbara Boat Charters',
-    description: 'Private sunset cruises on the Santa Barbara Channel. Dolphins, sea caves, golden hour views — from $636 for up to 6 passengers.',
-    images: [{ url: 'https://www.sbboatcharters.com/images/sunset-cruise.webp', width: 1200, height: 630, alt: 'Sunset cruise Santa Barbara' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    images: ['https://www.sbboatcharters.com/images/sunset-cruise.webp'],
-  },
-  alternates: { canonical: 'https://www.sbboatcharters.com/coastal-sunset-cruises/' },
-};
+// Prices come from the same catalog rows checkout uses, regenerated hourly, so a
+// price changed in the database shows here without a deploy.
+export const revalidate = 3600;
+
+export async function generateMetadata() {
+  const p = await getTourPricing('coastal-sunset-cruise');
+  return {
+    title: 'Coastal & Sunset Cruises Santa Barbara | Private Boat Charter',
+    description:
+      `Private coastal and sunset cruises in Santa Barbara. Watch the sun set over the Pacific from the water. Wildlife, celebrations, photography & custom routes.${p ? ` From ${p.fromUsd} for ${p.hours} hours, all fees included.` : ''} Up to 6 passengers.`,
+    openGraph: {
+      title: 'Coastal & Sunset Cruises | Santa Barbara Boat Charters',
+      description: `Private sunset cruises on the Santa Barbara Channel. Dolphins, sea caves, golden hour views${p ? ` — from ${p.fromUsd}` : ''} for up to 6 passengers.`,
+      images: [{ url: 'https://www.sbboatcharters.com/images/sunset-cruise.webp', width: 1200, height: 630, alt: 'Sunset cruise Santa Barbara' }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      images: ['https://www.sbboatcharters.com/images/sunset-cruise.webp'],
+    },
+    alternates: { canonical: 'https://www.sbboatcharters.com/coastal-sunset-cruises/' },
+  };
+}
 
 const HIGHLIGHTS = [
   { image: '/images/generated/sunset-channel.png', title: 'Sunset Cruises', desc: 'Watch the sun descend into the Pacific in a golden blaze of color — a front-row seat from the water.' },
@@ -34,7 +42,8 @@ const DETAIL_ICONS = {
   sun: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>,
 };
 
-export default function CoastalSunsetCruises() {
+export default async function CoastalSunsetCruises() {
+  const p = await getTourPricing('coastal-sunset-cruise');
   return (
     <>
       {/* HERO */}
@@ -42,7 +51,7 @@ export default function CoastalSunsetCruises() {
         <img src="/images/sunset-cruise.webp" alt="Sunset cruise on the Santa Barbara Channel" className={styles.heroBgImage} loading="eager" fetchPriority="high" />
         <div className={styles.heroOverlay} />
         <div className={`container ${styles.heroContent}`}>
-          <span className={styles.heroLabel}>Private Cruises · From $636</span>
+          <span className={styles.heroLabel}>Private Cruises{p ? ` · From ${p.fromUsd}` : ''}</span>
           <h1 className={styles.heroTitle}>Coastal &amp; Sunset Cruises</h1>
           <p className={styles.heroSubtitle}>
             Panoramic views of the American Riviera from the water. The best way to experience Santa Barbara's legendary coastline and sunsets.
@@ -76,7 +85,7 @@ export default function CoastalSunsetCruises() {
             <h3 className={styles.detailsTitle}>Cruise Details</h3>
             {[
               { icon: 'clock', label: 'Duration', value: '2-hour minimum (customizable)' },
-              { icon: 'dollar', label: 'Pricing', value: '$636 (2 hrs) · $954 (3 hrs) — all fees included' },
+              { icon: 'dollar', label: 'Pricing', value: p?.label ?? CALL_FOR_PRICING },
               { icon: 'users', label: 'Capacity', value: 'Up to 6 passengers' },
               { icon: 'pin', label: 'Departure', value: 'Santa Barbara Harbor, Marina 3' },
               { icon: 'sun', label: 'Best Time', value: 'Late afternoon for golden hour & sunset' },

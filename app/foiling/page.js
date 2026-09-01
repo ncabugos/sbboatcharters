@@ -1,5 +1,11 @@
 import Link from 'next/link';
 import styles from '../components/ServicePage.module.css';
+import { getTourPricingLabel } from '@/lib/catalog';
+
+
+// Prices come from the same catalog rows checkout uses, regenerated hourly, so a
+// price changed in the database shows here without a deploy.
+export const revalidate = 3600;
 
 export const metadata = {
   title: 'Foiling Adventures Santa Barbara | Learn to Fly Above the Water',
@@ -17,7 +23,8 @@ export const metadata = {
   alternates: { canonical: 'https://www.sbboatcharters.com/foiling/' },
 };
 
-export default function Foiling() {
+export default async function Foiling() {
+  const pricing = await getTourPricingLabel('foiling');
   return (
     <>
       <section className={styles.hero}>
@@ -60,7 +67,7 @@ export default function Foiling() {
             {[
               { svg: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>, label: 'Location', value: 'Santa Barbara Coast' },
               { svg: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>, label: 'Experience', value: 'All levels welcome' },
-              { svg: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>, label: 'Pricing', value: '$636 (2 hrs) · $954 (3) · $1,272 (4) — all fees included' },
+              { svg: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>, label: 'Pricing', value: pricing },
             ].map((d) => (
               <div key={d.label} className={styles.detailItem}>
                 <span className={styles.detailIcon}>{d.svg}</span>

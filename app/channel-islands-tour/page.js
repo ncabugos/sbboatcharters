@@ -1,5 +1,11 @@
 import Link from 'next/link';
 import styles from '../components/ServicePage.module.css';
+import { getTourPricingLabel } from '@/lib/catalog';
+
+
+// Prices come from the same catalog rows checkout uses, regenerated hourly, so a
+// price changed in the database shows here without a deploy.
+export const revalidate = 3600;
 
 export const metadata = {
   title: 'Channel Islands Private Boat Tour | 6 or 8 Hour Charters',
@@ -26,7 +32,8 @@ const HIGHLIGHTS = [
   { image: '/images/hero-orcas-channel.jpg', title: 'Whale Watching', desc: 'Gray whales (Dec–Apr), blue and humpback whales (May–Aug) — we know the migration routes.' },
 ];
 
-export default function ChannelIslandsTour() {
+export default async function ChannelIslandsTour() {
+  const pricing = await getTourPricingLabel('full-day-island-cruise');
   return (
     <>
       <section className={styles.hero}>
@@ -78,6 +85,7 @@ export default function ChannelIslandsTour() {
               { svg: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>, label: 'Departure', value: 'Santa Barbara Harbor, Marina 3' },
               { svg: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 17l4-8 4 4 3-5 4 9"/></svg>, label: 'Crossing Time', value: '~1 hour to Santa Cruz Island' },
               { svg: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>, label: 'Activities', value: 'Snorkeling, diving, fishing, surfing, whale watching, beach exploration' },
+              { svg: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>, label: 'Pricing', value: pricing },
             ].map((d) => (
               <div key={d.label} className={styles.detailItem}>
                 <span className={styles.detailIcon}>{d.svg}</span>
