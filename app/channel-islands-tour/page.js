@@ -69,7 +69,7 @@ export default async function ChannelIslandsTour() {
             <p className={styles.infoText}>
               Offering steep cliffs, massive sea caves, secluded coves, and sandy beaches, the
               diversity is unmatched. Captain Garrick has spent over 20 years diving and exploring
-              all 8 Channel Islands, compiling an intimate knowledge of every hidden gem along the coast.
+              all the Channel Islands, compiling an intimate knowledge of every hidden gem along the coast.
             </p>
             <p className={styles.infoText}>
               Whether you want to explore the world-famous <strong>Painted Cave</strong>, search for

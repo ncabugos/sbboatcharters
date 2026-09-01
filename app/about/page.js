@@ -3,11 +3,11 @@ import styles from './about.module.css';
 export const metadata = {
   title: 'About Captain Garrick | 20+ Years of Ocean Expertise',
   description:
-    'Meet Captain Garrick — over 20 years of diving and exploring the California coast and all 8 Channel Islands. USCG licensed captain offering private boat charters in Santa Barbara.',
+    'Meet Captain Garrick — over 20 years of diving and exploring the California coast and all the Channel Islands. USCG licensed captain offering private boat charters in Santa Barbara.',
   alternates: { canonical: 'https://www.sbboatcharters.com/about/' },
   openGraph: {
     title: 'About Captain Garrick | Santa Barbara Boat Charters',
-    description: 'Meet Captain Garrick — 20+ years exploring the California coast and all 8 Channel Islands. USCG licensed. Your expert guide on the water.',
+    description: 'Meet Captain Garrick — 20+ years exploring the California coast and all the Channel Islands. USCG licensed. Your expert guide on the water.',
     images: [{ url: 'https://www.sbboatcharters.com/images/captain-garrick/garrick-lobster.webp', width: 1200, height: 630, alt: 'Captain Garrick' }],
   },
   twitter: {
@@ -65,7 +65,7 @@ export default function About() {
             </p>
             <p className={styles.text}>
               This is your one-stop shop for personalized Channel Islands experiences. Having dove
-              and explored all 8 Channel Islands, I have compiled quite a few gems off our coast
+              and explored all the Channel Islands, I have compiled quite a few gems off our coast
               to share with my clients. From the massive sea caves of Santa Cruz to the remote
               shores of San Miguel — I know these waters like the back of my hand.
             </p>

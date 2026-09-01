@@ -7,7 +7,7 @@ const SLIDES = [
   { src: '/images/generated/spearfishing-underwater.png', alt: 'Spearfishing underwater', caption: 'Hunt the Santa Barbara Channel' },
   { src: '/images/instagram/SBCharters-IG-3.jpeg', alt: 'Spearfishing charter', caption: '16+ Years of Island Diving Experience' },
   { src: '/images/generated/snorkeling-kelp.png', alt: 'Kelp forest diving', caption: 'Crystal-Clear Kelp Forests' },
-  { src: '/images/generated/santa-cruz-coastline.png', alt: 'Santa Cruz Island', caption: 'Secret Spots Across All 8 Channel Islands' },
+  { src: '/images/generated/santa-cruz-coastline.png', alt: 'Santa Cruz Island', caption: 'Secret Spots Across All the Channel Islands' },
   { src: '/images/instagram/SBCharters-IG-1.jpg', alt: 'Charter boat in Santa Barbara', caption: 'White Sea Bass, Yellowtail & Bluefin Tuna' },
   { src: '/images/belafonte/boating-in-santa-barbara.webp', alt: 'Boat on the water', caption: 'State-of-the-Art Electronics & Local Knowledge' },
 ];
@@ -35,7 +35,7 @@ export const metadata = {
 
 const ADVANTAGES = [
   { image: '/images/captain-garrick/captain-garrick.webp', title: 'Expert Guidance', desc: 'Captain Garrick brings decades of competitive freediving and spearfishing experience. He reads the water, the current, and the fish behavior — putting you in the right place at the right time.' },
-  { image: '/images/generated/santa-cruz-coastline.png', title: '16+ Years of Secret Spots', desc: 'Hard-coded marks across all 8 Channel Islands and the entire Santa Barbara coastline. We go where the fish actually are — not the popular spots everyone else hits.' },
+  { image: '/images/generated/santa-cruz-coastline.png', title: '16+ Years of Secret Spots', desc: 'Hard-coded marks across all the Channel Islands and the entire Santa Barbara coastline. We go where the fish actually are — not the popular spots everyone else hits.' },
   { image: '/images/belafonte/boating-in-santa-barbara.webp', title: 'State-of-the-Art Electronics', desc: 'High-end fish finders, real-time sonar, and local intel from active fishing reports. We track thermoclines, bait schools, and temperature breaks so you can focus on diving.' },
 ];
 

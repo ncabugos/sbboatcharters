@@ -114,7 +114,7 @@ const FEATURES = [
   {
     iconKey: 'experience',
     title: '20+ Years Experience',
-    description: 'Over two decades of diving and exploring every mile of the California coast and all 8 Channel Islands.',
+    description: 'Over two decades of diving and exploring every mile of the California coast and all the Channel Islands.',
   },
   {
     iconKey: 'passengers',
@@ -224,8 +224,8 @@ export default async function HomePage() {
             </div>
             <div className={styles.statDivider}></div>
             <div className={styles.stat}>
-              <span className={styles.statNumber}>8</span>
-              <span className={styles.statLabel}>Channel Islands Explored</span>
+              <span className={styles.statNumber}>16+</span>
+              <span className={styles.statLabel}>Years Diving the Islands</span>
             </div>
             <div className={styles.statDivider}></div>
             <div className={styles.stat}>
@@ -342,7 +342,7 @@ export default async function HomePage() {
               exploration I have curated from decades of personal adventures in and on the water.
             </p>
             <p className={styles.aboutText}>
-              Having dove and explored all 8 Channel Islands, I've compiled quite a few gems off our
+              Having dove and explored all the Channel Islands, I've compiled quite a few gems off our
               coast to share with my clients. From the massive sea caves of Santa Cruz Island to the
               remote shores of San Miguel, every trip is an opportunity to see something extraordinary.
             </p>
