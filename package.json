@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "hubspot:setup": "node scripts/hubspot-setup.mjs",
+    "hubspot:backfill": "node scripts/hubspot-backfill.mjs"
   },
   "dependencies": {
     "@behold/react": "^0.1.11",

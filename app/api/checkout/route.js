@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, after } from 'next/server';
 import { sql, withTransaction } from '@/lib/db';
 import { validateSlot, BUFFER_MIN } from '@/lib/availability';
 import { taxFromBase } from '@/lib/pricing';
@@ -6,6 +6,7 @@ import { findActiveCard, redeemWithinTx } from '@/lib/giftCards';
 import { getStripe, onConnected, stripeConfigured } from '@/lib/stripe';
 import { sendBookingConfirmation, sendCaptainNotification } from '@/lib/email';
 import { loadBookingDetails } from '@/lib/bookings';
+import { syncContact, bookingContact } from '@/lib/hubspot.mjs';
 
 export const dynamic = 'force-dynamic';
 
@@ -146,6 +147,7 @@ export async function POST(request) {
       const details = await loadBookingDetails(booking.id);
       await sendBookingConfirmation(details);
       await sendCaptainNotification(details);
+      after(() => syncContact(bookingContact(details)));
       return NextResponse.json({ confirmed: true, token: booking.confirmation_token });
     }
 

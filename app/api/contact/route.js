@@ -1,4 +1,6 @@
+import { after } from 'next/server';
 import { Resend } from 'resend';
+import { syncContact, SOURCES } from '@/lib/hubspot.mjs';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -102,6 +104,11 @@ export async function POST(request) {
         <p>${escapeHtml(message).replace(/\n/g, '<br />')}</p>
       `,
     });
+
+    // CRM sync runs after the response is sent; it never throws.
+    after(() => syncContact({
+      email, firstName, lastName, phone, tour: charter, source: SOURCES.CONTACT_FORM,
+    }));
 
     return Response.json({ success: true });
   } catch (error) {
