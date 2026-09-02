@@ -520,9 +520,7 @@ function PaymentStep({ checkout, onError, gaItem, party }) {
   return (
     <div className={styles.payBox}>
       <ExpressCheckoutElement onConfirm={confirm} options={{ buttonHeight: 48 }} />
-      {/* Bank (ACH) first: lowest fees for us and Stripe shows a cash-back
-          offer on it, so it is the best-value option for the guest too. */}
-      <PaymentElement options={{ layout: 'tabs', paymentMethodOrder: ['us_bank_account', 'card'] }} />
+      <PaymentElement options={{ layout: 'tabs' }} />
       <button
         type="button"
         className="btn btn--primary btn--large"
