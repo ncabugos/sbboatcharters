@@ -171,8 +171,7 @@ export default function GiftCardForm({ stripeReady }) {
         ) : !checkout ? (
           <button
             type="button"
-            className="btn btn--primary btn--large"
-            style={{ width: '100%' }}
+            className={`btn btn--primary btn--large ${styles.fullButton}`}
             disabled={!validAmount || !validEmail || submitting}
             onClick={startPurchase}
           >
@@ -214,7 +213,7 @@ function GiftPaymentStep({ chargeCents, onError }) {
   return (
     <div className={styles.payBox}>
       <PaymentElement options={{ layout: 'tabs' }} />
-      <button type="button" className="btn btn--primary btn--large" style={{ width: '100%' }} onClick={confirm} disabled={!stripe || paying}>
+      <button type="button" className={`btn btn--primary btn--large ${styles.fullButton}`} onClick={confirm} disabled={!stripe || paying}>
         {paying ? 'Processing…' : `Pay ${formatUsd(chargeCents)}`}
       </button>
     </div>

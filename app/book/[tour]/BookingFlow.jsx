@@ -360,7 +360,7 @@ export default function BookingFlow({ tour, options, stripeReady }) {
                 value={contact.phone} onChange={(e) => setContact({ ...contact, phone: e.target.value })}
               />
               <textarea
-                className={`${styles.input} ${styles.full}`} rows={2}
+                className={`${styles.input} ${styles.full} ${styles.notes}`} rows={3}
                 placeholder="Anything we should know? (celebrations, mobility, fishing goals...)"
                 value={contact.notes} onChange={(e) => setContact({ ...contact, notes: e.target.value })}
               />
@@ -415,10 +415,9 @@ export default function BookingFlow({ tour, options, stripeReady }) {
             ) : !checkout ? (
               <button
                 type="button"
-                className="btn btn--primary btn--large"
+                className={`btn btn--primary btn--large ${styles.fullButton}`}
                 onClick={startCheckout}
                 disabled={submitting}
-                style={{ width: '100%' }}
               >
                 {submitting
                   ? 'One moment…'
@@ -523,10 +522,9 @@ function PaymentStep({ checkout, onError, gaItem, party }) {
       <PaymentElement options={{ layout: 'tabs' }} />
       <button
         type="button"
-        className="btn btn--primary btn--large"
+        className={`btn btn--primary btn--large ${styles.fullButton}`}
         onClick={confirm}
         disabled={!stripe || paying}
-        style={{ width: '100%' }}
       >
         {paying ? <><span className={styles.spinner} />Processing…</> : `Pay ${formatUsd(checkout.amountCents)}`}
       </button>

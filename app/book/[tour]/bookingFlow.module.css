@@ -21,6 +21,18 @@
   display: flex;
   flex-direction: column;
   gap: 1.75rem;
+  /* Grid items default to min-width:auto, so anything wide inside (a
+     no-wrap button label) would push the panel past the phone viewport. */
+  min-width: 0;
+}
+
+/* Full-width action buttons (Continue to payment, Pay). The global .btn is
+   no-wrap, which cannot fit "Continue to payment — $1,908" on a phone, so
+   let the label wrap instead of widening the panel. */
+.fullButton {
+  width: 100%;
+  white-space: normal;
+  line-height: 1.35;
 }
 
 .stepTitle {
@@ -239,6 +251,13 @@
   font-family: inherit;
   font-size: 0.95rem;
   background: #fff;
+}
+
+/* Notes textarea. Its placeholder runs three lines on a phone, so give it
+   room for four so nothing is clipped; users can still drag it taller. */
+.notes {
+  min-height: 7rem;
+  resize: vertical;
 }
 
 .input:focus {
