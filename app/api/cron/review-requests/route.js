@@ -46,6 +46,10 @@ export async function GET(request) {
           AND review_email_sent_at IS NULL
           AND trip_end < now() - (${MIN_AGE_HOURS} * interval '1 hour')
           AND trip_end > now() - (${MAX_AGE_DAYS} * interval '1 day')
+          AND NOT EXISTS (
+            SELECT 1 FROM customers c
+            WHERE c.id = bookings.customer_id AND c.marketing_opt_out_at IS NOT NULL
+          )
         FOR UPDATE SKIP LOCKED
       )
       RETURNING id`;
@@ -60,13 +64,16 @@ export async function GET(request) {
         continue;
       }
       try {
-        await sendReviewRequest(booking);
-        sent += 1;
+        if (await sendReviewRequest(booking)) {
+          sent += 1;
+          continue;
+        }
       } catch (err) {
-        console.error('[cron/review-requests] send failed, releasing', id, err);
-        await sql`UPDATE bookings SET review_email_sent_at = NULL WHERE id = ${id}`;
-        failed.push(id);
+        console.error('[cron/review-requests] send threw', id, err);
       }
+      // sendReviewRequest logs its own failures and returns false; release either way.
+      await sql`UPDATE bookings SET review_email_sent_at = NULL WHERE id = ${id}`;
+      failed.push(id);
     }
 
     console.log(`[cron/review-requests] claimed ${claimed.length}, sent ${sent}`);

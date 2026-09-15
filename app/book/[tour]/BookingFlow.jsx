@@ -82,17 +82,17 @@ const APPEARANCE = {
 
 const FONTS = [{ cssSrc: 'https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap' }];
 
-export default function BookingFlow({ tour, options, stripeReady }) {
+export default function BookingFlow({ tour, options, stripeReady, initial = {} }) {
   const router = useRouter();
   const startedAt = useRef(Date.now());
 
-  const [month, setMonth] = useState(() => initialMonth(tour.season));
+  const [month, setMonth] = useState(() => initial.date?.slice(0, 7) || initialMonth(tour.season));
   const [availability, setAvailability] = useState({}); // monthStr -> days map
   const [loadingMonth, setLoadingMonth] = useState(true);
-  const [date, setDate] = useState(null);
-  const [optionId, setOptionId] = useState(options[0]?.id ?? null);
+  const [date, setDate] = useState(initial.date ?? null);
+  const [optionId, setOptionId] = useState(initial.optionId ?? options[0]?.id ?? null);
   const [time, setTime] = useState(null);
-  const [party, setParty] = useState(2);
+  const [party, setParty] = useState(initial.party ?? 2);
   const [contact, setContact] = useState({ name: '', email: '', phone: '', notes: '' });
   const [showGift, setShowGift] = useState(false);
   const [giftInput, setGiftInput] = useState('');

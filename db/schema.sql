@@ -70,7 +70,10 @@ CREATE TABLE customers (
   email      text NOT NULL,
   name       text NOT NULL,
   phone      text,
-  created_at timestamptz NOT NULL DEFAULT now()
+  created_at timestamptz NOT NULL DEFAULT now(),
+  -- Set from the unsubscribe link. Stops reminder and review emails; booking
+  -- confirmations and receipts still go out.
+  marketing_opt_out_at timestamptz
 );
 CREATE UNIQUE INDEX customers_email_idx ON customers (lower(email));
 
@@ -100,6 +103,8 @@ CREATE TABLE bookings (
   -- Post-trip review request. Claimed atomically by the daily cron before the
   -- email is sent, so a duplicate cron invocation can't email a guest twice.
   review_email_sent_at timestamptz,
+  -- Abandoned-checkout reminder. Claimed the same way by its cron.
+  abandon_email_sent_at timestamptz,
   -- One boat: no two live bookings may overlap. This is the system's core guarantee.
   CONSTRAINT no_overlap EXCLUDE USING gist (block_range WITH &&)
     WHERE (status IN ('pending','confirmed'))

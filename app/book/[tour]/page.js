@@ -18,11 +18,20 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default async function BookTourPage({ params }) {
+export default async function BookTourPage({ params, searchParams }) {
   const { tour: slug } = await params;
   const result = await getTourWithOptions(slug);
   if (!result) notFound();
   const { tour, options } = result;
+
+  // ?date=&option=&party= preselects a trip (the abandoned-checkout email links
+  // here). Anything that doesn't match this tour is ignored, not an error.
+  const query = await searchParams;
+  const initial = {};
+  if (/^\d{4}-\d{2}-\d{2}$/.test(query.date || '')) initial.date = query.date;
+  if (options.some((o) => String(o.id) === query.option)) initial.optionId = Number(query.option);
+  const party = Number(query.party);
+  if (Number.isInteger(party) && party >= 1 && party <= tour.max_party) initial.party = party;
 
   const stripeReady = Boolean(
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY && process.env.NEXT_PUBLIC_STRIPE_CONNECTED_ACCOUNT_ID
@@ -68,6 +77,7 @@ export default async function BookTourPage({ params }) {
           displayCents: o.display_cents,
         }))}
         stripeReady={stripeReady}
+        initial={initial}
       />
     </>
   );
