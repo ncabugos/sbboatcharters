@@ -1,20 +1,15 @@
 import Link from 'next/link';
 import styles from '../about/about.module.css';
+import { pageMetadata } from '@/lib/seo';
 
-export const metadata = {
-  title: 'Gift Cards | Santa Barbara Boat Charter Experiences',
-  description: 'Give the gift of adventure. Purchase Santa Barbara Boat Charter gift cards for Channel Islands tours, sunset cruises, fishing charters, and more.',
-  openGraph: {
-    title: 'Gift Cards | Santa Barbara Boat Charters',
-    description: 'Give the gift of an unforgettable ocean adventure. Gift cards for Channel Islands tours, sunset cruises, spearfishing, and more.',
-    images: [{ url: 'https://www.sbboatcharters.com/images/sunset-cruise.webp', width: 1200, height: 630, alt: 'Santa Barbara boat charter gift card' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    images: ['https://www.sbboatcharters.com/images/sunset-cruise.webp'],
-  },
-  alternates: { canonical: 'https://www.sbboatcharters.com/gift-cards/' },
-};
+export const metadata = pageMetadata({
+  path: '/gift-cards/',
+  title: 'Boat Charter Gift Cards',
+  description:
+    'Give the gift of adventure. Santa Barbara Boat Charters gift cards work for Channel Islands tours, sunset cruises, fishing charters and more.',
+  image: '/images/sunset-cruise.webp',
+  imageAlt: 'Santa Barbara boat charter gift card',
+});
 
 export default function GiftCards() {
   return (

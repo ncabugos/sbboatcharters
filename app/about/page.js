@@ -1,20 +1,14 @@
 import styles from './about.module.css';
+import { pageMetadata } from '@/lib/seo';
 
-export const metadata = {
-  title: 'About Captain Garrick | 20+ Years of Ocean Expertise',
+export const metadata = pageMetadata({
+  path: '/about/',
+  title: 'About Captain Garrick',
   description:
-    'Meet Captain Garrick — over 20 years of diving and exploring the California coast and all the Channel Islands. USCG licensed captain offering private boat charters in Santa Barbara.',
-  alternates: { canonical: 'https://www.sbboatcharters.com/about/' },
-  openGraph: {
-    title: 'About Captain Garrick | Santa Barbara Boat Charters',
-    description: 'Meet Captain Garrick — 20+ years exploring the California coast and all the Channel Islands. USCG licensed. Your expert guide on the water.',
-    images: [{ url: 'https://www.sbboatcharters.com/images/captain-garrick/garrick-lobster.webp', width: 1200, height: 630, alt: 'Captain Garrick' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    images: ['https://www.sbboatcharters.com/images/captain-garrick/garrick-lobster.webp'],
-  },
-};
+    'Meet Captain Garrick, a USCG licensed captain with over 20 years diving and exploring the California coast and the Channel Islands from Santa Barbara.',
+  image: '/images/captain-garrick/garrick-lobster.webp',
+  imageAlt: 'Captain Garrick',
+});
 
 export default function About() {
   return (

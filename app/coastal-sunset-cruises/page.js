@@ -1,28 +1,29 @@
 import Link from 'next/link';
 import styles from './coastal-sunset-cruises.module.css';
 import { getTourPricing, CALL_FOR_PRICING } from '@/lib/catalog';
+import { pageMetadata } from '@/lib/seo';
+import TripSchema from '../components/TripSchema';
 
 // Prices come from the same catalog rows checkout uses, regenerated hourly, so a
 // price changed in the database shows here without a deploy.
 export const revalidate = 3600;
 
+// Shared by the page's metadata and its TouristTrip schema, so they can't drift.
+const META = {
+  path: '/coastal-sunset-cruises/',
+  title: 'Santa Barbara Sunset & Coastal Cruises',
+  description:
+    'Private sunset and coastal cruises in Santa Barbara for up to 6 guests. Dolphins, sea caves and golden hour on the water.',
+  image: '/images/sunset-cruise.webp',
+  imageAlt: 'Sunset cruise Santa Barbara',
+};
+
 export async function generateMetadata() {
   const p = await getTourPricing('coastal-sunset-cruise');
-  return {
-    title: 'Coastal & Sunset Cruises Santa Barbara | Private Boat Charter',
-    description:
-      `Private coastal and sunset cruises in Santa Barbara. Watch the sun set over the Pacific from the water. Wildlife, celebrations, photography & custom routes.${p ? ` From ${p.fromUsd} for ${p.hours} hours, all fees included.` : ''} Up to 6 passengers.`,
-    openGraph: {
-      title: 'Coastal & Sunset Cruises | Santa Barbara Boat Charters',
-      description: `Private sunset cruises on the Santa Barbara Channel. Dolphins, sea caves, golden hour views${p ? ` — from ${p.fromUsd}` : ''} for up to 6 passengers.`,
-      images: [{ url: 'https://www.sbboatcharters.com/images/sunset-cruise.webp', width: 1200, height: 630, alt: 'Sunset cruise Santa Barbara' }],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      images: ['https://www.sbboatcharters.com/images/sunset-cruise.webp'],
-    },
-    alternates: { canonical: 'https://www.sbboatcharters.com/coastal-sunset-cruises/' },
-  };
+  return pageMetadata({
+    ...META,
+    description: `${META.description}${p ? ` From ${p.fromUsd} for ${p.hours} hours, all fees included.` : ''}`,
+  });
 }
 
 const HIGHLIGHTS = [
@@ -46,6 +47,7 @@ export default async function CoastalSunsetCruises() {
   const p = await getTourPricing('coastal-sunset-cruise');
   return (
     <>
+      <TripSchema slug="coastal-sunset-cruise" {...META} />
       {/* HERO */}
       <section className={styles.hero}>
         <img src="/images/sunset-cruise.webp" alt="Sunset cruise on the Santa Barbara Channel" className={styles.heroBgImage} loading="eager" fetchPriority="high" />

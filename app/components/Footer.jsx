@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import styles from './Footer.module.css';
+import { BUSINESS_ID } from '@/lib/structuredData';
 
 const CHARTER_LINKS = [
   { label: 'Channel Islands Tour', href: '/channel-islands-tour' },
@@ -142,13 +143,16 @@ export default function Footer() {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'LocalBusiness',
+            // Referenced as `provider` by the TouristTrip nodes on experience pages.
+            '@id': BUSINESS_ID,
             name: 'Santa Barbara Boat Charters',
             description: 'Private 6-passenger boat charters in Santa Barbara. Channel Islands tours, coastal cruises, sunset cruises, spearfishing, lobster diving, sport fishing, and foiling adventures with over 20 years of experience.',
             url: 'https://www.sbboatcharters.com',
             telephone: '+18057222282',
             address: {
               '@type': 'PostalAddress',
-              streetAddress: 'Santa Barbara Harbor, Marina 3',
+              // Same meeting point checkout shows (tours.meeting_point).
+              streetAddress: '302 W. Cabrillo Blvd, Marina 3 Gate',
               addressLocality: 'Santa Barbara',
               addressRegion: 'CA',
               postalCode: '93109',
@@ -162,6 +166,7 @@ export default function Footer() {
             openingHours: 'Mo-Su 06:00-20:00',
             priceRange: '$$',
             image: 'https://www.sbboatcharters.com/og-image.jpg',
+            logo: 'https://www.sbboatcharters.com/logo-favicon.jpg',
             sameAs: [
               'https://www.instagram.com/sbboatcharters/',
               'https://www.facebook.com/boatcharterssb',

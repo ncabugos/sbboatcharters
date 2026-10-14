@@ -3,15 +3,16 @@ import { sql } from '@/lib/db';
 import { formatUsd } from '@/lib/pricing';
 import { buildTourListSchema, jsonLdString } from '@/lib/structuredData';
 import styles from './book.module.css';
+import { pageMetadata } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata = {
+export const metadata = pageMetadata({
+  path: '/book/',
   title: 'Book Your Adventure',
   description:
-    'Book a private Santa Barbara boat charter: coastal & sunset cruises, Channel Islands tours, whale watching, fishing, foiling, and custom adventures.',
-  alternates: { canonical: 'https://www.sbboatcharters.com/book/' },
-};
+    'Book a private Santa Barbara boat charter: coastal and sunset cruises, Channel Islands tours, whale watching, fishing, foiling and custom adventures.',
+});
 
 export default async function BookPage() {
   const tours = await sql`

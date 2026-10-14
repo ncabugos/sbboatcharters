@@ -1,27 +1,25 @@
 import Link from 'next/link';
 import styles from '../components/ServicePage.module.css';
 import { getTourPricingLabel } from '@/lib/catalog';
+import { pageMetadata } from '@/lib/seo';
+import TripSchema from '../components/TripSchema';
 
 
 // Prices come from the same catalog rows checkout uses, regenerated hourly, so a
 // price changed in the database shows here without a deploy.
 export const revalidate = 3600;
 
-export const metadata = {
-  title: 'Channel Islands Private Boat Tour | 6 or 8 Hour Charters',
+// Shared by the page's metadata and its TouristTrip schema, so they can't drift.
+const META = {
+  path: '/channel-islands-tour/',
+  title: 'Channel Islands Private Boat Tour',
   description:
-    'Private Channel Islands boat tour from Santa Barbara. Six-hour (3/4 day) or eight-hour (full day) excursions to Santa Cruz Island with snorkeling, sea caves, whale watching & more. Up to 6 passengers. Book your private island adventure today.',
-  openGraph: {
-    title: 'Channel Islands Private Boat Tour | Santa Barbara Boat Charters',
-    description: 'Private 6-hour (3/4 day) or 8-hour (full day) excursion to Santa Cruz Island. Snorkeling, sea caves, whale watching & beach activities for up to 6 passengers.',
-    images: [{ url: 'https://www.sbboatcharters.com/images/hero-channel-islands.jpg', width: 1200, height: 630, alt: 'Channel Islands from the water' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    images: ['https://www.sbboatcharters.com/images/hero-channel-islands.jpg'],
-  },
-  alternates: { canonical: 'https://www.sbboatcharters.com/channel-islands-tour/' },
+    'Private 6 or 8 hour boat trips from Santa Barbara to Santa Cruz Island. Snorkeling, sea caves, whales and beach time for up to 6 guests on the Belafonte.',
+  image: '/images/hero-channel-islands.jpg',
+  imageAlt: 'Channel Islands from the water',
 };
+
+export const metadata = pageMetadata(META);
 
 const HIGHLIGHTS = [
   { image: '/images/santa-cruz-island.webp', title: 'Santa Cruz Island', desc: 'California\'s largest Channel Island with 77 miles of rugged coastline, towering sea cliffs, and pristine beaches.' },
@@ -36,6 +34,7 @@ export default async function ChannelIslandsTour() {
   const pricing = await getTourPricingLabel('full-day-island-cruise');
   return (
     <>
+      <TripSchema slug="full-day-island-cruise" {...META} />
       <section className={styles.hero}>
         <img
           src="/images/hero-channel-islands.jpg"

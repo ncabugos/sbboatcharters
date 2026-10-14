@@ -1,21 +1,37 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getTourWithOptions } from '@/lib/catalog';
-import { buildTourProductSchema, jsonLdString } from '@/lib/structuredData';
+import { getTourWithOptions, fromPrice } from '@/lib/catalog';
+import { buildTourProductSchema, buildBreadcrumbSchema, jsonLdString } from '@/lib/structuredData';
+import { pageMetadata } from '@/lib/seo';
 import BookingFlow from './BookingFlow';
 import styles from '../book.module.css';
 
 export const dynamic = 'force-dynamic';
 
+// Built from the catalog row rather than the tagline, which is a few words
+// ("8 Hours - Enjoy a Day of Adventure") and reads as an empty search snippet.
+function describeTour(tour, options) {
+  const price = fromPrice(options);
+  if (!price) return tour.tagline;
+  const hours = [...new Set(options.map((o) => o.duration_min / 60))].sort((a, b) => a - b);
+  const span = hours.length === 1
+    ? `${hours[0]} hours`
+    : hours.length === 2 ? `${hours[0]} or ${hours[1]} hours` : `${hours[0]} to ${hours.at(-1)} hours`;
+  return `${tour.name} in Santa Barbara: a private charter for up to ${tour.max_party} guests, ${span}, from ${price.fromUsd} with all fees included. Departs Marina 3, Santa Barbara Harbor.`;
+}
+
 export async function generateMetadata({ params }) {
   const { tour: slug } = await params;
   const result = await getTourWithOptions(slug);
   if (!result) return { title: 'Book Your Adventure' };
-  return {
-    title: `Book ${result.tour.name}`,
-    description: result.tour.tagline,
-    alternates: { canonical: `https://www.sbboatcharters.com/book/${slug}/` },
-  };
+  const { tour, options } = result;
+  return pageMetadata({
+    path: `/book/${slug}/`,
+    title: `Book ${tour.name}`,
+    description: describeTour(tour, options),
+    image: tour.image_url || undefined,
+    imageAlt: tour.name,
+  });
 }
 
 export default async function BookTourPage({ params, searchParams }) {
@@ -43,6 +59,19 @@ export default async function BookTourPage({ params, searchParams }) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdString(buildTourProductSchema(tour, options)) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdString({
+            '@context': 'https://schema.org',
+            ...buildBreadcrumbSchema([
+              { name: 'Home', path: '/' },
+              { name: 'Book', path: '/book/' },
+              { name: tour.name, path: `/book/${tour.slug}/` },
+            ]),
+          }),
+        }}
       />
       <section className={styles.hero} style={{ paddingBottom: '2rem' }}>
         <div className="container">

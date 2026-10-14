@@ -12,9 +12,9 @@ const FAQS = [
   { q: 'How long does it take to get to Santa Cruz Island?', a: 'In calm conditions, the Belafonte makes the crossing in approximately one hour thanks to her twin Yamaha 200hp outboards. Conditions permitting, we maintain a comfortable cruising speed throughout.' },
   { q: 'What should I bring?', a: 'We recommend bringing sunscreen (reef-safe preferred), a hat, sunglasses, layers for wind, a swimsuit and towel, a camera or waterproof phone case, and any snacks or drinks you\'d like. Motion sickness medication is recommended if you\'re prone to seasickness.' },
   { q: 'How much should I tip?', a: 'While not obligatory, tips are greatly appreciated. 10-20% of the charter cost is standard and a wonderful way to show appreciation for a great experience.' },
-  { q: 'What happens if bad weather is forecasted?', a: 'Safety is our top priority. In the event of extreme wind or dangerous conditions, we will work with you to reschedule your charter. If rescheduling isn\'t possible, we\'ll refund your original deposit.' },
-  { q: 'What is the cancellation policy?', a: 'Deposits are refundable with a minimum of two weeks notice or due to inclement weather. We understand plans change and will always work with you to find a solution.' },
-  { q: 'Is the captain licensed?', a: 'Yes! Captain Garrick holds a USCG (United States Coast Guard) license. The Belafonte also undergoes yearly Coast Guard examinations to ensure compliance with the latest safety regulations.' },
+  { q: 'What happens if bad weather is forecasted?', a: 'Safety is our top priority. In the event of extreme wind or dangerous conditions, the captain may cancel the trip. You can then reschedule or get a full refund.' },
+  { q: 'What is the cancellation policy?', a: 'You pay the full charter price when you book. Cancel two weeks or more before departure for a full refund. Trips the captain cancels for weather are fully refundable or can be rescheduled. We understand plans change and will always work with you to find a solution.' },
+  { q: 'Is the captain licensed?', a: 'Yes! Captain Garrick holds a USCG (United States Coast Guard) OUPV license, often called a six-pack license, which covers charters of up to six passengers. The Belafonte also undergoes yearly Coast Guard examinations to ensure compliance with the latest safety regulations.' },
   { q: 'Can I customize my charter?', a: 'Absolutely! Every charter is tailored to your desires. Whether you want to focus on fishing, sightseeing, diving, or a mix of activities, just let us know your preferences and we\'ll craft the perfect experience.' },
 ];
 
@@ -70,7 +70,7 @@ export default function FAQ() {
             <p className={styles.ctaText}>Don't hesitate to reach out — we're happy to help plan your perfect charter.</p>
             <div className={styles.ctaActions}>
               <a href="tel:+18057222282" className="btn btn--primary">Call (805) 722-2282</a>
-              <a href="/contact" className="btn btn--outline-dark">Contact Us</a>
+              <a href="/contact/" className="btn btn--outline-dark">Contact Us</a>
             </div>
           </div>
         </div>

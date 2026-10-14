@@ -1,32 +1,31 @@
 import Link from 'next/link';
 import styles from '../components/ServicePage.module.css';
 import { getTourPricingLabel } from '@/lib/catalog';
+import { pageMetadata } from '@/lib/seo';
+import TripSchema from '../components/TripSchema';
 
 
 // Prices come from the same catalog rows checkout uses, regenerated hourly, so a
 // price changed in the database shows here without a deploy.
 export const revalidate = 3600;
 
-export const metadata = {
-  title: 'Foiling Adventures Santa Barbara | Learn to Fly Above the Water',
+// Shared by the page's metadata and its TouristTrip schema, so they can't drift.
+const META = {
+  path: '/foiling/',
+  title: 'Foiling Charters in Santa Barbara',
   description:
-    'Foiling lessons and charters in Santa Barbara. Learn to hydrofoil above the water on the protected Santa Barbara coast. All skill levels welcome. Private sessions with expert instruction.',
-  openGraph: {
-    title: 'Foiling Adventures | Santa Barbara Boat Charters',
-    description: 'Experience the thrill of foiling above the water in Santa Barbara. Private lessons for all skill levels on the beautiful California coast.',
-    images: [{ url: 'https://www.sbboatcharters.com/images/foiling-sbboatcharters.jpeg', width: 1200, height: 630, alt: 'Foiling in Santa Barbara' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    images: ['https://www.sbboatcharters.com/images/foiling-sbboatcharters.jpeg'],
-  },
-  alternates: { canonical: 'https://www.sbboatcharters.com/foiling/' },
+    'Foiling lessons and charters in Santa Barbara. Learn to hydrofoil above the water on the protected Santa Barbara coast. Private sessions for all skill levels.',
+  image: '/images/foiling-sbboatcharters.jpeg',
+  imageAlt: 'Foiling in Santa Barbara',
 };
+
+export const metadata = pageMetadata(META);
 
 export default async function Foiling() {
   const pricing = await getTourPricingLabel('foiling');
   return (
     <>
+      <TripSchema slug="foiling" {...META} />
       <section className={styles.hero}>
         <img src="/images/instagram/SBCharters-IG-3.jpeg" alt="Foiling on the water" className={styles.heroBgImage} loading="eager" fetchPriority="high" />
         <div className={styles.heroOverlay} style={{ background: 'linear-gradient(165deg, rgba(10,22,40,0.78) 0%, rgba(13,79,82,0.6) 100%)' }} />

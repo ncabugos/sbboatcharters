@@ -1,6 +1,17 @@
 import Link from 'next/link';
 import styles from './page.module.css';
 import { getGoogleReviews } from '@/lib/googleReviews';
+import { pageMetadata } from '@/lib/seo';
+
+// The homepage owns its canonical. It used to live in the root layout, where every
+// page without its own (the 404 included) inherited a canonical pointing here.
+export const metadata = pageMetadata({
+  path: '/',
+  title: { absolute: 'Santa Barbara Boat Charters | Private Channel Islands Tours' },
+  description:
+    'Private boat charters in Santa Barbara for up to 6 guests: Channel Islands tours, sunset cruises, fishing, spearfishing and lobster diving. USCG licensed captain.',
+  imageAlt: 'Santa Barbara Boat Charters on the Santa Barbara Channel',
+});
 
 const IconIsland = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 17h18"/><path d="M12 3C8 3 5 8 5 11h14c0-3-3-8-7-8z"/><path d="M8 17c0 2 1.5 3 4 3s4-1 4-3"/></svg>;
 const IconSunset = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>;
@@ -192,10 +203,10 @@ export default async function HomePage() {
             muted
             loop
             playsInline
-            preload="auto"
+            preload="metadata"
             poster="/images/hero-channel-islands.jpg"
           >
-            <source src="/videos/sbboat-highlight-whales.mp4" type="video/mp4" />
+            <source src="/videos/sbboat-highlight-whales-web.mp4" type="video/mp4" />
           </video>
         </div>
         <div className={styles.heroOverlay}></div>
@@ -245,7 +256,7 @@ export default async function HomePage() {
         <div className={styles.photoStripTrack}>
           {GALLERY_STRIP.map((img, i) => (
             <div key={i} className={styles.photoStripItem}>
-              <img src={img.src} alt={img.alt} />
+              <img src={img.src} alt={img.alt} loading="lazy" decoding="async" />
             </div>
           ))}
         </div>
@@ -266,7 +277,7 @@ export default async function HomePage() {
             {SERVICES.map((service, i) => (
               <Link href={service.href} key={service.title} className={styles.serviceCard} style={{ animationDelay: `${i * 0.1}s` }}>
                 <div className={styles.serviceImageWrap}>
-                  <img src={service.image} alt={service.title} className={styles.serviceImage} />
+                  <img src={service.image} alt={service.title} className={styles.serviceImage} loading="lazy" decoding="async" />
                   <div className={styles.serviceImageOverlay}></div>
                 </div>
                 <div className={styles.serviceTag}>{service.tag}</div>
@@ -288,7 +299,7 @@ export default async function HomePage() {
 
       {/* ===== FULL-WIDTH IMAGE BREAK ===== */}
       <section className={styles.imageBreak}>
-        <img src="/images/jonathan-hsu-unsplash.jpg" alt="Humpback whale breaching near the Channel Islands" />
+        <img src="/images/jonathan-hsu-unsplash.jpg" alt="Humpback whale breaching near the Channel Islands" loading="lazy" decoding="async" />
         <div className={styles.imageBreakOverlay}>
           <span className={styles.imageBreakText}>Witness Magnificent Marine Wildlife Up Close</span>
         </div>
@@ -326,6 +337,8 @@ export default async function HomePage() {
                 src="/images/captain-garrick/captain-garrick.webp"
                 alt="Captain Garrick — your expert guide on the Santa Barbara waters"
                 className={styles.aboutPhoto}
+                loading="lazy"
+                decoding="async"
               />
             </div>
             <div className={styles.aboutBadge}>
@@ -363,7 +376,7 @@ export default async function HomePage() {
         <div className={styles.wildlifeGrid}>
           {INSTAGRAM_GRID.map((img, i) => (
             <div key={i} className={styles.wildlifeItem}>
-              <img src={img.src} alt={img.alt} />
+              <img src={img.src} alt={img.alt} loading="lazy" decoding="async" />
               <a
                 href="https://www.instagram.com/sbboatcharters/"
                 target="_blank"
@@ -524,6 +537,8 @@ export default async function HomePage() {
                 src="/images/belafonte/belafonte.webp"
                 alt="The Belafonte — Stabicraft 2500 Ultracab XL"
                 className={styles.vesselPhoto}
+                loading="lazy"
+                decoding="async"
               />
             </div>
             <div className={styles.vesselImageSecondary}>
@@ -531,6 +546,8 @@ export default async function HomePage() {
                 src="/images/belafonte/boating-in-santa-barbara.webp"
                 alt="Boating in Santa Barbara"
                 className={styles.vesselPhoto}
+                loading="lazy"
+                decoding="async"
               />
             </div>
           </div>
@@ -549,7 +566,7 @@ export default async function HomePage() {
               { q: 'How many passengers can go on a charter?', a: 'SB Boat Charters is limited to six passengers per trip, ensuring an intimate and personalized experience on every outing.' },
               { q: 'Where do we meet?', a: 'We meet at Santa Barbara Harbor, Marina 3 gate (in the pay parking lot). Parking is $2.50/hour in the adjacent harbor lot.' },
               { q: 'How long does it take to get to Santa Cruz Island?', a: 'In calm conditions, the Belafonte makes the crossing in approximately one hour thanks to her twin 200hp Yamaha outboards.' },
-              { q: 'What happens if bad weather is forecasted?', a: 'Safety is our priority. In the event of extreme wind or dangerous conditions, we can reschedule or refund your original deposit.' },
+              { q: 'What happens if bad weather is forecasted?', a: 'Safety is our priority. If the captain cancels for extreme wind or dangerous conditions, you can reschedule or get a full refund.' },
             ].map((faq, i) => (
               <div key={i} className={styles.faqCard}>
                 <h3 className={styles.faqQuestion}>{faq.q}</h3>
@@ -571,6 +588,8 @@ export default async function HomePage() {
           src="/images/sunset-cruise.webp"
           alt="Sunset over Santa Barbara Channel"
           className={styles.ctaBackgroundImage}
+          loading="lazy"
+          decoding="async"
         />
         <div className={styles.ctaOverlay}></div>
         <div className={`container ${styles.ctaContent}`}>

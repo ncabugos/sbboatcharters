@@ -2,6 +2,8 @@ import Link from 'next/link';
 import styles from '../components/ServicePage.module.css';
 import PageSlideshow from '../components/PageSlideshow';
 import { getTourPricingLabel } from '@/lib/catalog';
+import { pageMetadata } from '@/lib/seo';
+import TripSchema from '../components/TripSchema';
 
 const SLIDES = [
   { src: '/images/generated/spearfishing-underwater.png', alt: 'Spearfishing underwater', caption: 'Hunt the Santa Barbara Channel' },
@@ -17,21 +19,17 @@ const SLIDES = [
 // price changed in the database shows here without a deploy.
 export const revalidate = 3600;
 
-export const metadata = {
-  title: 'Spearfishing Charters Santa Barbara | Expert Guided Expeditions',
+// Shared by the page's metadata and its TouristTrip schema, so they can't drift.
+const META = {
+  path: '/spearfishing/',
+  title: 'Santa Barbara Spearfishing Charters',
   description:
-    'Expert-guided spearfishing charters in Santa Barbara and Channel Islands. 16+ years of island diving experience. Targeting Sea Bass, Yellowtail, and Tuna. Up to 4 passengers. Book your spearfishing expedition.',
-  openGraph: {
-    title: 'Spearfishing Charters | Santa Barbara Boat Charters',
-    description: 'Expert-guided spearfishing expeditions in Santa Barbara. 16+ years diving the Channel Islands. Sea Bass, Yellowtail, Tuna.',
-    images: [{ url: 'https://www.sbboatcharters.com/images/spearfishing-gallery-1.jpeg', width: 1200, height: 630, alt: 'Spearfishing charter Santa Barbara' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    images: ['https://www.sbboatcharters.com/images/spearfishing-gallery-1.jpeg'],
-  },
-  alternates: { canonical: 'https://www.sbboatcharters.com/spearfishing/' },
+    'Guided spearfishing charters at the Channel Islands from Santa Barbara, with 16+ years of island diving experience. Sea bass, yellowtail and tuna. Up to 4 divers.',
+  image: '/images/spearfishing-gallery-1.jpeg',
+  imageAlt: 'Spearfishing charter Santa Barbara',
 };
+
+export const metadata = pageMetadata(META);
 
 const ADVANTAGES = [
   { image: '/images/captain-garrick/captain-garrick.webp', title: 'Expert Guidance', desc: 'Captain Garrick brings decades of competitive freediving and spearfishing experience. He reads the water, the current, and the fish behavior — putting you in the right place at the right time.' },
@@ -111,6 +109,7 @@ export default async function Spearfishing() {
   const pricing = await getTourPricingLabel('spearfishing');
   return (
     <>
+      <TripSchema slug="spearfishing" {...META} />
       <section className={styles.hero}>
         <img src="/images/generated/spearfishing-underwater.png" alt="Spearfishing underwater" className={styles.heroBgImage} loading="eager" fetchPriority="high" />
         <div className={styles.heroOverlay} style={{ background: 'linear-gradient(165deg, rgba(10,22,40,0.8) 0%, rgba(10,46,53,0.65) 40%, rgba(13,80,85,0.55) 100%)' }} />

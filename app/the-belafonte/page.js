@@ -1,21 +1,15 @@
 import Link from 'next/link';
 import styles from '../components/ServicePage.module.css';
+import { pageMetadata } from '@/lib/seo';
 
-export const metadata = {
-  title: 'The Belafonte | Stabicraft 2500 Ultracab XL Charter Boat',
+export const metadata = pageMetadata({
+  path: '/the-belafonte/',
+  title: 'The Belafonte: Our Charter Boat',
   description:
-    'Meet the Belafonte — a brand new Stabicraft 2500 Ultracab XL with twin Yamaha 200hp outboards. Built in New Zealand, 100% aluminum construction, USCG examined. Your vessel for Santa Barbara adventures.',
-  openGraph: {
-    title: 'The Belafonte | Santa Barbara Boat Charters',
-    description: 'The Belafonte — Stabicraft 2500 Ultracab XL with twin Yamaha 200hp outboards. Built for rough seas, perfect for the Santa Barbara Channel.',
-    images: [{ url: 'https://www.sbboatcharters.com/images/belafonte/boating-in-santa-barbara.webp', width: 1200, height: 630, alt: 'The Belafonte charter boat Santa Barbara' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    images: ['https://www.sbboatcharters.com/images/belafonte/boating-in-santa-barbara.webp'],
-  },
-  alternates: { canonical: 'https://www.sbboatcharters.com/the-belafonte/' },
-};
+    'Meet the Belafonte, a Stabicraft 2500 Ultracab XL with twin Yamaha 200hp outboards. All aluminum, USCG examined, and built for the Santa Barbara Channel.',
+  image: '/images/belafonte/boating-in-santa-barbara.webp',
+  imageAlt: 'The Belafonte charter boat Santa Barbara',
+});
 
 export default function TheBelafonte() {
   return (

@@ -2,6 +2,8 @@ import Link from 'next/link';
 import styles from '../components/ServicePage.module.css';
 import PageSlideshow from '../components/PageSlideshow';
 import { getTourPricingLabel } from '@/lib/catalog';
+import { pageMetadata } from '@/lib/seo';
+import TripSchema from '../components/TripSchema';
 
 const SLIDES = [
   { src: '/images/instagram/SBCharters-IG-3.jpeg', alt: 'Sport fishing charter', caption: 'Private Sport Fishing Charters' },
@@ -17,21 +19,17 @@ const SLIDES = [
 // price changed in the database shows here without a deploy.
 export const revalidate = 3600;
 
-export const metadata = {
-  title: 'Private Sport Fishing Charter Santa Barbara | Expert Captain',
+// Shared by the page's metadata and its TouristTrip schema, so they can't drift.
+const META = {
+  path: '/sport-fishing/',
+  title: 'Santa Barbara Fishing Charters',
   description:
-    'Private sport fishing charters in the Santa Barbara Channel and Channel Islands. Premium tackle, expert captain with 20+ years experience. Up to 6 passengers. Book your fishing adventure.',
-  openGraph: {
-    title: 'Private Sport Fishing Charters | Santa Barbara Boat Charters',
-    description: 'Fish the Santa Barbara Channel on a private charter. Calico Bass, Yellowtail, White Seabass & Halibut. Expert captain, premium tackle, up to 6 passengers.',
-    images: [{ url: 'https://www.sbboatcharters.com/images/hero-sportfishing-sbboatcharters.jpg', width: 1200, height: 630, alt: 'Sport fishing charter Santa Barbara' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    images: ['https://www.sbboatcharters.com/images/hero-sportfishing-sbboatcharters.jpg'],
-  },
-  alternates: { canonical: 'https://www.sbboatcharters.com/sport-fishing/' },
+    'Private sport fishing charters in the Santa Barbara Channel and Channel Islands. Premium tackle and a captain with 20+ years of experience. Up to 6 guests.',
+  image: '/images/hero-sportfishing-sbboatcharters.jpg',
+  imageAlt: 'Sport fishing charter Santa Barbara',
 };
+
+export const metadata = pageMetadata(META);
 
 const HIGHLIGHTS = [
   { image: '/images/instagram/SBCharters-IG-3.jpeg', title: 'Calico Bass', desc: 'Abundant in nearshore kelp forests and rocky structure. Great action year-round for all skill levels.' },
@@ -47,6 +45,7 @@ export default async function SportFishing() {
   const pricing = await getTourPricingLabel('sport-fishing');
   return (
     <>
+      <TripSchema slug="sport-fishing" {...META} />
       <section className={styles.hero}>
         <img src="/images/hero-sportfishing-sbboatcharters.jpg" alt="Sport fishing charter" className={styles.heroBgImage} loading="eager" fetchPriority="high" />
         <div className={styles.heroOverlay} style={{ background: 'linear-gradient(165deg, rgba(10,22,40,0.8) 0%, rgba(18,51,74,0.65) 40%, rgba(26,82,118,0.55) 100%)' }} />

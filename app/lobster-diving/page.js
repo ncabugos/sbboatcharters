@@ -2,6 +2,8 @@ import Link from 'next/link';
 import styles from '../components/ServicePage.module.css';
 import { getTourWithOptions, fromPrice, CALL_FOR_PRICING } from '@/lib/catalog';
 import { seasonLabel } from '@/lib/season';
+import { pageMetadata } from '@/lib/seo';
+import TripSchema from '../components/TripSchema';
 
 const SLUG = 'lobster-diving';
 
@@ -14,21 +16,17 @@ const FALLBACK_SEASON = { start: '2026-10-02', end: '2027-03-17' };
 // hourly, so a change in the database shows here without a deploy.
 export const revalidate = 3600;
 
-export const metadata = {
-  title: 'Lobster Diving Charters Santa Barbara | Day & Night Trips',
+// Shared by the page's metadata and its TouristTrip schema, so they can't drift.
+const META = {
+  path: '/lobster-diving/',
+  title: 'Santa Barbara Lobster Diving Charters',
   description:
-    'Private guided California spiny lobster diving charters in Santa Barbara and the Channel Islands. 8-hour day or night trips for up to 4 divers, October through March. Book your lobster dive.',
-  openGraph: {
-    title: 'Lobster Diving Charters | Santa Barbara Boat Charters',
-    description: 'Guided spiny lobster dives in the Santa Barbara Channel, by day or after dark. 8 hours, up to 4 divers, lobster season only.',
-    images: [{ url: 'https://www.sbboatcharters.com/images/lobster-diving-hero.jpg', width: 1200, height: 630, alt: 'California spiny lobster in a kelp forest' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    images: ['https://www.sbboatcharters.com/images/lobster-diving-hero.jpg'],
-  },
-  alternates: { canonical: 'https://www.sbboatcharters.com/lobster-diving/' },
+    'Private guided spiny lobster dives in Santa Barbara and the Channel Islands. 8 hour day or night trips for up to 4 divers, October through March.',
+  image: '/images/lobster-diving-hero.jpg',
+  imageAlt: 'California spiny lobster in a kelp forest',
 };
+
+export const metadata = pageMetadata(META);
 
 const Icon = ({ children }) => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">{children}</svg>
@@ -82,6 +80,7 @@ export default async function LobsterDiving() {
 
   return (
     <>
+      <TripSchema slug="lobster-diving" {...META} />
       <section className={styles.hero}>
         <img src="/images/lobster-diving-hero.jpg" alt="California spiny lobster on a reef in a kelp forest" className={styles.heroBgImage} loading="eager" fetchPriority="high" />
         <div className={styles.heroOverlay} style={{ background: 'linear-gradient(165deg, rgba(10,22,40,0.82) 0%, rgba(10,46,53,0.62) 40%, rgba(13,80,85,0.5) 100%)' }} />
