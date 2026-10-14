@@ -173,12 +173,6 @@
   box-shadow: var(--shadow-md);
 }
 
-.valueIcon {
-  font-size: 2.5rem;
-  display: block;
-  margin-bottom: var(--space-lg);
-}
-
 .valueTitle {
   font-family: var(--font-heading);
   font-size: var(--fs-h4);

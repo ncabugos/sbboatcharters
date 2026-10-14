@@ -319,6 +319,28 @@ p {
   color: var(--color-silver);
 }
 
+/* --- Icon badge ---
+   Line icon centered in a soft accent circle, above a centered card title
+   (homepage "Why Choose Us", about "What Sets Us Apart"). The svg reset above
+   makes icons display:block, which text-align:center can't move, so the badge
+   centers them itself. Icons should use stroke="currentColor". */
+.icon-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  margin: 0 auto var(--space-lg);
+  border-radius: 50%;
+  background: rgba(232, 72, 30, 0.08);
+  color: var(--color-accent);
+}
+
+.icon-badge svg {
+  width: 1.625rem;
+  height: 1.625rem;
+}
+
 .section-title {
   font-family: var(--font-heading);
   font-size: var(--fs-h2);

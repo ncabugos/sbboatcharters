@@ -93,30 +93,45 @@ const TESTIMONIALS = [
   },
 ];
 
+// Drawn in currentColor; the .icon-badge wrapper (globals.css) sets color and size.
 const FEATURE_ICONS = {
+  // Anchor
   experience: (
-    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--color-ocean-teal)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="8" r="6"/>
-      <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="5" r="3"/>
+      <path d="M12 22V8"/>
+      <path d="M5 12H2a10 10 0 0 0 20 0h-3"/>
     </svg>
   ),
+  // Small group
   passengers: (
-    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--color-ocean-teal)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
       <circle cx="9" cy="7" r="4"/>
       <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
       <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
     </svg>
   ),
+  // Ship's wheel
   licensed: (
-    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--color-ocean-teal)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-      <path d="m9 12 2 2 4-4"/>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="8"/>
+      <circle cx="12" cy="12" r="2.5"/>
+      <path d="M12 2v7.5"/>
+      <path d="M12 14.5V22"/>
+      <path d="M2 12h7.5"/>
+      <path d="M14.5 12H22"/>
+      <path d="m5 5 5.23 5.23"/>
+      <path d="m13.77 13.77 5.23 5.23"/>
+      <path d="m19 5-5.23 5.23"/>
+      <path d="M10.23 13.77 5 19"/>
     </svg>
   ),
+  // Compass
   tailored: (
-    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--color-ocean-teal)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="10"/>
+      <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
     </svg>
   ),
 };
@@ -319,7 +334,7 @@ export default async function HomePage() {
           <div className={styles.featuresGrid}>
             {FEATURES.map((feature) => (
               <div key={feature.title} className={styles.featureCard}>
-                <span className={styles.featureIcon}>{FEATURE_ICONS[feature.iconKey]}</span>
+                <span className="icon-badge">{FEATURE_ICONS[feature.iconKey]}</span>
                 <h3 className={styles.featureTitle}>{feature.title}</h3>
                 <p className={styles.featureDesc}>{feature.description}</p>
               </div>
