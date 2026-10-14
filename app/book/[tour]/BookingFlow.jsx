@@ -94,6 +94,12 @@ export default function BookingFlow({ tour, options, stripeReady, initial = {} }
   const [time, setTime] = useState(null);
   const [party, setParty] = useState(initial.party ?? 2);
   const [contact, setContact] = useState({ name: '', email: '', phone: '', notes: '' });
+  const [showNotes, setShowNotes] = useState(false);
+  // Set when Continue is tapped with the contact fields incomplete; only then
+  // are the missing fields marked, so nobody is scolded before they try.
+  const [triedContinue, setTriedContinue] = useState(false);
+  const nameRef = useRef(null);
+  const emailRef = useRef(null);
   const [showGift, setShowGift] = useState(false);
   const [giftInput, setGiftInput] = useState('');
   const [gift, setGift] = useState(null); // { code, balanceCents }
@@ -161,9 +167,22 @@ export default function BookingFlow({ tour, options, stripeReady, initial = {} }
   const giftApplied = gift ? Math.min(gift.balanceCents, totalCents) : 0;
   const dueCents = totalCents - giftApplied;
 
-  const contactValid =
-    contact.name.trim().length >= 2 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email.trim());
-  const readyForPayment = date && option && time && contactValid;
+  const nameValid = contact.name.trim().length >= 2;
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email.trim());
+  const contactValid = nameValid && emailValid;
+  // The Continue button shows as soon as a slot is picked. Hiding it until the
+  // contact fields were valid left the details step looking like a dead end:
+  // 4 in 5 guests who picked a time never started checkout.
+  const slotChosen = date && option && time;
+
+  function continueToPayment() {
+    if (!contactValid) {
+      setTriedContinue(true);
+      (nameValid ? emailRef : nameRef).current?.focus();
+      return;
+    }
+    startCheckout();
+  }
 
   // Invalidate any created hold when the selection changes.
   const invalidateCheckout = () => setCheckout(null);
@@ -348,30 +367,54 @@ export default function BookingFlow({ tour, options, stripeReady, initial = {} }
               {/* honeypot */}
               <input type="text" name="company" tabIndex={-1} autoComplete="off" value="" onChange={() => {}} style={{ position: 'absolute', left: '-9999px' }} aria-hidden="true" />
               <input
-                className={`${styles.input} ${styles.full}`} placeholder="Full name *" autoComplete="name"
+                ref={nameRef}
+                className={`${styles.input} ${styles.full} ${triedContinue && !nameValid ? styles.inputInvalid : ''}`}
+                placeholder="Full name *" autoComplete="name" aria-invalid={triedContinue && !nameValid}
                 value={contact.name} onChange={(e) => { setContact({ ...contact, name: e.target.value }); invalidateCheckout(); }}
               />
               <input
-                className={styles.input} type="email" placeholder="Email *" autoComplete="email"
+                ref={emailRef}
+                className={`${styles.input} ${triedContinue && !emailValid ? styles.inputInvalid : ''}`}
+                type="email" placeholder="Email *" autoComplete="email" aria-invalid={triedContinue && !emailValid}
                 value={contact.email} onChange={(e) => { setContact({ ...contact, email: e.target.value }); invalidateCheckout(); }}
               />
               <input
                 className={styles.input} type="tel" placeholder="Phone" autoComplete="tel"
                 value={contact.phone} onChange={(e) => setContact({ ...contact, phone: e.target.value })}
               />
-              <textarea
-                className={`${styles.input} ${styles.full} ${styles.notes}`} rows={3}
-                placeholder="Anything we should know? (celebrations, mobility, fishing goals...)"
-                value={contact.notes} onChange={(e) => setContact({ ...contact, notes: e.target.value })}
-              />
+              {showNotes && (
+                <textarea
+                  className={`${styles.input} ${styles.full} ${styles.notes}`} rows={3} autoFocus
+                  placeholder="Anything we should know? (celebrations, mobility, fishing goals...)"
+                  value={contact.notes} onChange={(e) => setContact({ ...contact, notes: e.target.value })}
+                />
+              )}
             </div>
+            {triedContinue && !contactValid && (
+              <p className={styles.fieldError} role="alert">
+                {!nameValid && !emailValid
+                  ? 'Add your name and email to continue.'
+                  : !nameValid
+                    ? 'Add your full name to continue.'
+                    : contact.email.trim()
+                      ? 'Check your email address. Your confirmation goes there.'
+                      : 'Add your email to continue.'}
+              </p>
+            )}
 
-            <div style={{ marginTop: '1rem' }}>
+            <div className={styles.linkRow}>
+              {!showNotes && (
+                <button type="button" className={styles.giftLink} onClick={() => setShowNotes(true)}>
+                  Add a note
+                </button>
+              )}
               {!showGift && !gift && (
                 <button type="button" className={styles.giftLink} onClick={() => setShowGift(true)}>
                   Have a gift card?
                 </button>
               )}
+            </div>
+            <div className={styles.giftArea}>
               {showGift && !gift && (
                 <div>
                   <div className={styles.giftRow}>
@@ -400,7 +443,7 @@ export default function BookingFlow({ tour, options, stripeReady, initial = {} }
         )}
 
         {/* Step 5 — payment */}
-        {readyForPayment && (
+        {slotChosen && (
           <section>
             <h2 className={styles.stepTitle}>
               <span className={styles.stepNumber}>{options.length > 1 ? 5 : 4}</span> Payment
@@ -416,7 +459,7 @@ export default function BookingFlow({ tour, options, stripeReady, initial = {} }
               <button
                 type="button"
                 className={`btn btn--primary btn--large ${styles.fullButton}`}
-                onClick={startCheckout}
+                onClick={continueToPayment}
                 disabled={submitting}
               >
                 {submitting

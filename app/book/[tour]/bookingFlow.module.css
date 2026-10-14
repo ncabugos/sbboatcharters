@@ -260,6 +260,33 @@
   resize: vertical;
 }
 
+/* Marked only after Continue is tapped with the field missing or malformed. */
+.inputInvalid {
+  border-color: #c0392b;
+}
+
+.fieldError {
+  margin-top: 0.6rem;
+  font-size: 0.85rem;
+  color: #96281b;
+}
+
+/* "Add a note" and "Have a gift card?" share one line under the fields. */
+.linkRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin-top: 1rem;
+}
+
+.linkRow:empty {
+  display: none;
+}
+
+.giftArea:not(:empty) {
+  margin-top: 0.75rem;
+}
+
 .input:focus {
   outline: 2px solid var(--color-accent, #E8481E);
   outline-offset: -1px;
