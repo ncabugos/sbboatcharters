@@ -30,6 +30,8 @@ export default function GalleryClient({ instagramData }) {
     if (igLightbox === null) return;
     const onKey = (e) => {
       if (e.key === 'Escape') closeIgLightbox();
+      // A focused video uses the arrow keys to seek; don't also switch posts.
+      if (e.target.tagName === 'VIDEO') return;
       if (e.key === 'ArrowLeft') prevIgPost();
       if (e.key === 'ArrowRight') nextIgPost();
     };
@@ -321,18 +323,7 @@ export default function GalleryClient({ instagramData }) {
             </button>
 
             <div className={styles.igModalContent} onClick={(e) => e.stopPropagation()}>
-              <div className={styles.igModalImg}>
-                <img src={post.thumbnailUrl} alt={post.prunedCaption} />
-                {isVideo && (
-                  <div className={styles.igModalPlayOverlay}>
-                    <div className={styles.igModalPlayBtn}>
-                      <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
-                        <polygon points="6 3 20 12 6 21 6 3"/>
-                      </svg>
-                    </div>
-                  </div>
-                )}
-              </div>
+              <IgLightboxMedia key={post.id} post={post} />
               <div className={styles.igModalInfo}>
                 <div className={styles.igModalMeta}>
                   {isVideo && <span className={styles.igModalType}>Reel</span>}
@@ -394,5 +385,83 @@ export default function GalleryClient({ instagramData }) {
         </div>
       )}
     </>
+  );
+}
+
+// Media panel of the Instagram lightbox. Keyed by post id by the caller, so the
+// carousel position and the fallback state reset whenever the post changes.
+function IgLightboxMedia({ post }) {
+  const [childIndex, setChildIndex] = useState(0);
+  const [videoFailed, setVideoFailed] = useState(false);
+
+  // The mp4 is a signed IG CDN URL that can expire before the page regenerates.
+  // When it fails, Instagram's own embed player shows the post instead.
+  if (videoFailed && post.shortcode) {
+    return (
+      <div className={styles.igModalImg}>
+        <iframe
+          src={`https://www.instagram.com/p/${post.shortcode}/embed/`}
+          title={post.prunedCaption || 'Instagram post'}
+          className={styles.igModalEmbed}
+          allow="autoplay; encrypted-media; picture-in-picture"
+          allowFullScreen
+        />
+      </div>
+    );
+  }
+
+  const children = post.children || [];
+  const item = children.length > 0 ? children[childIndex] : post;
+  const step = (delta) =>
+    setChildIndex((i) => (i + delta + children.length) % children.length);
+
+  return (
+    <div className={styles.igModalImg}>
+      {item.videoUrl ? (
+        <video
+          key={item.videoUrl}
+          src={item.videoUrl}
+          poster={item.imageUrl}
+          className={styles.igModalVideo}
+          controls
+          autoPlay
+          playsInline
+          onError={() => setVideoFailed(true)}
+        />
+      ) : (
+        <img src={item.imageUrl} alt={post.prunedCaption} />
+      )}
+
+      {children.length > 1 && (
+        <>
+          <button
+            className={`${styles.igSlideNav} ${styles.igSlideNavPrev}`}
+            onClick={() => step(-1)}
+            aria-label="Previous photo"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+              <path d="M15 18l-6-6 6-6"/>
+            </svg>
+          </button>
+          <button
+            className={`${styles.igSlideNav} ${styles.igSlideNavNext}`}
+            onClick={() => step(1)}
+            aria-label="Next photo"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </button>
+          <div className={styles.igSlideDots}>
+            {children.map((c, i) => (
+              <span
+                key={c.id}
+                className={`${styles.igSlideDot} ${i === childIndex ? styles.igSlideDotActive : ''}`}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
   );
 }

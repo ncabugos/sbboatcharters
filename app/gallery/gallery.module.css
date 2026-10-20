@@ -557,31 +557,61 @@
   object-fit: cover;
 }
 
-.igModalPlayOverlay {
+.igModalVideo,
+.igModalEmbed {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #000;
+}
+
+.igModalVideo {
+  object-fit: contain;
+}
+
+.igSlideNav {
   position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.25);
-}
-
-.igModalPlayBtn {
-  width: 72px;
-  height: 72px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 2px solid rgba(255, 255, 255, 0.35);
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  transition: background var(--duration-fast);
 }
 
-.igModalPlayBtn svg {
-  margin-left: 4px;
+.igSlideNav:hover {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.igSlideNavPrev { left: var(--space-md); }
+.igSlideNavNext { right: var(--space-md); }
+
+/* Top edge, so the dots never sit on top of the video controls */
+.igSlideDots {
+  position: absolute;
+  top: var(--space-md);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+}
+
+.igSlideDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.igSlideDotActive {
+  background: white;
 }
 
 .igModalInfo {
@@ -765,7 +795,7 @@
   .igModalContent {
     flex-direction: column;
     width: 95vw;
-    max-height: 90vh;
+    max-height: 80vh;
   }
 
   .igModalImg {
@@ -778,8 +808,20 @@
     padding: var(--space-lg);
   }
 
-  .igModalNavPrev { left: var(--space-md); }
-  .igModalNavNext { right: var(--space-md); }
+  /* Post arrows move beside the counter so they can't be confused with the
+     carousel arrows inside the media */
+  .igModalNav {
+    top: auto;
+    bottom: var(--space-md);
+    transform: none;
+  }
+
+  .igModalNavPrev { left: calc(50% - 100px); }
+  .igModalNavNext { right: calc(50% - 100px); }
+
+  .igModalCounter {
+    bottom: calc(var(--space-md) + 14px);
+  }
 }
 
 @media (max-width: 480px) {
@@ -811,9 +853,6 @@
     width: 40px;
     height: 40px;
   }
-
-  .igModalNavPrev { left: var(--space-sm); }
-  .igModalNavNext { right: var(--space-sm); }
 
   .igModalInfo {
     padding: var(--space-md);
