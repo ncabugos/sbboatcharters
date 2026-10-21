@@ -2,16 +2,51 @@ import Link from 'next/link';
 import styles from './page.module.css';
 import { getGoogleReviews } from '@/lib/googleReviews';
 import { pageMetadata } from '@/lib/seo';
+import { sql } from '@/lib/db';
+import { formatUsd } from '@/lib/pricing';
+import { seasonLabel } from '@/lib/season';
 
 // The homepage owns its canonical. It used to live in the root layout, where every
 // page without its own (the 404 included) inherited a canonical pointing here.
+// "Boat rental" is in the title because rental searches were the largest group
+// landing here (~430 impressions in 90 days at position 8 to 10, Search Console,
+// Oct 2026) and the old title never said it.
 export const metadata = pageMetadata({
   path: '/',
-  title: { absolute: 'Santa Barbara Boat Charters | Private Channel Islands Tours' },
+  title: { absolute: 'Santa Barbara Boat Charters | Private Boat Rental with Captain' },
   description:
-    'Private boat charters in Santa Barbara for up to 6 guests: Channel Islands tours, sunset cruises, fishing, spearfishing and lobster diving. USCG licensed captain.',
+    'Private boat charters and captained boat rentals in Santa Barbara for up to 6 guests. Channel Islands tours, sunset cruises, fishing and lobster diving.',
   imageAlt: 'Santa Barbara Boat Charters on the Santa Barbara Channel',
 });
+
+// Card prices, the FAQ prices and the lobster season come from the same catalog
+// rows checkout uses, regenerated hourly, so a change in Neon shows here without
+// a deploy.
+export const revalidate = 3600;
+
+// Same dates the lobster page falls back to until the catalog row has them.
+const FALLBACK_LOBSTER_SEASON = { start: '2026-10-02', end: '2027-03-17' };
+
+// { [slug]: { fromCents, seasonStart, seasonEnd } } for every active tour, or {}
+// when Neon is unreachable: the page then shows each card's static tag and drops
+// the price lines rather than failing.
+async function getCatalogSummary() {
+  try {
+    const rows = await sql`
+      SELECT t.slug, t.season_start, t.season_end, min(p.display_cents) AS from_cents
+      FROM tours t
+      JOIN pricing_options p ON p.tour_id = t.id AND p.active
+      WHERE t.active
+      GROUP BY t.id`;
+    return Object.fromEntries(rows.map((r) => [r.slug, {
+      fromCents: Number(r.from_cents),
+      seasonStart: r.season_start,
+      seasonEnd: r.season_end,
+    }]));
+  } catch {
+    return {};
+  }
+}
 
 const IconIsland = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 17h18"/><path d="M12 3C8 3 5 8 5 11h14c0-3-3-8-7-8z"/><path d="M8 17c0 2 1.5 3 4 3s4-1 4-3"/></svg>;
 const IconSunset = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>;
@@ -20,11 +55,14 @@ const IconFish = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="non
 const IconMoon = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>;
 const IconWave = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12c1.5-3 3.5-4.5 6-4s5 3 8 3 4.5-1.5 6-4"/><path d="M2 18c1.5-3 3.5-4.5 6-4s5 3 8 3 4.5-1.5 6-4"/></svg>;
 
+// `slug` is the catalog tour whose cheapest option prices the card; `tag` is what
+// the card shows when the catalog can't be read. `note` is appended to the price.
 const SERVICES = [
   {
     title: 'Channel Islands Tour',
     description: 'Private excursions to Santa Cruz Island with snorkeling, sea caves, and wildlife. A 6-hour (3/4 day) or 8-hour (full day) adventure tailored to your desires.',
     href: '/channel-islands-tour',
+    slug: 'full-day-island-cruise',
     icon: <IconIsland />,
     tag: '6 or 8 Hours',
     image: '/images/santa-cruz-island.webp',
@@ -33,14 +71,16 @@ const SERVICES = [
     title: 'Coastal & Sunset Cruises',
     description: 'Panoramic views of the American Riviera coastline from Carpinteria to Hollister Ranch. Perfect for celebrations and special occasions.',
     href: '/coastal-sunset-cruises',
+    slug: 'coastal-sunset-cruise',
     icon: <IconSunset />,
-    tag: 'From $636',
+    tag: 'Private Cruise',
     image: '/images/sunset-cruise.webp',
   },
   {
     title: 'Spearfishing',
     description: 'Expert-guided spearfishing expeditions with 16+ years of island diving experience. Targeting Sea Bass, Yellowtail, and Tuna.',
     href: '/spearfishing',
+    slug: 'spearfishing',
     icon: <IconDive />,
     tag: 'Expert Guided',
     image: '/images/spearfishing-gallery-1.jpeg',
@@ -49,14 +89,19 @@ const SERVICES = [
     title: 'Lobster Diving',
     description: 'Guided California spiny lobster dives, by day or after dark. Eight private hours on the reefs and kelp of the Channel Islands, October through March.',
     href: '/lobster-diving',
+    slug: 'lobster-diving',
     icon: <IconMoon />,
     tag: 'Day & Night · Oct to Mar',
+    note: 'Oct to Mar',
     image: '/images/lobster-diving-gallery-1.jpeg',
   },
   {
-    title: 'Sport Fishing',
-    description: 'Private sport fishing charters in the rich waters of the Santa Barbara Channel and Channel Islands. Premium tackle and electronics.',
+    // The card is the link, so this wording is the anchor text Google reads for
+    // /sport-fishing/. Fishing searches were landing on the homepage instead.
+    title: 'Fishing Charters',
+    description: 'Private Santa Barbara fishing charters in the Channel and around the Channel Islands. Premium tackle and electronics.',
     href: '/sport-fishing',
+    slug: 'sport-fishing',
     icon: <IconFish />,
     tag: 'Private Charter',
     image: '/images/sportfishing-sbboatcharters.jpg',
@@ -65,11 +110,19 @@ const SERVICES = [
     title: 'Foiling',
     description: 'Take your board skills to the next level with hydrofoil lessons on the beautiful Santa Barbara coast. An unforgettable thrill.',
     href: '/foiling',
+    slug: 'foiling',
     icon: <IconWave />,
     tag: 'Adventure',
     image: '/images/foiling-sbboatcharters.jpeg',
   },
 ];
+
+function serviceTag(service, catalog) {
+  const fromCents = catalog[service.slug]?.fromCents;
+  if (!fromCents) return service.tag;
+  const price = `From ${formatUsd(fromCents)}`;
+  return service.note ? `${price} · ${service.note}` : price;
+}
 
 // Fallback only — shown when the live Google fetch returns null (no API key
 // locally, or Google is down). Deliberately rendered WITHOUT the Google badge:
@@ -206,7 +259,32 @@ const Stars = ({ rating = 5, className }) => (
 export default async function HomePage() {
   // null when the key is absent or Google errors — the section then renders the
   // curated fallback with no Google branding.
-  const google = await getGoogleReviews();
+  const [google, catalog] = await Promise.all([getGoogleReviews(), getCatalogSummary()]);
+
+  const prices = Object.values(catalog).map((t) => t.fromCents).filter(Boolean);
+  const lowestFrom = prices.length ? formatUsd(Math.min(...prices)) : null;
+  const customFrom = catalog['create-your-own-adventure']?.fromCents;
+  const islandFrom = catalog['full-day-island-cruise']?.fromCents;
+  const lobster = catalog['lobster-diving'];
+  const lobsterSeason = seasonLabel(
+    lobster?.seasonStart ?? FALLBACK_LOBSTER_SEASON.start,
+    lobster?.seasonEnd ?? FALLBACK_LOBSTER_SEASON.end
+  );
+
+  // Questions written to match searches that already reach this page. The price
+  // answer is dropped rather than guessed when the catalog can't be read.
+  const faqs = [
+    { q: 'Can I rent a boat without a captain?', a: 'No. Every trip runs with Captain Garrick, a USCG licensed captain, at the helm, so nobody in your group needs a boating license or experience. You still choose the plan, from a coastal cruise to a full day at the islands.' },
+    lowestFrom && {
+      q: 'How much does a private boat charter cost?',
+      a: `Private trips for up to 6 guests start at ${lowestFrom}${islandFrom ? `, and Channel Islands trips start at ${formatUsd(islandFrom)}` : ''}. The price you see includes all booking fees.`,
+    },
+    { q: 'When is lobster season in Santa Barbara?', a: `Our lobster diving season runs ${lobsterSeason}. Trips go out by day or at night for up to 4 divers.` },
+    { q: 'Where do we meet?', a: 'We meet at Santa Barbara Harbor, Marina 3 gate (in the pay parking lot). Parking is $2.50/hour in the adjacent harbor lot.' },
+    { q: 'How long does it take to get to Santa Cruz Island?', a: 'In calm conditions, the Belafonte makes the crossing in approximately one hour thanks to her twin 200hp Yamaha outboards.' },
+    { q: 'What happens if bad weather is forecasted?', a: 'Safety is our priority. If the captain cancels for extreme wind or dangerous conditions, you can reschedule or get a full refund.' },
+  ].filter(Boolean);
+
   return (
     <>
       {/* ===== HERO WITH VIDEO BACKGROUND ===== */}
@@ -227,13 +305,14 @@ export default async function HomePage() {
         <div className={styles.heroOverlay}></div>
         <div className={styles.heroWaves}></div>
         <div className={`container ${styles.heroContent}`}>
-          <span className={styles.heroLabel}>Private Boat Charters · Santa Barbara, CA</span>
+          <span className={styles.heroLabel}>Discover the Language of the Ocean</span>
           <h1 className={styles.heroTitle}>
-            Discover the Language<br />of the Ocean
+            Private Boat Charters<br />in Santa Barbara
           </h1>
           <p className={styles.heroSubtitle}>
-            Private 6-passenger charters through the Santa Barbara Channel and
-            Channel Islands. Over 20 years of coastal expertise at your service.
+            Private trips for up to 6 guests on the Santa Barbara Channel and
+            Channel Islands, with over 20 years of local expertise. An easy day
+            trip from Los Angeles.
           </p>
           <div className={styles.heroActions}>
             <Link href="/book/" className="btn btn--primary btn--large">
@@ -249,10 +328,19 @@ export default async function HomePage() {
               <span className={styles.statLabel}>Years on the Water</span>
             </div>
             <div className={styles.statDivider}></div>
-            <div className={styles.stat}>
-              <span className={styles.statNumber}>16+</span>
-              <span className={styles.statLabel}>Years Diving the Islands</span>
-            </div>
+            {/* The live Google rating when we have it: it is the proof a first-time
+                visitor from search is looking for. Falls back to the old stat. */}
+            {google?.rating ? (
+              <div className={styles.stat}>
+                <span className={styles.statNumber}>{google.rating.toFixed(1)}</span>
+                <span className={styles.statLabel}>Google Rating ({google.totalCount})</span>
+              </div>
+            ) : (
+              <div className={styles.stat}>
+                <span className={styles.statNumber}>16+</span>
+                <span className={styles.statLabel}>Years Diving the Islands</span>
+              </div>
+            )}
             <div className={styles.statDivider}></div>
             <div className={styles.stat}>
               <span className={styles.statNumber}>6</span>
@@ -282,7 +370,7 @@ export default async function HomePage() {
         <div className="container">
           <div className={styles.sectionHeader}>
             <span className="section-label">Our Charters</span>
-            <h2 className="section-title">Unforgettable Experiences on the Water</h2>
+            <h2 className="section-title">Santa Barbara Charters and Tours</h2>
             <p className="section-subtitle">
               From dawn excursions to the Channel Islands to golden-hour sunset cruises along the
               American Riviera, every charter is a personally curated adventure.
@@ -295,7 +383,7 @@ export default async function HomePage() {
                   <img src={service.image} alt={service.title} className={styles.serviceImage} loading="lazy" decoding="async" />
                   <div className={styles.serviceImageOverlay}></div>
                 </div>
-                <div className={styles.serviceTag}>{service.tag}</div>
+                <div className={styles.serviceTag}>{serviceTag(service, catalog)}</div>
                 <div className={styles.serviceBody}>
                   <h3 className={styles.serviceTitle}>{service.title}</h3>
                   <p className={styles.serviceDesc}>{service.description}</p>
@@ -308,6 +396,32 @@ export default async function HomePage() {
                 </div>
               </Link>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== BOAT RENTAL ===== */}
+      {/* Answers "boat rental santa barbara" searches, the largest group reaching
+          this page. The site only runs captained trips, so it says so plainly. */}
+      <section className={`section ${styles.rental}`} id="boat-rental">
+        <div className="container container--narrow">
+          <div className={styles.sectionHeader}>
+            <span className="section-label">Boat Rental</span>
+            <h2 className="section-title">Private Boat Rental with a Captain</h2>
+            <p className="section-subtitle">
+              Looking to rent a boat in Santa Barbara? Book the Belafonte for your group and
+              Captain Garrick runs the boat, so nobody needs a boating license. You choose the
+              plan: cruise the coast, fish, snorkel, or cross to the Channel Islands.
+              {customFrom ? ` Up to 6 guests, from ${formatUsd(customFrom)} with all fees included.` : ' Up to 6 guests.'}
+            </p>
+          </div>
+          <div className={styles.rentalActions}>
+            <Link href="/book/create-your-own-adventure/" className="btn btn--primary">
+              Plan a Custom Trip
+            </Link>
+            <Link href="/book/" className="btn btn--outline-dark">
+              See All Trips
+            </Link>
           </div>
         </div>
       </section>
@@ -325,7 +439,7 @@ export default async function HomePage() {
         <div className="container">
           <div className={styles.sectionHeader}>
             <span className="section-label">Why Choose Us</span>
-            <h2 className="section-title">Not Your Average Boat Tour</h2>
+            <h2 className="section-title">Why Book With Us</h2>
             <p className="section-subtitle">
               A private vessel with an expert captain who has spent two decades
               mastering the waters of the Santa Barbara Channel.
@@ -363,7 +477,7 @@ export default async function HomePage() {
           </div>
           <div className={styles.aboutContent}>
             <span className="section-label">Meet Your Captain</span>
-            <h2 className="section-title">Your Guide to the Ocean&apos;s Best Kept Secrets</h2>
+            <h2 className="section-title">Captain Garrick</h2>
             <div className={styles.aboutDivider}></div>
             <p className={styles.aboutText}>
               My niche is showing people the language of the ocean: to give you a lens of ocean
@@ -414,7 +528,7 @@ export default async function HomePage() {
         <div className="container">
           <div className={styles.sectionHeader}>
             <span className="section-label section-label--light">Guest Experiences</span>
-            <h2 className="section-title section-title--light">What Our Guests Say</h2>
+            <h2 className="section-title section-title--light">Guest Reviews</h2>
           </div>
           {google && (
             <div className={styles.googleSummary}>
@@ -573,16 +687,11 @@ export default async function HomePage() {
       <section className={`section ${styles.faqPreview}`}>
         <div className="container">
           <div className={styles.sectionHeader}>
-            <span className="section-label">Common Questions</span>
-            <h2 className="section-title">Everything You Need to Know</h2>
+            <span className="section-label">FAQ</span>
+            <h2 className="section-title">Common Questions</h2>
           </div>
           <div className={styles.faqGrid}>
-            {[
-              { q: 'How many passengers can go on a charter?', a: 'SB Boat Charters is limited to six passengers per trip, ensuring an intimate and personalized experience on every outing.' },
-              { q: 'Where do we meet?', a: 'We meet at Santa Barbara Harbor, Marina 3 gate (in the pay parking lot). Parking is $2.50/hour in the adjacent harbor lot.' },
-              { q: 'How long does it take to get to Santa Cruz Island?', a: 'In calm conditions, the Belafonte makes the crossing in approximately one hour thanks to her twin 200hp Yamaha outboards.' },
-              { q: 'What happens if bad weather is forecasted?', a: 'Safety is our priority. If the captain cancels for extreme wind or dangerous conditions, you can reschedule or get a full refund.' },
-            ].map((faq, i) => (
+            {faqs.map((faq, i) => (
               <div key={i} className={styles.faqCard}>
                 <h3 className={styles.faqQuestion}>{faq.q}</h3>
                 <p className={styles.faqAnswer}>{faq.a}</p>
@@ -609,7 +718,7 @@ export default async function HomePage() {
         <div className={styles.ctaOverlay}></div>
         <div className={`container ${styles.ctaContent}`}>
           <span className="section-label section-label--light">Ready for an Adventure?</span>
-          <h2 className={styles.ctaTitle}>Your Next Great Story Starts Here</h2>
+          <h2 className={styles.ctaTitle}>Book Your Charter</h2>
           <p className={styles.ctaText}>
             Whether it's exploring sea caves, chasing a sunset along the coast, or landing the
             catch of a lifetime — let's make it happen.
