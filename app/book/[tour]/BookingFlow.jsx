@@ -247,7 +247,7 @@ export default function BookingFlow({ tour, options, stripeReady, initial = {} }
           coupon: 'gift_card',
           items: [{ ...gaItem, quantity: party }],
         });
-        router.push(`/book/confirmation/${data.token}`);
+        router.push(`/book/confirmation/${data.token}?from=checkout`);
         return;
       }
       setCheckout(data);
@@ -532,7 +532,9 @@ function PaymentStep({ checkout, onError, gaItem, party }) {
   const [paying, setPaying] = useState(false);
 
   const returnUrl = useMemo(
-    () => `${window.location.origin}/book/confirmation/${checkout.token}`,
+    // `from=checkout` tells PurchaseTracker this visit is the end of a checkout,
+    // not a revisit from the confirmation email. Stripe appends its own params.
+    () => `${window.location.origin}/book/confirmation/${checkout.token}?from=checkout`,
     [checkout.token]
   );
 

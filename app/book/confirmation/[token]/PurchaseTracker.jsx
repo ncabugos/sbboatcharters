@@ -10,9 +10,17 @@ import { gaEventOnce, usd } from '@/lib/analytics';
  * redirects here, PendingRefresher reloads it while the webhook lands, and the URL
  * is a stable link the customer can revisit. `gaEventOnce` keys on the booking id
  * so revenue is counted a single time per tab.
+ *
+ * Per tab is not enough on its own: the "View your booking" link in the
+ * confirmation email opens a fresh tab (often on another device), and GA4 was
+ * counting those visits as new purchases. So the event fires only when the URL
+ * carries `from=checkout`, which BookingFlow adds to both ways out of checkout
+ * (Stripe's return_url and the fully gift-carded redirect). The email link never
+ * has it.
  */
 export default function PurchaseTracker({ bookingId, tourSlug, tourName, optionLabel, partySize, chargedCents, giftCardCents }) {
   useEffect(() => {
+    if (new URLSearchParams(window.location.search).get('from') !== 'checkout') return;
     gaEventOnce(`purchase:${bookingId}`, 'purchase', {
       transaction_id: String(bookingId),
       currency: 'USD',
