@@ -145,3 +145,23 @@ CREATE TABLE webhook_events (
   type            text NOT NULL,
   processed_at    timestamptz NOT NULL DEFAULT now()
 );
+
+-- ── Channel Report ─────────────────────────────────────────
+-- One weekly report per date, written in /admin/reports and shown at /report/.
+-- The date is the URL (/report/2026-10-26/). Unpublished rows are drafts.
+
+CREATE TABLE channel_reports (
+  id           serial PRIMARY KEY,
+  report_date  date UNIQUE NOT NULL,
+  summary      text NOT NULL DEFAULT '',
+  water_temp   text,
+  wildlife     text,
+  fishing      text,
+  diving       text,
+  outlook      text,
+  open_dates   text,
+  published_at timestamptz,
+  created_at   timestamptz NOT NULL DEFAULT now(),
+  updated_at   timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX channel_reports_published_idx ON channel_reports (report_date DESC) WHERE published_at IS NOT NULL;

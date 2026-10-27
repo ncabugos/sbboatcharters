@@ -4,6 +4,7 @@ import { getTourWithOptions, fromPrice, CALL_FOR_PRICING } from '@/lib/catalog';
 import { seasonLabel } from '@/lib/season';
 import { pageMetadata } from '@/lib/seo';
 import TripSchema from '../components/TripSchema';
+import LatestReport from '../components/LatestReport';
 
 const SLUG = 'lobster-diving';
 
@@ -140,6 +141,7 @@ export default async function LobsterDiving() {
               Book Lobster Diving
             </Link>
             <a href="tel:+18057222282" className={styles.phoneLink}>Or call (805) 722-2282</a>
+            <LatestReport />
           </div>
         </div>
       </section>

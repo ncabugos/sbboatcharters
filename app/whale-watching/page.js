@@ -5,6 +5,7 @@ import { formatUsd } from '@/lib/pricing';
 import { pageMetadata } from '@/lib/seo';
 import { jsonLdString } from '@/lib/structuredData';
 import TripSchema from '../components/TripSchema';
+import LatestReport from '../components/LatestReport';
 
 const SLUG = 'whale-watching';
 
@@ -195,6 +196,7 @@ export default async function WhaleWatching() {
               Book Whale Watching
             </Link>
             <a href="tel:+18057222282" className={styles.phoneLink}>Or call (805) 722-2282</a>
+            <LatestReport />
           </div>
         </div>
       </section>

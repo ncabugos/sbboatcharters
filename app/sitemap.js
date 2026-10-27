@@ -1,4 +1,5 @@
 import { sql } from '@/lib/db';
+import { getPublishedReports, reportPath } from '@/lib/reports';
 
 const SITE = 'https://www.sbboatcharters.com';
 
@@ -53,6 +54,17 @@ export default async function sitemap() {
     // The catalog lives in Neon. If it is unreachable, serve the marketing pages
     // rather than a 500 — Search Console treats a failed fetch as the whole
     // sitemap being broken, which is far worse than a temporarily short one.
+  }
+
+  // The Channel Report, once there is one: /report/ is noindex while empty.
+  // These do carry lastmod, because updated_at is a real edit time.
+  const reports = await getPublishedReports();
+  if (reports.length) {
+    const newest = Math.max(...reports.map((r) => new Date(r.updated_at).getTime()));
+    entries.push({ url: `${SITE}/report/`, lastModified: new Date(newest) });
+    for (const r of reports) {
+      entries.push({ url: `${SITE}${reportPath(r)}`, lastModified: new Date(r.updated_at) });
+    }
   }
 
   return entries;

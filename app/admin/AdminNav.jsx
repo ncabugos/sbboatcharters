@@ -9,6 +9,7 @@ const LINKS = [
   { href: '/admin/manual', label: 'Add booking' },
   { href: '/admin/blackouts', label: 'Blackout dates' },
   { href: '/admin/gift-cards', label: 'Gift cards' },
+  { href: '/admin/reports', label: 'Channel Report' },
 ];
 
 export default function AdminNav() {

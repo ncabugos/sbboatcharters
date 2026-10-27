@@ -4,6 +4,7 @@ import PageSlideshow from '../components/PageSlideshow';
 import { getTourPricingLabel } from '@/lib/catalog';
 import { pageMetadata } from '@/lib/seo';
 import TripSchema from '../components/TripSchema';
+import LatestReport from '../components/LatestReport';
 
 const SLIDES = [
   { src: '/images/generated/spearfishing-underwater.png', alt: 'Spearfishing underwater', caption: 'Hunt the Santa Barbara Channel' },
@@ -168,6 +169,7 @@ export default async function Spearfishing() {
               Book Spearfishing
             </Link>
             <a href="tel:+18057222282" className={styles.phoneLink}>Or call (805) 722-2282</a>
+            <LatestReport />
           </div>
         </div>
       </section>

@@ -1,0 +1,168 @@
+/* ===== CHANNEL REPORT ===== */
+
+.page {
+  background: #FFFFFF;
+}
+
+.article + .article {
+  margin-top: var(--space-3xl);
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: var(--fs-h2);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-deep-navy);
+  margin-bottom: var(--space-sm);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm) var(--space-lg);
+  font-size: var(--fs-small);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-xl);
+}
+
+.metaTemp {
+  color: var(--color-accent);
+  font-weight: var(--fw-semibold);
+}
+
+.summary {
+  font-size: var(--fs-body-lg);
+  line-height: 1.8;
+  color: var(--color-deep-navy);
+  padding-left: var(--space-lg);
+  border-left: 2px solid var(--color-accent);
+  margin-bottom: var(--space-2xl);
+}
+
+.section + .section {
+  margin-top: var(--space-xl);
+}
+
+.sectionHeading {
+  font-family: var(--font-heading);
+  font-size: var(--fs-h4);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-deep-navy);
+  margin-bottom: var(--space-sm);
+}
+
+.body p {
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+  margin-bottom: var(--space-md);
+}
+
+.readMore {
+  display: inline-block;
+  margin-top: var(--space-md);
+  color: var(--color-accent);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-small);
+}
+
+/* ===== PAST REPORTS ===== */
+.archive {
+  background: var(--color-warm-white);
+}
+
+.archiveList {
+  list-style: none;
+  margin-top: var(--space-xl);
+  border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.archiveItem {
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.archiveLink {
+  display: grid;
+  grid-template-columns: 11rem 1fr;
+  gap: var(--space-lg);
+  padding: var(--space-lg) 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.archiveLink:hover .archiveDate {
+  color: var(--color-accent);
+}
+
+.archiveDate {
+  font-weight: var(--fw-semibold);
+  color: var(--color-deep-navy);
+}
+
+.archiveSummary {
+  font-size: var(--fs-small);
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+
+@media (max-width: 600px) {
+  .archiveLink {
+    grid-template-columns: 1fr;
+    gap: var(--space-xs);
+  }
+}
+
+.empty {
+  text-align: center;
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+}
+
+/* ===== TRIP LINKS ===== */
+.trips {
+  margin-top: var(--space-3xl);
+  padding-top: var(--space-xl);
+  border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.tripsHeading {
+  font-family: var(--font-heading);
+  font-size: var(--fs-h4);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-deep-navy);
+  margin-bottom: var(--space-md);
+}
+
+.tripLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.tripLink {
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid rgba(0,0,0,0.15);
+  font-size: var(--fs-small);
+  color: var(--color-deep-navy);
+  text-decoration: none;
+}
+
+.tripLink:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+/* ===== LATEST REPORT LINE (tour pages) ===== */
+.latest {
+  text-align: center;
+  margin-top: var(--space-lg);
+  font-size: var(--fs-small);
+  color: var(--color-text-secondary);
+}
+
+.latest a {
+  color: var(--color-accent);
+  font-weight: var(--fw-semibold);
+}

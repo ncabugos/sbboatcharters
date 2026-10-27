@@ -4,6 +4,7 @@ import PageSlideshow from '../components/PageSlideshow';
 import { getTourPricingLabel } from '@/lib/catalog';
 import { pageMetadata } from '@/lib/seo';
 import TripSchema from '../components/TripSchema';
+import LatestReport from '../components/LatestReport';
 
 const SLIDES = [
   { src: '/images/instagram/SBCharters-IG-3.jpeg', alt: 'Sport fishing charter', caption: 'Private Sport Fishing Charters' },
@@ -98,6 +99,7 @@ export default async function SportFishing() {
             ))}
             <Link href="/book/sport-fishing/" className={`btn btn--primary ${styles.bookingCTA}`}>Book Sport Fishing</Link>
             <a href="tel:+18057222282" className={styles.phoneLink}>Or call (805) 722-2282</a>
+            <LatestReport />
           </div>
         </div>
       </section>

@@ -17,6 +17,7 @@ const INFO_LINKS = [
   { label: 'About Captain Garrick', href: '/about' },
   { label: 'The Belafonte', href: '/the-belafonte' },
   { label: 'Gallery', href: '/gallery' },
+  { label: 'Channel Report', href: '/report' },
   { label: 'FAQ', href: '/faq' },
   { label: 'Contact', href: '/contact' },
 ];
