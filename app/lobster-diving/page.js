@@ -2,16 +2,12 @@ import Link from 'next/link';
 import styles from '../components/ServicePage.module.css';
 import { getTourWithOptions, fromPrice, CALL_FOR_PRICING } from '@/lib/catalog';
 import { seasonLabel } from '@/lib/season';
+import { FALLBACK_SEASON } from '@/lib/lobsterSeason';
 import { pageMetadata } from '@/lib/seo';
 import TripSchema from '../components/TripSchema';
 import LatestReport from '../components/LatestReport';
 
 const SLUG = 'lobster-diving';
-
-// The season is content, so it lives on the catalog row (tours.season_start /
-// season_end, see scripts/apply-lobster-diving.js) where it also drives the
-// booking calendar. These dates only stand in until that row exists.
-const FALLBACK_SEASON = { start: '2026-10-02', end: '2027-03-17' };
 
 // Price and season come from the same catalog rows checkout uses, regenerated
 // hourly, so a change in the database shows here without a deploy.

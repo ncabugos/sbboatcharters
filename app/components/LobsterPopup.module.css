@@ -1,0 +1,117 @@
+/* Bottom-left card on desktop, bottom sheet on phones. Left, not right: the
+   service pages keep a sticky booking card in the right column and the footer
+   puts its Book button bottom-right, and the card must never cover a Book
+   button. Sits under the header (z 1000) and the open mobile menu (999). */
+.card {
+  position: fixed;
+  left: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 900;
+  width: min(380px, calc(100vw - 2.5rem));
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  background: var(--color-graphite, #141618);
+  color: var(--color-white-ice, #E8ECF0);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--color-charcoal, #2E333B);
+  animation: rise 0.45s var(--ease-out, ease-out) both;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card { animation: none; }
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 40%;
+  display: block;
+}
+
+.close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 2rem;
+  height: 2rem;
+  display: grid;
+  place-items: center;
+  background: rgba(13, 15, 17, 0.6);
+  color: var(--color-chrome, #B8C4D0);
+  border: 0;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: #fff;
+  background: rgba(13, 15, 17, 0.9);
+}
+
+.body {
+  padding: 1.1rem 1.1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0;
+  padding-right: 1.75rem;
+}
+
+.text {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--color-silver, #9BA5B4);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.35rem;
+}
+
+.book {
+  padding: 0.7rem 1.25rem;
+  font-size: 0.85rem;
+}
+
+.more {
+  font-size: 0.85rem;
+  color: var(--color-chrome, #B8C4D0);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.more:hover {
+  color: #fff;
+}
+
+@media (max-width: 600px) {
+  .card {
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    grid-template-columns: 96px 1fr;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .body {
+    padding: 1rem 1rem 0.9rem;
+  }
+}

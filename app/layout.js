@@ -3,6 +3,8 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import ScrollReveal from './components/ScrollReveal';
 import Analytics from './components/Analytics';
+import LobsterPopup from './components/LobsterPopup';
+import { getLobsterPromo } from '@/lib/lobsterSeason';
 import { SITE } from '@/lib/structuredData';
 import { SITE_NAME, DEFAULT_OG_IMAGE } from '@/lib/seo';
 
@@ -60,7 +62,9 @@ export const viewport = {
   themeColor: '#141618',
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  // Season dates and price for the lobster card; never throws (static fallback).
+  const lobster = await getLobsterPromo();
   return (
     <html lang="en">
       <head>
@@ -74,6 +78,7 @@ export default function RootLayout({ children }) {
         <ScrollReveal />
         <main>{children}</main>
         <Footer />
+        <LobsterPopup {...lobster} />
         <Analytics />
       </body>
     </html>
