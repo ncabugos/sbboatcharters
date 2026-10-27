@@ -73,7 +73,13 @@ export default function About() {
 
       {/* ===== FULL-WIDTH IMAGE BREAK ===== */}
       <section className={styles.imageBreak}>
-        <img src="/images/stephen-wiggins-unsplash.jpg" alt="Santa Barbara coastal scenery" />
+        <img
+          src="/images/belafonte/islands-bay.webp"
+          alt="The Belafonte anchored in a quiet cove at the Channel Islands at sunset"
+          width="2000"
+          height="947"
+          loading="lazy"
+        />
         <div className={styles.imageBreakOverlay}></div>
       </section>
 
