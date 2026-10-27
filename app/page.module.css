@@ -229,6 +229,11 @@
   gap: var(--space-xl);
 }
 
+/* A card left alone on the last row sits in the middle column. */
+.servicesGrid > :last-child:nth-child(3n + 1) {
+  grid-column: 2;
+}
+
 .serviceCard {
   position: relative;
   background: white;
@@ -324,7 +329,9 @@
 }
 
 /* ===== IMAGE BREAK ===== */
+/* A link to /whale-watching/, so it needs to be a block. */
 .imageBreak {
+  display: block;
   position: relative;
   height: clamp(280px, 50vw, 50vh);
   min-height: 280px;
@@ -926,6 +933,16 @@ a.authorName:hover {
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .servicesGrid > :last-child:nth-child(3n + 1) {
+    grid-column: auto;
+  }
+
+  .servicesGrid > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: calc((100% - var(--space-xl)) / 2);
+  }
+
   .featuresGrid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -985,6 +1002,10 @@ a.authorName:hover {
     grid-template-columns: 1fr;
     max-width: 480px;
     margin-inline: auto;
+  }
+
+  .servicesGrid > :last-child:nth-child(odd) {
+    width: auto;
   }
 
   .featuresGrid {

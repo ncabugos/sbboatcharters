@@ -15,7 +15,7 @@ export const metadata = pageMetadata({
   path: '/',
   title: { absolute: 'Santa Barbara Boat Charters | Private Boat Rental with Captain' },
   description:
-    'Private boat charters and captained boat rentals in Santa Barbara for up to 6 guests. Channel Islands tours, sunset cruises, fishing and lobster diving.',
+    'Private boat charters and captained boat rentals in Santa Barbara for up to 6 guests. Island tours, whale watching, sunset cruises, fishing and lobster diving.',
   imageAlt: 'Santa Barbara Boat Charters on the Santa Barbara Channel',
 });
 
@@ -53,6 +53,7 @@ const IconSunset = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="n
 const IconDive = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h4m16 0h-4M12 6v2m0 8v2"/></svg>;
 const IconFish = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6.5 12c.94-3.46 4.94-6 8.5-6 3.56 0 6.06 3.15 5.5 6.5-.48 2.9-2.84 4.9-5 6.5"/><path d="M2 12c.5-4 4-7 8-7"/><circle cx="6" cy="18" r="2"/></svg>;
 const IconMoon = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>;
+const IconTail = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20v-7"/><path d="M12 13c-1-3-4-5-8-5 1 3 4 5 8 5z"/><path d="M12 13c1-3 4-5 8-5-1 3-4 5-8 5z"/><path d="M3 20c3 0 3-1.5 6-1.5s3 1.5 6 1.5 3-1.5 6-1.5"/></svg>;
 const IconWave = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12c1.5-3 3.5-4.5 6-4s5 3 8 3 4.5-1.5 6-4"/><path d="M2 18c1.5-3 3.5-4.5 6-4s5 3 8 3 4.5-1.5 6-4"/></svg>;
 
 // `slug` is the catalog tour whose cheapest option prices the card; `tag` is what
@@ -75,6 +76,15 @@ const SERVICES = [
     icon: <IconSunset />,
     tag: 'Private Cruise',
     image: '/images/sunset-cruise.webp',
+  },
+  {
+    title: 'Whale Watching',
+    description: 'Private whale watching on the Santa Barbara Channel, just your group on board. Gray whales in winter and spring, humpbacks and blue whales in summer.',
+    href: '/whale-watching',
+    slug: 'whale-watching',
+    icon: <IconTail />,
+    tag: 'Private Cruise',
+    image: '/images/whale-watching-humpback.jpg',
   },
   {
     title: 'Spearfishing',
@@ -427,12 +437,12 @@ export default async function HomePage() {
       </section>
 
       {/* ===== FULL-WIDTH IMAGE BREAK ===== */}
-      <section className={styles.imageBreak}>
+      <Link href="/whale-watching/" className={styles.imageBreak}>
         <img src="/images/jonathan-hsu-unsplash.jpg" alt="Humpback whale breaching near the Channel Islands" loading="lazy" decoding="async" />
         <div className={styles.imageBreakOverlay}>
-          <span className={styles.imageBreakText}>Witness Magnificent Marine Wildlife Up Close</span>
+          <span className={styles.imageBreakText}>Private Whale Watching in Santa Barbara</span>
         </div>
-      </section>
+      </Link>
 
       {/* ===== WHY CHOOSE US ===== */}
       <section className={`section ${styles.features}`}>

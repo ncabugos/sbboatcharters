@@ -258,6 +258,13 @@
   margin-bottom: var(--space-sm);
 }
 
+.highlightTitle a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--color-accent);
+  text-underline-offset: 4px;
+}
+
 .highlightDesc {
   font-size: var(--fs-small);
   color: var(--color-text-secondary);
@@ -359,6 +366,130 @@
   color: var(--color-text-secondary);
   line-height: 1.7;
   padding: var(--space-sm) var(--space-lg) var(--space-xl);
+}
+
+/* ===== SEASON TABLE (whale watching) ===== */
+.seasonTableWrap {
+  margin-top: var(--space-xl);
+  background: #FFFFFF;
+  border: 1px solid rgba(0,0,0,0.07);
+  overflow-x: auto;
+}
+
+.seasonTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-small);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.seasonTable th,
+.seasonTable td {
+  text-align: left;
+  vertical-align: top;
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid rgba(0,0,0,0.07);
+}
+
+.seasonTable tbody tr:last-child th,
+.seasonTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.seasonTable thead th {
+  font-size: 11px;
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-deep-navy);
+}
+
+.seasonTable tbody th {
+  font-weight: var(--fw-semibold);
+  color: var(--color-deep-navy);
+  white-space: nowrap;
+}
+
+.seasonWhen {
+  color: var(--color-accent);
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .seasonTable thead { display: none; }
+  .seasonTable tr { display: block; padding: var(--space-md) var(--space-lg); border-bottom: 1px solid rgba(0,0,0,0.07); }
+  .seasonTable tbody tr:last-child { border-bottom: none; }
+  .seasonTable th,
+  .seasonTable td { display: block; padding: 0; border: none; }
+  .seasonTable .seasonWhen { margin: 2px 0 var(--space-xs); }
+}
+
+.sourceNote {
+  text-align: center;
+  margin-top: var(--space-lg);
+  font-size: var(--fs-small);
+  color: var(--color-text-secondary);
+}
+
+.sourceNote a {
+  color: var(--color-accent);
+}
+
+/* ===== VIDEO ===== */
+.videoSection {
+  background: var(--color-deep-navy);
+  padding: clamp(3rem, 8vw, var(--space-4xl)) 0;
+}
+
+.videoPlayer {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  margin-top: var(--space-lg);
+}
+
+/* ===== QUESTIONS ===== */
+.faqList {
+  margin-top: var(--space-xl);
+  border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.faqItem {
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.faqQuestion {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-lg) 0;
+  font-weight: var(--fw-semibold);
+  color: var(--color-deep-navy);
+}
+
+.faqQuestion::-webkit-details-marker { display: none; }
+
+.faqQuestion::after {
+  content: '+';
+  font-size: 1.25rem;
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+.faqItem[open] .faqQuestion::after { content: '\2212'; }
+
+.faqAnswer {
+  padding-bottom: var(--space-lg);
+  font-size: var(--fs-small);
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  max-width: 65ch;
 }
 
 /* ===== WHAT TO BRING ===== */

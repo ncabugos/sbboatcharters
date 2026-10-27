@@ -15,6 +15,7 @@ const MARKETING = [
   '/the-belafonte/',
   '/channel-islands-tour/',
   '/coastal-sunset-cruises/',
+  '/whale-watching/',
   '/spearfishing/',
   '/lobster-diving/',
   '/sport-fishing/',

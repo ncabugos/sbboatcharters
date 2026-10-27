@@ -5,6 +5,7 @@ import { BUSINESS_ID } from '@/lib/structuredData';
 const CHARTER_LINKS = [
   { label: 'Channel Islands Tour', href: '/channel-islands-tour' },
   { label: 'Coastal & Sunset Cruises', href: '/coastal-sunset-cruises' },
+  { label: 'Whale Watching', href: '/whale-watching' },
   { label: 'Spearfishing', href: '/spearfishing' },
   { label: 'Lobster Diving', href: '/lobster-diving' },
   { label: 'Sport Fishing', href: '/sport-fishing' },
@@ -146,7 +147,7 @@ export default function Footer() {
             // Referenced as `provider` by the TouristTrip nodes on experience pages.
             '@id': BUSINESS_ID,
             name: 'Santa Barbara Boat Charters',
-            description: 'Private 6-passenger boat charters in Santa Barbara. Channel Islands tours, coastal cruises, sunset cruises, spearfishing, lobster diving, sport fishing, and foiling adventures with over 20 years of experience.',
+            description: 'Private 6-passenger boat charters in Santa Barbara. Channel Islands tours, coastal cruises, sunset cruises, whale watching, spearfishing, lobster diving, sport fishing, and foiling adventures with over 20 years of experience.',
             url: 'https://www.sbboatcharters.com',
             telephone: '+18057222282',
             address: {

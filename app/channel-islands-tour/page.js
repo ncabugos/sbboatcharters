@@ -27,7 +27,7 @@ const HIGHLIGHTS = [
   { image: '/images/instagram/SBCharters-IG-2.jpeg', title: 'Giant Sea Caves', desc: 'Explore Painted Cave — one of the world\'s largest sea caves at over 1,215 feet deep — and dozens more.' },
   { image: '/images/snorkle-diving.webp', title: 'Snorkeling & Diving', desc: 'Crystal-clear waters and lush kelp forests teeming with garibaldi, lobster, and vibrant marine life.' },
   { image: '/images/belafonte/channel-island-charters.webp', title: 'Private Beaches', desc: 'Anchor in secluded coves accessible only by boat. Swim, sunbathe, and explore without the crowds.' },
-  { image: '/images/hero-orcas-channel.jpg', title: 'Whale Watching', desc: 'Gray whales (Dec–Apr), blue and humpback whales (May–Aug) — we know the migration routes.' },
+  { image: '/images/whale-watching-orcas.jpg', title: 'Whale Watching', desc: 'Gray whales from December to May, humpbacks and blue whales through the summer. We know the migration routes.', href: '/whale-watching/' },
 ];
 
 export default async function ChannelIslandsTour() {
@@ -118,7 +118,7 @@ export default async function ChannelIslandsTour() {
                   <div className={styles.highlightImageOverlay} />
                 </div>
                 <div className={styles.highlightBody}>
-                  <h3 className={styles.highlightTitle}>{h.title}</h3>
+                  <h3 className={styles.highlightTitle}>{h.href ? <Link href={h.href}>{h.title}</Link> : h.title}</h3>
                   <p className={styles.highlightDesc}>{h.desc}</p>
                 </div>
               </div>
