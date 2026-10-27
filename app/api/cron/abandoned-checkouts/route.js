@@ -9,8 +9,8 @@ import { getStripe, onConnected, stripeConfigured } from '@/lib/stripe';
 // gets a 308, doesn't follow it, and the job silently never runs.
 export const dynamic = 'force-dynamic';
 
-// Checkout holds last 30 minutes, so an hour after starting checkout the guest
-// has been gone for at least half an hour. With a 15-minute schedule the email
+// Checkout holds last 15 minutes, so an hour after starting checkout the guest
+// has been gone for at least 45 minutes. With a 15-minute schedule the email
 // lands 60 to 75 minutes after they left the payment step.
 const MIN_AGE_MINUTES = 60;
 // Upper bound: a missed run still catches people, but the first deploy doesn't

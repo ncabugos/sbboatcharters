@@ -10,11 +10,45 @@ import { syncContact, bookingContact } from '@/lib/hubspot.mjs';
 
 export const dynamic = 'force-dynamic';
 
-const HOLD_MINUTES = 30;
+const HOLD_MINUTES = 15;
+// Online booking stops here; anything further out is a phone call. Without a
+// horizon a script could hold every slot on the calendar for years ahead.
+const MAX_DAYS_AHEAD = 365;
+// Caps on unpaid holds. A guest editing their selection replaces their previous
+// hold (replaceBookingId), so a real guest never has more than one or two live.
+const MAX_LIVE_HOLDS_PER_EMAIL = 3;
+const MAX_HOLDS_PER_IP_PER_HOUR = 10;
 const EXCLUSION_VIOLATION = '23P01';
+
+class HoldCapError extends Error {}
 
 function bad(message, status = 400) {
   return NextResponse.json({ error: message }, { status });
+}
+
+function clientIp(request) {
+  const forwarded = request.headers.get('x-forwarded-for');
+  const first = forwarded ? forwarded.split(',')[0].trim() : '';
+  return (first || request.headers.get('x-real-ip') || '').slice(0, 64) || null;
+}
+
+function horizonDate() {
+  return new Date(Date.now() + MAX_DAYS_AHEAD * 86400000).toISOString().slice(0, 10);
+}
+
+// Runs inside the hold transaction. The customer row lock from upsertCustomer
+// serializes same-email requests; the advisory lock does the same per IP, so a
+// burst of concurrent requests cannot all pass the count before any inserts.
+async function enforceHoldCaps(tx, customerId, ip) {
+  const [{ live }] = await tx`
+    SELECT count(*)::int AS live FROM bookings
+    WHERE customer_id = ${customerId} AND status = 'pending' AND expires_at > now()`;
+  if (live >= MAX_LIVE_HOLDS_PER_EMAIL) throw new HoldCapError('email');
+  if (!ip) return;
+  const [{ recent }] = await tx`
+    SELECT count(*)::int AS recent FROM bookings
+    WHERE client_ip = ${ip} AND created_at > now() - interval '1 hour'`;
+  if (recent >= MAX_HOLDS_PER_IP_PER_HOUR) throw new HoldCapError('ip');
 }
 
 async function upsertCustomer(tx, { name, email, phone }) {
@@ -39,17 +73,23 @@ export async function POST(request) {
     tour: tourSlug, pricingOptionId, date, time,
     partySize, name, email, phone, notes, giftCardCode,
     // set when the user edits their selection after a hold was created,
-    // so their own previous hold doesn't block them
-    replaceBookingId,
+    // so their own previous hold doesn't block them; the token proves the
+    // hold is theirs
+    replaceBookingId, replaceToken,
     // anti-spam, mirroring the contact form
     company, elapsedMs,
   } = body || {};
 
   if (company) return bad('Invalid request'); // honeypot
-  if (typeof elapsedMs === 'number' && elapsedMs < 2000) return bad('Please take a moment and try again');
+  // The form always sends elapsedMs; a request without it did not come from the form.
+  if (!Number.isFinite(elapsedMs) || elapsedMs < 2000) return bad('Please take a moment and try again');
 
   if (!tourSlug || !pricingOptionId || !date || !time) return bad('Missing booking details');
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{2}:\d{2}$/.test(time)) return bad('Invalid date or time');
+  if (date > horizonDate()) {
+    return bad('Online booking is open up to a year ahead. Call (805) 722-2282 for dates further out.');
+  }
+  const ip = clientIp(request);
   const party = Number(partySize);
   const cleanName = String(name || '').trim().slice(0, 120);
   const cleanEmail = String(email || '').trim().toLowerCase().slice(0, 200);
@@ -63,11 +103,14 @@ export async function POST(request) {
     await sql`
       UPDATE bookings SET status = 'expired'
       WHERE status = 'pending' AND expires_at < now()`;
-    if (typeof replaceBookingId === 'string' && /^[0-9a-f-]{36}$/.test(replaceBookingId)) {
-      // Only unpaid pending holds can be replaced; harmless if id is bogus.
+    if (
+      typeof replaceBookingId === 'string' && /^[0-9a-f-]{36}$/.test(replaceBookingId)
+      && typeof replaceToken === 'string' && /^[0-9a-f]{32}$/.test(replaceToken)
+    ) {
+      // Only the holder's own unpaid pending hold can be replaced; harmless if bogus.
       await sql`
         UPDATE bookings SET status = 'cancelled'
-        WHERE id = ${replaceBookingId} AND status = 'pending'`;
+        WHERE id = ${replaceBookingId} AND confirmation_token = ${replaceToken} AND status = 'pending'`;
     }
 
     // 2. Re-validate the slot server-side (same engine as the picker).
@@ -113,27 +156,33 @@ export async function POST(request) {
     let booking;
     try {
       booking = await withTransaction(async (tx) => {
+        // Taken before the customer row lock so every request locks in the same order.
+        if (ip) await tx`SELECT pg_advisory_xact_lock(hashtext(${ip}))`;
         const customerId = await upsertCustomer(tx, {
           name: cleanName, email: cleanEmail, phone: cleanPhone,
         });
+        await enforceHoldCaps(tx, customerId, ip);
         const rows = await tx`
           INSERT INTO bookings (
             tour_id, pricing_option_id, customer_id, party_size,
             trip_start, trip_end, block_range, status, expires_at,
-            base_cents, fee_cents, tax_cents, gift_card_cents, charged_cents, notes
+            base_cents, fee_cents, tax_cents, gift_card_cents, charged_cents, notes, client_ip
           ) VALUES (
             ${tour.id}, ${option.id}, ${customerId}, ${party},
             ${tripStart.toISOString()}, ${tripEnd.toISOString()},
             tstzrange(${tripStart.toISOString()}, ${new Date(tripEnd.getTime() + BUFFER_MIN * 60000).toISOString()}),
             'pending', now() + (${HOLD_MINUTES} * interval '1 minute'),
-            ${option.base_cents}, ${applicationFee}, ${taxCents}, ${giftCardCents}, ${chargeCents}, ${cleanNotes || null}
+            ${option.base_cents}, ${applicationFee}, ${taxCents}, ${giftCardCents}, ${chargeCents}, ${cleanNotes || null}, ${ip}
           )
-          RETURNING id, confirmation_token`;
+          RETURNING id, confirmation_token, expires_at`;
         return rows[0];
       });
     } catch (err) {
       if (err?.code === EXCLUSION_VIOLATION) {
         return bad('That time was just taken. Please pick another slot.', 409);
+      }
+      if (err instanceof HoldCapError) {
+        return bad('Too many booking attempts right now. Call (805) 722-2282 and we will hold a time for you.', 429);
       }
       throw err;
     }
@@ -182,6 +231,8 @@ export async function POST(request) {
       token: booking.confirmation_token,
       amountCents: chargeCents,
       holdMinutes: HOLD_MINUTES,
+      // Drives the countdown on the payment step; the row's clock, not the browser's.
+      expiresAt: new Date(booking.expires_at).toISOString(),
     });
   } catch (err) {
     console.error('[checkout]', err);

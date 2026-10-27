@@ -63,8 +63,9 @@ async function handleBookingPaid(intent) {
   const giftCardCents = Number(intent.metadata.gift_card_cents || 0);
   if (!bookingId) return;
 
+  let outcome;
   try {
-    await withTransaction(async (tx) => {
+    outcome = await withTransaction(async (tx) => {
       // Re-confirming an 'expired' row re-enters the exclusion constraint's
       // scope — if the slot was retaken meanwhile, this throws 23P01.
       const rows = await tx`
@@ -72,27 +73,31 @@ async function handleBookingPaid(intent) {
         SET status = 'confirmed', expires_at = NULL
         WHERE id = ${bookingId} AND status IN ('pending','expired')
         RETURNING id`;
-      if (rows.length === 0) return; // already confirmed (or cancelled by admin)
+      if (rows.length === 0) {
+        // Already confirmed, or the hold was cancelled (admin, or the guest's
+        // own edit) while the payment form was still open.
+        const existing = await tx`SELECT status FROM bookings WHERE id = ${bookingId}`;
+        return existing[0]?.status || 'missing';
+      }
       if (giftCardId && giftCardCents > 0) {
         await redeemWithinTx(tx, giftCardId, bookingId, giftCardCents);
       }
+      return 'confirmed';
     });
   } catch (err) {
     if (err?.code === EXCLUSION_VIOLATION) {
-      // Paid after the hold expired AND the slot was retaken: refund + apologize.
-      console.warn('[webhook] slot lost after payment; refunding', bookingId);
-      const stripe = getStripe();
-      await stripe.refunds.create(
-        { payment_intent: intent.id, reason: 'requested_by_customer' },
-        onConnected()
-      );
-      await sql`UPDATE bookings SET status = 'cancelled' WHERE id = ${bookingId}`;
-      const details = await loadBookingDetails(bookingId);
-      if (details?.customer_email) await sendBookingApology(details);
+      // Paid after the hold expired AND the slot was retaken.
+      await refundLostBooking(intent, bookingId, 'slot retaken');
       return;
     }
     throw err;
   }
+  if (outcome === 'cancelled') {
+    // Money taken for a hold that no longer exists: give it back, never keep it silently.
+    await refundLostBooking(intent, bookingId, 'hold cancelled');
+    return;
+  }
+  if (outcome !== 'confirmed') return;
 
   const details = await loadBookingDetails(bookingId);
   if (details?.status === 'confirmed') {
@@ -100,6 +105,25 @@ async function handleBookingPaid(intent) {
     await sendCaptainNotification(details);
     after(() => syncContact(bookingContact(details)));
   }
+}
+
+// Full refund for a payment that landed on a booking we can no longer honor.
+// The idempotency key makes a Stripe retry of this webhook harmless: Stripe
+// returns the original refund instead of raising charge_already_refunded.
+async function refundLostBooking(intent, bookingId, why) {
+  console.warn(`[webhook] ${why} after payment; refunding`, bookingId);
+  const stripe = getStripe();
+  try {
+    await stripe.refunds.create(
+      { payment_intent: intent.id, reason: 'requested_by_customer' },
+      { ...onConnected(), idempotencyKey: `refund-${intent.id}` }
+    );
+  } catch (err) {
+    if (err?.code !== 'charge_already_refunded') throw err;
+  }
+  await sql`UPDATE bookings SET status = 'cancelled' WHERE id = ${bookingId}`;
+  const details = await loadBookingDetails(bookingId);
+  if (details?.customer_email) await sendBookingApology(details);
 }
 
 async function handleGiftCardPaid(intent) {

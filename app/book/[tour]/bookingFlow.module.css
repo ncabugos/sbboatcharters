@@ -425,6 +425,28 @@
   text-align: center;
 }
 
+.holdTimer {
+  margin: 0;
+  padding: 0.7rem 1rem;
+  background: var(--color-light-bg, #F4F5F6);
+  border-left: 3px solid var(--color-charcoal, #2E333B);
+  font-size: 0.9rem;
+  color: var(--color-deep-navy, #12151A);
+}
+
+.holdTimer strong {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.holdTimerLow {
+  border-left-color: var(--color-accent, #E8481E);
+}
+
+.holdTimerLow strong {
+  color: var(--color-accent, #E8481E);
+}
+
 .spinner {
   display: inline-block;
   width: 1rem;

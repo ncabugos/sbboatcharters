@@ -99,6 +99,8 @@ CREATE TABLE bookings (
   confirmation_token text UNIQUE NOT NULL DEFAULT encode(gen_random_bytes(16),'hex'),
   source             text NOT NULL DEFAULT 'web' CHECK (source IN ('web','admin')),
   notes              text,
+  -- Requesting IP at checkout; /api/checkout caps holds per IP with it.
+  client_ip          text,
   created_at         timestamptz NOT NULL DEFAULT now(),
   -- Post-trip review request. Claimed atomically by the daily cron before the
   -- email is sent, so a duplicate cron invocation can't email a guest twice.
@@ -111,6 +113,8 @@ CREATE TABLE bookings (
 );
 CREATE INDEX bookings_start_idx ON bookings (trip_start);
 CREATE INDEX bookings_pi_idx ON bookings (stripe_payment_intent_id);
+CREATE INDEX bookings_ip_idx ON bookings (client_ip, created_at);
+CREATE INDEX bookings_customer_idx ON bookings (customer_id);
 
 -- ── Gift cards ─────────────────────────────────────────────
 

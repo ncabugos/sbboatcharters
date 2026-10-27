@@ -85,6 +85,10 @@ const FONTS = [{ cssSrc: 'https://fonts.googleapis.com/css2?family=Montserrat:wg
 export default function BookingFlow({ tour, options, stripeReady, initial = {} }) {
   const router = useRouter();
   const startedAt = useRef(Date.now());
+  // The most recent hold this guest created. Kept outside `checkout`, which is
+  // cleared on every edit, so a re-submit always replaces the old hold instead
+  // of stacking a new one next to it (the server caps live holds per guest).
+  const lastHold = useRef(null);
 
   const [month, setMonth] = useState(() => initial.date?.slice(0, 7) || initialMonth(tour.season));
   const [availability, setAvailability] = useState({}); // monthStr -> days map
@@ -226,7 +230,8 @@ export default function BookingFlow({ tour, options, stripeReady, initial = {} }
           phone: contact.phone,
           notes: contact.notes,
           giftCardCode: gift?.code || undefined,
-          replaceBookingId: checkout?.bookingId,
+          replaceBookingId: lastHold.current?.bookingId,
+          replaceToken: lastHold.current?.token,
           elapsedMs: Date.now() - startedAt.current,
         }),
       });
@@ -250,6 +255,7 @@ export default function BookingFlow({ tour, options, stripeReady, initial = {} }
         router.push(`/book/confirmation/${data.token}?from=checkout`);
         return;
       }
+      lastHold.current = { bookingId: data.bookingId, token: data.token };
       setCheckout(data);
       gaEvent('begin_checkout', {
         currency: 'USD',
@@ -473,7 +479,17 @@ export default function BookingFlow({ tour, options, stripeReady, initial = {} }
                 stripe={getStripePromise()}
                 options={{ clientSecret: checkout.clientSecret, appearance: APPEARANCE, fonts: FONTS }}
               >
-                <PaymentStep checkout={checkout} onError={setError} gaItem={gaItem} party={party} />
+                <PaymentStep
+                  checkout={checkout}
+                  onError={setError}
+                  onExpired={() => {
+                    // Back to the Continue button; the next hold replaces this one.
+                    invalidateCheckout();
+                    setError('Your hold on this time ended. Continue to payment again to hold it.');
+                  }}
+                  gaItem={gaItem}
+                  party={party}
+                />
               </Elements>
             )}
           </section>
@@ -526,10 +542,37 @@ export default function BookingFlow({ tour, options, stripeReady, initial = {} }
   );
 }
 
-function PaymentStep({ checkout, onError, gaItem, party }) {
+// Seconds left on the hold, ticking once a second. Trusts the server's expiry
+// but never shows more than the advertised hold length, so a skewed browser
+// clock cannot promise time the server will not honor.
+function useHoldCountdown(checkout) {
+  const [deadline] = useState(() => {
+    const full = checkout.holdMinutes * 60000;
+    const fromServer = checkout.expiresAt ? new Date(checkout.expiresAt).getTime() - Date.now() : full;
+    return Date.now() + Math.max(0, Math.min(fromServer, full));
+  });
+  const [secondsLeft, setSecondsLeft] = useState(() => Math.ceil((deadline - Date.now()) / 1000));
+  useEffect(() => {
+    const id = setInterval(() => {
+      setSecondsLeft(Math.max(0, Math.ceil((deadline - Date.now()) / 1000)));
+    }, 1000);
+    return () => clearInterval(id);
+  }, [deadline]);
+  return secondsLeft;
+}
+
+function PaymentStep({ checkout, onError, onExpired, gaItem, party }) {
   const stripe = useStripe();
   const elements = useElements();
   const [paying, setPaying] = useState(false);
+  const secondsLeft = useHoldCountdown(checkout);
+  const lowTime = secondsLeft <= 120;
+
+  useEffect(() => {
+    // Let a payment already in flight finish; Stripe's webhook re-confirms an
+    // expired hold if the slot is still free.
+    if (secondsLeft === 0 && !paying) onExpired();
+  }, [secondsLeft, paying, onExpired]);
 
   const returnUrl = useMemo(
     // `from=checkout` tells PurchaseTracker this visit is the end of a checkout,
@@ -563,6 +606,10 @@ function PaymentStep({ checkout, onError, gaItem, party }) {
 
   return (
     <div className={styles.payBox}>
+      <p className={`${styles.holdTimer} ${lowTime ? styles.holdTimerLow : ''}`} role="timer" aria-live="polite">
+        This time slot expires in{' '}
+        <strong>{Math.floor(secondsLeft / 60)}:{String(secondsLeft % 60).padStart(2, '0')}</strong>
+      </p>
       <ExpressCheckoutElement onConfirm={confirm} options={{ buttonHeight: 48 }} />
       <PaymentElement options={{ layout: 'tabs' }} />
       <button
@@ -574,7 +621,7 @@ function PaymentStep({ checkout, onError, gaItem, party }) {
         {paying ? <><span className={styles.spinner} />Processing…</> : `Pay ${formatUsd(checkout.amountCents)}`}
       </button>
       <p className={styles.holdNote}>
-        Your time slot is held for {checkout.holdMinutes} minutes. Payments are processed securely by Stripe.
+        Payments are processed securely by Stripe.
       </p>
     </div>
   );
